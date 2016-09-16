@@ -66,7 +66,7 @@ Liste d’en-têtes de lieux, comprenant chacune les propriétés suivantes :
 
 Nom | Description | Exemple
 ----|-------------|--------
-_id | Identifiant du lieu | ObjectId("57dbe334c3eaf116f88e0318")
+_id | Identifiant du lieu | "57dbe334c3eaf116f88e0318"
 location | Localisation du lieu | { "latitude": 49.18165, "longitude": -0.34709 }
 title | Titre du lieu | "Le Dôme"
 
@@ -79,7 +79,7 @@ $ curl https://api.example.com/places
 ```json
 [
   {
-    "_id": ObjectId("57dbe334c3eaf116f88e0318"),
+    "_id": "57dbe334c3eaf116f88e0318",
     "location": {
       "latitude": 49.18165,
       "longitude": -0.34709
@@ -87,7 +87,7 @@ $ curl https://api.example.com/places
     "title": "Le Dôme"
   },
   {
-    "_id": ObjectId("57dbe738c3eaf116f88e0319"),
+    "_id": "57dbe738c3eaf116f88e0319",
     "location": {
       "latitude": 49.21272,
       "longitude": -0.36847
