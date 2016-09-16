@@ -4,10 +4,10 @@
 
 * [**Informations générales**](#informations-generales)
     * [Protocole et format](#protocole-et-format)
-    * [Appels réussis](#appels-reussis)
+    * [Appels réussis](#appels-réussis)
     * [Gestion des erreurs](#gestion-des-erreurs)
 * [**Lieux**](#lieux)
-    * [Récupération des en-têtes de lieux](#recuperation-des-en-tetes-de-lieux)
+    * [Récupération des en-têtes de lieux](#récupération-des-en-têtes-de-lieux)
 
 ## Informations générales
 
