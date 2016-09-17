@@ -4,6 +4,7 @@ var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 
 var routes = require('./routes/index');
+var places = require('./routes/places');
 
 var mongoURL = 'mongodb://localhost/participamap';
 
@@ -27,6 +28,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 // Routes declarations
 app.use('/', routes);
+app.use('/places', places);
 
 // catch 404 and forward to error handler
 app.use(function notFound(req, res, next) {

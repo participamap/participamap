@@ -83,7 +83,7 @@ Liste d’en-têtes de lieux :
 
 Attribut | Description | Exemple
 ---------|-------------|--------
-id | Identifiant du lieu | "57dbe334c3eaf116f88e0318"
+_id | Identifiant du lieu | "57dbe334c3eaf116f88e0318"
 location | Localisation du lieu | { "latitude": 49.18165, "longitude": -0.34709 }
 title | Titre du lieu | "Le Dôme"
 
@@ -96,7 +96,7 @@ $ curl https://api.example.com/places?when=now
 ```json
 [
   {
-    "id": "57dbe334c3eaf116f88e0318",
+    "_id": "57dbe334c3eaf116f88e0318",
     "location": {
       "latitude": 49.18165,
       "longitude": -0.34709
@@ -104,7 +104,7 @@ $ curl https://api.example.com/places?when=now
     "title": "Le Dôme"
   },
   {
-    "id": "57dbe738c3eaf116f88e0319",
+    "_id": "57dbe738c3eaf116f88e0319",
     "location": {
       "latitude": 49.21272,
       "longitude": -0.36847
@@ -147,7 +147,7 @@ Un lieu :
 
 Attribut | Description | Exemple
 ---------|-------------|--------
-id | Identifiant du lieu | "57dbe334c3eaf116f88e0318"
+_id | Identifiant du lieu | "57dbe334c3eaf116f88e0318"
 location | Localisation du lieu | { "latitude": 49.18165, "longitude": -0.34709 }
 title | Titre du lieu | "Le Dôme"
 isVerified | État de vérification du lieu | true
@@ -165,7 +165,7 @@ $ curl https://api.example.com/places/57dbe334c3eaf116f88e0318
 
 ```json
 {
-  "id": "57dbe334c3eaf116f88e0318",
+  "_id": "57dbe334c3eaf116f88e0318",
   "location": {
     "latitude": 49.18165,
     "longitude": -0.34709
