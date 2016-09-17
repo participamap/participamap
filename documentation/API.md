@@ -8,7 +8,7 @@
     * [Gestion des erreurs](#gestion-des-erreurs)
 * [**Lieux**](#lieux)
     * [En-têtes de lieux](#en-têtes-de-lieux)
-    * [Informations d’un lieu](#informations-d-un-lieu)
+    * [Informations d’un lieu](#informations-dun-lieu)
 
 ## Informations générales
 
