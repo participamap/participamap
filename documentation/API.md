@@ -68,8 +68,8 @@ Nom | Description | Exemples
 when | Date de la carte à afficher | now, 2016-09-16
 lat | Latitude du centre du cadre de recherche | 49.18165
 long | Longitude du centre du cadre de recherche | -0.34709
-height | Demi-hauteur du cadre de rercherche en degrés | 0.03
-width | Demi-largeur du cadre de recherche en degrés | 0.03
+height | Hauteur du cadre de rercherche en degrés | 0.06
+width | Largeur du cadre de recherche en degrés | 0.06
 
 **Note : *lat*, *long*, *height* et *width* doivent être renseignés ensemble.**
 
