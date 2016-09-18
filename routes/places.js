@@ -9,8 +9,32 @@ router.get('/', Checks.db, getPlacesHeaders);
 router.get('/:id', Checks.db, getPlaceInfo);
 
 function getPlacesHeaders(req, res, next) {
-  // TODO: Filtre basé sur les paramètres de requête
   var filter = {};
+
+  if (req.query.when) {
+    var date = (req.query.when === 'now')
+      ? new Date()
+      : new Date(req.query.when)
+
+      if (isNaN(date.valueOf())) {
+        var err = new Error('Bad request: invalid date');
+        err.status = 400;
+        return next(err);
+      }
+
+      filter.$and = [
+        { $or: [
+            { startDate: { $lte: date } },
+            { startDate: null }
+          ] },
+        { $or: [
+            { endDate: { $gte: date } },
+            { endDate: null }
+          ] }
+      ];
+  }
+
+  // TODO: Filtre basé sur la position
   
   var projection = {
     location: true,
