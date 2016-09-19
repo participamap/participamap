@@ -10,6 +10,7 @@
     * [En-têtes de lieux](#en-têtes-de-lieux)
     * [Informations d’un lieu](#informations-dun-lieu)
     * [Commentaires d’un lieu](#commentaires-dun-lieu)
+    * [Images d’un lieu](#images-dun-lieu)
 
 ## Informations générales
 
@@ -252,20 +253,82 @@ $ curl https://api.participamap.org/places/57dbe334c3eaf116f88e0318/comments?pag
 ```json
 [
   {
-    author: {
-      id: "57dbe334c3eaf116f88eca27",
-      name: "Jean Dupont"
+    "author": {
+      "id": "57dbe334c3eaf116f88eca27",
+      "name": "Jean Dupont"
     },
-    date: "2016-09-19T19:30:26.037Z",
-    content: "Très bel endroit"
+    "date": "2016-09-19T19:30:26.037Z",
+    "content": "Très bel endroit"
   },
   {
-    author: {
-      id: "57dbe334c3eaf116f88eca2c",
-      name: "Alexis de caen"
+    "author": {
+      "id": "57dbe334c3eaf116f88eca2c",
+      "name": "Alexis de caen"
     },
-    date: "2016-09-19T19:30:32.739Z",
-    content: "Je plussoie Jean"
+    "date": "2016-09-19T19:30:32.739Z",
+    "content": "Je plussoie Jean"
+  }
+]
+```
+
+### Images d’un lieu
+
+#### Nom de la requête
+
+`getPictures`
+
+#### Description
+
+Récupère les images d’un lieu.
+
+#### Point d’accès
+
+Méthode | Chemin | autorisation
+:------:|:------:|:-----------:
+GET | /places/{id}/pictures | non requis
+
+#### Paramètres de chemin
+
+Nom | Description | Exemple
+----|-------------|--------
+id | Identifiant du lieu | 57dbe334c3eaf116f88e0318
+
+#### Paramètres de requête
+
+Nom | Description | Exemple | Absence
+----|-------------|---------|--------
+page | Numéro de page | 3 | 1
+n | Nombre d’images par page | 12 | 12 si `page` est fixé, infini sinon
+
+#### Charge
+
+*Néan*
+
+#### Réponse
+
+Liste de liens vers des images :
+
+Attribut | Description | Exemple
+---------|-------------|--------
+author | Auteur de la photo | { id: "57dbe334c3eaf116f88eca27", name: "Jean Dupont" }
+date | Date de mise en ligne | "2016-09-19T19:30:26.037Z"
+link | Lien vers la photo | "https://photos.participamap.org/83ca8f82.jpg"
+
+#### Exemple
+
+```sh
+$ curl https://api.participamap.org/places/57dbe334c3eaf116f88e0318/pitcures?page=1
+```
+
+```json
+[
+  {
+    "author": {
+      "id": "57dbe334c3eaf116f88eca27",
+      "name": "Jean Dupont"
+    },
+    "date": "2016-09-19T19:30:45.173Z",
+    "link": "https://photos.participamap.org/83ca8f82.jpg"
   }
 ]
 ```
