@@ -42,7 +42,6 @@ Si une erreur a lieu, le service web répond avec :
     * un objet vide en mode production
     * l’erreur en mode débug
 
-
 ## Lieux
 
 ### En-têtes de lieux
@@ -155,6 +154,9 @@ isVerified | État de vérification du lieu | true
 *description* | Description | "Maison de la Recherche et de l’Imagination"
 *startDate* | Date de création | "2015-01-01T13:00:00.000Z"
 *endDate* | Date de suppression | "2016-09-09T08:00:00.000Z"
+*denyComments* | Interdiction des commentaires | true
+*denyPictures* | Interdiction des photos | true
+*denyDocuments* | Interdiction des documents | true
 
 #### Exemple
 
