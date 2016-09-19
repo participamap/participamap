@@ -2,7 +2,7 @@
 
 ## Sommaire
 
-* [**Informations générales**](#informations-generales)
+* [**Informations générales**](#informations-générales)
     * [Protocole et format](#protocole-et-format)
     * [Appels réussis](#appels-réussis)
     * [Gestion des erreurs](#gestion-des-erreurs)
@@ -12,6 +12,7 @@
     * [Commentaires d’un lieu](#commentaires-dun-lieu)
     * [Images d’un lieu](#images-dun-lieu)
     * [Création d’un lieu](#création-dun-lieu)
+    * [Suppression d’un lieu](#suppression-dun-lieu)
 
 ## Informations générales
 
@@ -344,7 +345,7 @@ $ curl https://api.participamap.org/places/57dbe334c3eaf116f88e0318/pitcures?pag
 
 #### Description
 
-Crée un nouveau lieu
+Crée un nouveau lieu.
 
 #### Point d’accès
 
@@ -423,4 +424,44 @@ $ curl -X POST -H "Content-Type: application/json" \
   },
   "title": "Le Dôme"
 }
+```
+
+### Suppression d’un lieu
+
+#### Nom de la requête
+
+`deletePlace`
+
+#### Description
+
+Supprime un lieu.
+
+#### Point d’accès
+
+Méthode | Chemin | autorisation
+:------:|:------:|:-----------:
+DELETE | /places/{id} | administrateur
+
+#### Paramètres de chemin
+
+Nom | Description | Exemple
+----|-------------|--------
+id | Identifiant du lieu | 57dbe334c3eaf116f88e0318
+
+#### Paramètres de requête
+
+*Néan*
+
+#### Charge
+
+*Néan*
+
+#### Réponse
+
+`HTTP/1.1 200 OK`
+
+#### Exemple
+
+```sh
+$ curl -X DELETE https://api.participamap.org/places/57dbe334c3eaf116f88e0318
 ```
