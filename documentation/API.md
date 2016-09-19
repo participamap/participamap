@@ -153,9 +153,8 @@ title | Titre du lieu | "Le Dôme"
 isVerified | État de vérification du lieu | true
 *type* | Type du lieu | 0
 *description* | Description | "Maison de la Recherche et de l’Imagination"
-*startDate* | Date de création | "2015-01-01 15:00:00"
-
-*À compléter*
+*startDate* | Date de création | "2015-01-01T13:00:00.000Z"
+*endDate* | Date de suppression | "2016-09-09T08:00:00.000Z"
 
 #### Exemple
 
@@ -172,7 +171,7 @@ $ curl https://api.example.com/places/57dbe334c3eaf116f88e0318
   },
   "title": "Le Dôme",
   "isVerified": true,
-  "description": "Maison de la Recherche et de l’Imagination"
-  // À compléter
+  "description": "Maison de la Recherche et de l’Imagination",
+  "startDate": "2015-01-01T13:00:00.000Z"
 }
 ```
