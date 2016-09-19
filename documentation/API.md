@@ -11,6 +11,7 @@
     * [Informations d’un lieu](#informations-dun-lieu)
     * [Commentaires d’un lieu](#commentaires-dun-lieu)
     * [Images d’un lieu](#images-dun-lieu)
+    * [Création d’un lieu](#création-dun-lieu)
 
 ## Informations générales
 
@@ -167,11 +168,13 @@ title | Titre du lieu | "Le Dôme"
 isVerified | État de vérification du lieu | true
 *type* | Type du lieu | 0
 *description* | Description | "Maison de la Recherche et de l’Imagination"
-*comments* | Commentaires | *Tableau de commentaires*
-*pictures* | Photos | *Tableau de liens vers le photos*
-*documents* | Documents | *Tableau de documents*
 *startDate* | Date de création | "2015-01-01T13:00:00.000Z"
 *endDate* | Date de suppression | "2016-09-09T08:00:00.000Z"
+*comments* | Commentaires | *Liste de commentaires*
+*pictures* | Photos | *Liste de photos*
+*documents* | Documents | *Liste de documents*
+*votes* | Votes | *Liste de votes*
+*manager*\* | Gérant du lieu | "57dbe334c3eaf116f8a33e7"
 *moderateComments*\* | Modération des commentaires | true
 *moderatePictures*\* | Modération des photos | true
 *moderateDocuments*\* | Modération des documents | true
@@ -331,4 +334,93 @@ $ curl https://api.participamap.org/places/57dbe334c3eaf116f88e0318/pitcures?pag
     "link": "https://photos.participamap.org/83ca8f82.jpg"
   }
 ]
+```
+
+### Création d’un lieu
+
+#### Nom de la requête
+
+`saveLocation`
+
+#### Description
+
+Crée un nouveau lieu
+
+#### Point d’accès
+
+Méthode | Chemin | autorisation
+:------:|:------:|:-----------:
+POST | /places | utilisateur
+
+#### Paramètres de chemin
+
+*Néan*
+
+#### Paramètres de requête
+
+*Néan*
+
+#### Charge
+
+Un lieu :
+
+Attribut | Description | Exemple
+---------|-------------|--------
+location | Localisation du lieu | { "latitude": 49.18165, "longitude": -0.34709 }
+title | Titre du lieu | "Le Dôme"
+*isVerified*\*\* | État de vérification du lieu | true
+*type* | Type du lieu | 0
+*description* | Description | "Maison de la Recherche et de l’Imagination"
+*startDate* | Date de création | "2015-01-01T13:00:00.000Z"
+*endDate* | Date de suppression | "2016-09-09T08:00:00.000Z"
+*manager*\*\* | Gérant du lieu | "57dbe334c3eaf116f8a33e7"
+*moderateComments*\* | Modération des commentaires | true
+*moderatePictures*\* | Modération des photos | true
+*moderateDocuments*\* | Modération des documents | true
+*denyComments*\* | Interdiction des commentaires | true
+*denyPictures*\* | Interdiction des photos | true
+*denyDocuments*\* | Interdiction des documents | true
+
+\* N’est paramétrable qu’avec un niveau gérant.  
+\*\* N’est paramétrable qu’avec un niveau administrateur.
+
+#### Réponse
+
+Le lieu créé :
+
+Attribut | Description | Exemple
+---------|-------------|--------
+_id | Identifiant du lieu | "57dbe334c3eaf116f88e0318"
+location | Localisation du lieu | { "latitude": 49.18165, "longitude": -0.34709 }
+title | Titre du lieu | "Le Dôme"
+isVerified | État de vérification du lieu | true
+*type* | Type du lieu | 0
+*description* | Description | "Maison de la Recherche et de l’Imagination"
+*startDate* | Date de création | "2015-01-01T13:00:00.000Z"
+*endDate* | Date de suppression | "2016-09-09T08:00:00.000Z"
+*manager* | Gérant du lieu | "57dbe334c3eaf116f8a33e7"
+*moderateComments* | Modération des commentaires | true
+*moderatePictures* | Modération des photos | true
+*moderateDocuments* | Modération des documents | true
+*denyComments* | Interdiction des commentaires | true
+*denyPictures* | Interdiction des photos | true
+*denyDocuments* | Interdiction des documents | true
+
+#### Exemple
+
+```sh
+$ curl -X POST -H "Content-Type: application/json" \
+    -d '{"location":{"latitude":49.18165,"longitude":-0.34709},"title":"Le Dôme"}' \
+    https://api.participamap.org/places
+```
+
+```json
+{
+  "_id": "57dbe334c3eaf116f88e0318",
+  "location": {
+    "latitude": 49.18165,
+    "longitude": -0.34709
+  },
+  "title": "Le Dôme"
+}
 ```
