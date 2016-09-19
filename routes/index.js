@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 // Get the service descriptor
-router.get('/', function(req, res, next) {
+router.get('/', function getRoot(req, res, next) {
   res.send({});
 });
 

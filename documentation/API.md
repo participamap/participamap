@@ -68,8 +68,8 @@ Nom | Description | Exemples
 when | Date de la carte à afficher | now, 2016-09-16
 lat | Latitude du centre du cadre de recherche | 49.18165
 long | Longitude du centre du cadre de recherche | -0.34709
-height | Demi-hauteur du cadre de rercherche en degrés | 0.03
-width | Demi-largeur du cadre de recherche en degrés | 0.03
+height | Hauteur du cadre de rercherche en degrés | 0.06
+width | Largeur du cadre de recherche en degrés | 0.06
 
 **Note : *lat*, *long*, *height* et *width* doivent être renseignés ensemble.**
 
@@ -83,7 +83,7 @@ Liste d’en-têtes de lieux :
 
 Attribut | Description | Exemple
 ---------|-------------|--------
-id | Identifiant du lieu | "57dbe334c3eaf116f88e0318"
+_id | Identifiant du lieu | "57dbe334c3eaf116f88e0318"
 location | Localisation du lieu | { "latitude": 49.18165, "longitude": -0.34709 }
 title | Titre du lieu | "Le Dôme"
 
@@ -96,7 +96,7 @@ $ curl https://api.example.com/places?when=now
 ```json
 [
   {
-    "id": "57dbe334c3eaf116f88e0318",
+    "_id": "57dbe334c3eaf116f88e0318",
     "location": {
       "latitude": 49.18165,
       "longitude": -0.34709
@@ -104,7 +104,7 @@ $ curl https://api.example.com/places?when=now
     "title": "Le Dôme"
   },
   {
-    "id": "57dbe738c3eaf116f88e0319",
+    "_id": "57dbe738c3eaf116f88e0319",
     "location": {
       "latitude": 49.21272,
       "longitude": -0.36847
@@ -147,7 +147,7 @@ Un lieu :
 
 Attribut | Description | Exemple
 ---------|-------------|--------
-id | Identifiant du lieu | "57dbe334c3eaf116f88e0318"
+_id | Identifiant du lieu | "57dbe334c3eaf116f88e0318"
 location | Localisation du lieu | { "latitude": 49.18165, "longitude": -0.34709 }
 title | Titre du lieu | "Le Dôme"
 isVerified | État de vérification du lieu | true
@@ -164,7 +164,7 @@ $ curl https://api.example.com/places/57dbe334c3eaf116f88e0318
 
 ```json
 {
-  "id": "57dbe334c3eaf116f88e0318",
+  "_id": "57dbe334c3eaf116f88e0318",
   "location": {
     "latitude": 49.18165,
     "longitude": -0.34709
