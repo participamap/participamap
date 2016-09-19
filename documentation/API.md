@@ -46,6 +46,10 @@ Si une erreur a lieu, le service web répond avec :
 
 ### En-têtes de lieux
 
+#### Nom de la requête
+
+`getPlacesHeaders`
+
 #### Description
 
 Récupère les en-têtes de lieux.
@@ -62,13 +66,13 @@ GET | /places | non requis
 
 #### Paramètres de requête
 
-Nom | Description | Exemples
-----|-------------|---------
-when | Date de la carte à afficher | now, 2016-09-16
-lat | Latitude du centre du cadre de recherche | 49.18165
-long | Longitude du centre du cadre de recherche | -0.34709
-height | Hauteur du cadre de rercherche en degrés | 0.06
-width | Largeur du cadre de recherche en degrés | 0.06
+Nom | Description | Exemple | Absence
+----|-------------|---------|--------
+when | Date de la carte à afficher | now, 2016-09-16 | Tout
+lat | Latitude du centre du cadre de recherche | 49.18165 | Tout
+long | Longitude du centre du cadre de recherche | -0.34709 | Tout
+height | Hauteur du cadre de rercherche en degrés | 0.06 | Tout
+width | Largeur du cadre de recherche en degrés | 0.06 | Tout
 
 **Note : *lat*, *long*, *height* et *width* doivent être renseignés ensemble.**
 
@@ -89,7 +93,7 @@ title | Titre du lieu | "Le Dôme"
 #### Exemple
 
 ```sh
-$ curl https://api.example.com/places?when=now
+$ curl https://api.participamap.org/places?when=now
 ```
 
 ```json
@@ -115,6 +119,10 @@ $ curl https://api.example.com/places?when=now
 
 ### Informations d’un lieu
 
+#### Nom de la requête
+
+`getPlaceInfo`
+
 #### Description
 
 Récupère les informations sur un lieu.
@@ -133,8 +141,13 @@ id | Identifiant du lieu | 57dbe334c3eaf116f88e0318
 
 #### Paramètres de requête
 
-Nom | Description | Exemple
-----|-------------|--------
+Nom | Description | Exemple | Absence
+----|-------------|---------|--------
+comms | Nombre de commentaires à transmettre | 10 | Aucun
+pics | Nombre de photos à transmettre | 5 | Aucun
+docs | Nombre de documents à transmettre | 5 | Aucun
+votes | Nombre de votes à transmettre | 2 | Aucun
+admin | Récupérer des informations administrateur | true | false
 
 #### Charge
 
@@ -152,16 +165,24 @@ title | Titre du lieu | "Le Dôme"
 isVerified | État de vérification du lieu | true
 *type* | Type du lieu | 0
 *description* | Description | "Maison de la Recherche et de l’Imagination"
+*comments* | Commentaires | *Tableau de commentaires*
+*pictures* | Photos | *Tableau de liens vers le photos*
+*documents* | Documents | *Tableau de documents*
 *startDate* | Date de création | "2015-01-01T13:00:00.000Z"
 *endDate* | Date de suppression | "2016-09-09T08:00:00.000Z"
+*moderateComments*\* | Modération des commentaires | true
+*moderatePictures*\* | Modération des photos | true
+*moderateDocuments*\* | Modération des documents | true
 *denyComments* | Interdiction des commentaires | true
 *denyPictures* | Interdiction des photos | true
 *denyDocuments* | Interdiction des documents | true
 
+\* N’apparaît que si `admin=true`.
+
 #### Exemple
 
 ```sh
-$ curl https://api.example.com/places/57dbe334c3eaf116f88e0318
+$ curl https://api.participamap.org/places/57dbe334c3eaf116f88e0318
 ```
 
 ```json
