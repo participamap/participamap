@@ -9,6 +9,7 @@
 * [**Lieux**](#lieux)
     * [En-têtes de lieux](#en-têtes-de-lieux)
     * [Informations d’un lieu](#informations-dun-lieu)
+    * [Commentaires d’un lieu](#commentaires-dun-lieu)
 
 ## Informations générales
 
@@ -197,4 +198,74 @@ $ curl https://api.participamap.org/places/57dbe334c3eaf116f88e0318
   "description": "Maison de la Recherche et de l’Imagination",
   "startDate": "2015-01-01T13:00:00.000Z"
 }
+```
+
+### Commentaires d’un lieu
+
+#### Nom de la requête
+
+`getComments`
+
+#### Description
+
+Récupère les commentaires d’un lieu.
+
+#### Point d’accès
+
+Méthode | Chemin | autorisation
+:------:|:------:|:-----------:
+GET | /places/{id}/comments | non requis
+
+#### Paramètres de chemin
+
+Nom | Description | Exemple
+----|-------------|--------
+id | Identifiant du lieu | 57dbe334c3eaf116f88e0318
+
+#### Paramètres de requête
+
+Nom | Description | Exemple | Absence
+----|-------------|---------|--------
+page | Numéro de page | 3 | 1
+n | Nombre de commentaires par page | 10 | 10 si `page` est fixé, infini sinon
+
+#### Charge
+
+*Néan*
+
+#### Réponse
+
+Liste de commentaires :
+
+Attribut | Description | Exemple
+---------|-------------|--------
+author | Auteur du commentaire | { id: "57dbe334c3eaf116f88eca27", name: "Jean Dupont" }
+date | Date du commentaire | "2016-09-19T19:30:26.037Z"
+content | Contenu du commentaire | "Très bel endroit"
+
+#### Exemple
+
+```sh
+$ curl https://api.participamap.org/places/57dbe334c3eaf116f88e0318/comments?page=1&n=2
+```
+
+```json
+[
+  {
+    author: {
+      id: "57dbe334c3eaf116f88eca27",
+      name: "Jean Dupont"
+    },
+    date: "2016-09-19T19:30:26.037Z",
+    content: "Très bel endroit"
+  },
+  {
+    author: {
+      id: "57dbe334c3eaf116f88eca2c",
+      name: "Alexis de caen"
+    },
+    date: "2016-09-19T19:30:32.739Z",
+    content: "Je plussoie Jean"
+  }
+]
 ```
