@@ -340,7 +340,7 @@ $ curl https://api.participamap.org/places/57dbe334c3eaf116f88e0318/pitcures?pag
 
 #### Nom de la requête
 
-`saveLocation`
+`createPlace`
 
 #### Description
 
