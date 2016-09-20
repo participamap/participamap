@@ -135,7 +135,7 @@ Récupère les informations sur un lieu.
 
 Méthode | Chemin | autorisation
 :------:|:------:|:-----------:
-GET | /places/{id} | non requis
+GET | /places/{id} | non requis / modérateur si `admin=true`
 
 #### Paramètres de chemin
 
@@ -351,7 +351,7 @@ Crée un nouveau lieu.
 
 Méthode | Chemin | autorisation
 :------:|:------:|:-----------:
-POST | /places | utilisateur
+POST | /places | utilisateur / modérateur si champs modérateurs soumis
 
 #### Paramètres de chemin
 
@@ -369,12 +369,12 @@ Attribut | Description | Exemple
 ---------|-------------|--------
 location | Localisation du lieu | { "latitude": 49.18165, "longitude": -0.34709 }
 title | Titre du lieu | "Le Dôme"
-*isVerified*\*\* | État de vérification du lieu | true
+*isVerified*\* | État de vérification du lieu | true
 *type* | Type du lieu | 0
 *description* | Description | "Maison de la Recherche et de l’Imagination"
 *startDate* | Date de création | "2015-01-01T13:00:00.000Z"
 *endDate* | Date de suppression | "2016-09-09T08:00:00.000Z"
-*manager*\*\* | Gérant du lieu | "57dbe334c3eaf116f8a33e7"
+*manager*\* | Gérant du lieu | "57dbe334c3eaf116f8a33e7"
 *moderateComments*\* | Modération des commentaires | true
 *moderatePictures*\* | Modération des photos | true
 *moderateDocuments*\* | Modération des documents | true
@@ -382,8 +382,7 @@ title | Titre du lieu | "Le Dôme"
 *denyPictures*\* | Interdiction des photos | true
 *denyDocuments*\* | Interdiction des documents | true
 
-\* N’est paramétrable qu’avec un niveau gérant.  
-\*\* N’est paramétrable qu’avec un niveau administrateur.
+\* N’est paramétrable qu’avec un niveau modérateur.
 
 #### Réponse
 
@@ -440,7 +439,7 @@ Supprime un lieu.
 
 Méthode | Chemin | autorisation
 :------:|:------:|:-----------:
-DELETE | /places/{id} | administrateur
+DELETE | /places/{id} | modérateur
 
 #### Paramètres de chemin
 
