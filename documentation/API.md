@@ -167,6 +167,7 @@ _id | Identifiant du lieu | "57dbe334c3eaf116f88e0318"
 location | Localisation du lieu | { "latitude": 49.18165, "longitude": -0.34709 }
 title | Titre du lieu | "Le Dôme"
 isVerified | État de vérification du lieu | true
+*proposedBy*\* | Utilisateur ayant proposé le lieu | { "id": "57dbe334c3eaf116f88eca27", "name": "Jean Dupont" }
 *type* | Type du lieu | 0
 *description* | Description | "Maison de la Recherche et de l’Imagination"
 *startDate* | Date de création | "2015-01-01T13:00:00.000Z"
@@ -175,7 +176,7 @@ isVerified | État de vérification du lieu | true
 *pictures* | Photos | *Liste de photos*
 *documents* | Documents | *Liste de documents*
 *votes* | Votes | *Liste de votes*
-*manager*\* | Gérant du lieu | "57dbe334c3eaf116f8a33e7"
+*manager*\* | Gérant du lieu | { "id": "57dbe334c3eaf116f8a33e7", "name": "Gilles Dumesnil" }
 *moderateComments*\* | Modération des commentaires | true
 *moderatePictures*\* | Modération des photos | true
 *moderateDocuments*\* | Modération des documents | true
@@ -244,7 +245,7 @@ Liste de commentaires :
 
 Attribut | Description | Exemple
 ---------|-------------|--------
-author | Auteur du commentaire | { id: "57dbe334c3eaf116f88eca27", name: "Jean Dupont" }
+author | Auteur du commentaire | { "id": "57dbe334c3eaf116f88eca27", "name": "Jean Dupont" }
 date | Date du commentaire | "2016-09-19T19:30:26.037Z"
 content | Contenu du commentaire | "Très bel endroit"
 
@@ -314,7 +315,7 @@ Liste de liens vers des images :
 
 Attribut | Description | Exemple
 ---------|-------------|--------
-author | Auteur de la photo | { id: "57dbe334c3eaf116f88eca27", name: "Jean Dupont" }
+author | Auteur de la photo | { "id": "57dbe334c3eaf116f88eca27", "name": "Jean Dupont" }
 date | Date de mise en ligne | "2016-09-19T19:30:26.037Z"
 link | Lien vers la photo | "https://photos.participamap.org/83ca8f82.jpg"
 
@@ -394,6 +395,7 @@ _id | Identifiant du lieu | "57dbe334c3eaf116f88e0318"
 location | Localisation du lieu | { "latitude": 49.18165, "longitude": -0.34709 }
 title | Titre du lieu | "Le Dôme"
 isVerified | État de vérification du lieu | true
+*proposedBy* | Utilisateur ayant proposé le lieu | { "id": "57dbe334c3eaf116f88eca27", "name": "Jean Dupont" }
 *type* | Type du lieu | 0
 *description* | Description | "Maison de la Recherche et de l’Imagination"
 *startDate* | Date de création | "2015-01-01T13:00:00.000Z"

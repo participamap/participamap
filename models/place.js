@@ -13,6 +13,7 @@ var placeSchema = new Schema({
   location: {type: locationSchema, required: true },
   title: { type: String, required: true },
   isVerified: { type: Boolean, default: false, required: true },
+  proposedBy: Schema.Types.ObjectId,
   type: Number, // TODO: Autre type ?
   description: String,
   startDate: { type: Date, default: Date.now },
