@@ -6,9 +6,9 @@ var mongoose = require('mongoose');
 var routes = require('./routes/index');
 var places = require('./routes/places');
 
-var mongoURL = 'mongodb://localhost/participamap';
+var config = require('./config.json');
 
-mongoose.connect(mongoURL);
+mongoose.connect(config.mongoURL);
 var db = mongoose.connection;
 
 db.on('error', function onDBConnectionError() {
