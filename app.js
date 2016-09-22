@@ -3,12 +3,12 @@ var logger = require('morgan');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 
+var config = require('./config.json');
+
 var routes = require('./routes/index');
 var places = require('./routes/places');
 
-var config = require('./config.json');
-
-mongoose.connect(config.mongoURL);
+mongoose.connect(config.mongodb.uri, config.mongodb.options);
 var db = mongoose.connection;
 
 db.on('error', function onDBConnectionError() {

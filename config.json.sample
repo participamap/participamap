@@ -1,3 +1,5 @@
 {
-  "mongoURL": "mongodb://localhost/participamap"
+  "mongodb": {
+    "uri": "mongodb://localhost/participamap",
+    "options:" {}
 }
