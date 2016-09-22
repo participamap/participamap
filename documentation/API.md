@@ -66,7 +66,7 @@ GET | /places | non requis
 
 #### Paramètres de chemin
 
-*Néan*
+*Néant*
 
 #### Paramètres de requête
 
@@ -82,7 +82,7 @@ width | Largeur du cadre de recherche en degrés | 0.06 | Tout
 
 #### Charge
 
-*Néan*
+*Néant*
 
 #### Réponse
 
@@ -155,7 +155,7 @@ admin | Récupérer des informations administrateur | true | false
 
 #### Charge
 
-*Néan*
+*Néant*
 
 #### Réponse
 
@@ -237,7 +237,7 @@ n | Nombre de commentaires par page | 10 | 10 si `page` est fixé, infini sinon
 
 #### Charge
 
-*Néan*
+*Néant*
 
 #### Réponse
 
@@ -307,7 +307,7 @@ n | Nombre d’images par page | 12 | 12 si `page` est fixé, infini sinon
 
 #### Charge
 
-*Néan*
+*Néant*
 
 #### Réponse
 
@@ -356,11 +356,11 @@ POST | /places | utilisateur / modérateur si champs modérateurs soumis
 
 #### Paramètres de chemin
 
-*Néan*
+*Néant*
 
 #### Paramètres de requête
 
-*Néan*
+*Néant*
 
 #### Charge
 
@@ -451,11 +451,11 @@ id | Identifiant du lieu | 57dbe334c3eaf116f88e0318
 
 #### Paramètres de requête
 
-*Néan*
+*Néant*
 
 #### Charge
 
-*Néan*
+*Néant*
 
 #### Réponse
 
