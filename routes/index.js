@@ -3,7 +3,9 @@ var router = express.Router();
 
 // Get the service descriptor
 router.get('/', function getRoot(req, res, next) {
-  res.send({});
+
+  res.render('index',{title:'DEMO'});
+
 });
 
 module.exports = router;

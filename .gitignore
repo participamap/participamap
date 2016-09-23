@@ -38,3 +38,9 @@ jspm_packages
 
 # Configuration
 config.json
+
+# base de donnes
+data
+
+#Apple Files
+.DS_*

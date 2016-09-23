@@ -1,0 +1,65 @@
+
+<openlayers ol-center="centerP"  height="500px">
+    <ol-marker ng-repeat="mark in domeLocations" name="mark.title" lat="mark.lat" lon="mark.lon"></ol-marker>
+</openlayers>
+
+<div class="row-fluid">
+    <div class="col-md-5">
+
+        <h1>DEMO Map</h1>
+<!--        <div>
+            <img src="../images/ci.png" style="width:300px;height:100px;"/>
+        </div>-->
+
+        <!--<div ng-repeat="eachL in domeLocations | orderBy:'-upvotes'"> &lt;!&ndash; '-' pour renverser&ndash;&gt;-->
+        <div ng-repeat="eachL in domeLocations">
+            <a href="#/?c={[{eachL.lat}]}:{[{eachL.lon}]}:{[{eachL.zoom}]}">{[{eachL.title}]} </a>
+            - Verified? : {[{eachL.isVerified}]}
+            <span class="glyphicon glyphicon-thumbs-up" ng-click="ajouterVotes(eachL)"></span>
+            <span class="glyphicon glyphicon-thumbs-down" ng-click="diminuerVotes(eachL)"></span>
+            <span>
+                    <!--<a href="#ifclient/checkL/comm/{[{eachL._id}]}">Comments</a>-->
+                </span>
+        </div>
+
+        <form ng-submit="saveLocation()" style="margin-top:30px;">
+
+            <div class="form-group" class="col-md-3 col-md-offset-2">
+                Title : <input class="form-control col-md-3" type="text" ng-model="centerP.title"/>
+            </div>
+
+            <div class="form-group" class="col-md-3 col-md-offset-2">
+                Latitude: <input class="form-control" type="number" step="any" ng-model="centerP.lat"/>
+            </div>
+
+            <div class="form-group" class="col-md-3 col-md-offset-2">
+                Longitude : <input class="form-control" type="number" step="any" ng-model="centerP.lon" />
+            </div>
+
+            <div class="form-group" class="col-md-3 col-md-offset-2">
+                Zoom : <input class="form-control" type="number" step="any" ng-model="centerP.zoom" />
+            </div>
+
+            <div class="form-group" class="col-md-3">
+                Description: <input class="form-control" type="text" ng-model="centerP.description"/>
+            </div>
+            <button class="btn btn-block" type="submit">Save this location</button>
+        </form>
+
+        <button class="btn btn-block" ng-click="centerP.autodiscover=true;">Discover Position</button>
+
+
+
+    </div>
+
+    <div class="col-md-4">
+        <h3> Historique des lieux: </h3>
+        <div >
+            <!--<img src="../images/dome.png" style="width:300px;height:100px;"/>-->
+
+        </div>
+        <p> Ici les informations/photos/documents des utilisateurs sur le lieu </p>
+        <p><small><a href="#">signaler abus</a></small></p>
+        <ui-view></ui-view>
+    </div>
+</div>

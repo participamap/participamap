@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="JavaScriptLibraryMappings">
+    <file url="PROJECT" libraries="{angular-jwt-DefinitelyTyped, angular-ui-bootstrap-DefinitelyTyped, angular-ui-router-DefinitelyTyped, angularjs-DefinitelyTyped, bootstrap-DefinitelyTyped, crypto-js-DefinitelyTyped, handlebars-DefinitelyTyped, json-editor-DefinitelyTyped, mongodb-DefinitelyTyped, mongoose-DefinitelyTyped, openlayers-DefinitelyTyped, passport-DefinitelyTyped, passport-local-DefinitelyTyped, ui-router-extras-DefinitelyTyped}" />
+    <includedPredefinedLibrary name="Node.js Core" />
+  </component>
+</project>
