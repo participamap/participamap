@@ -12,6 +12,7 @@
     * [Commentaires d’un lieu](#commentaires-dun-lieu)
     * [Images d’un lieu](#images-dun-lieu)
     * [Création d’un lieu](#création-dun-lieu)
+    * [Modification d’un lieu](#modification-dun-lieu)
     * [Suppression d’un lieu](#suppression-dun-lieu)
 
 ## Informations générales
@@ -24,7 +25,7 @@ L’API utilise le protocole HTTP. Les charges des requêtes doivent être pass�
 
 Si un appel API est réussi, le service web répond avec :
 
-* un statut HTTP 200 (OK) ou HTTP 201 (Created),
+* un statut HTTP 200 (OK), HTTP 201 (Created) ou HTTP 204 (No Content),
 * une représentation JSON de l’entité demandée, créée ou modifiée le cas échéant.
 
 ### Gestion des erreurs
@@ -427,6 +428,93 @@ $ curl -X POST -H "Content-Type: application/json" \
 }
 ```
 
+### Modification d’un lieu
+
+#### Nom de la requête
+
+`updatePlace`
+
+#### Description
+
+Modifie un lieu existant.
+
+#### Point d’accès
+
+Méthode | Chemin | autorisation
+:------:|:------:|:-----------:
+PUT | /places/{id} | modérateur
+
+#### Paramètres de chemin
+
+*Néant*
+
+#### Paramètres de requête
+
+*Néant*
+
+#### Charge
+
+Un lieu :
+
+Attribut | Description | Exemple
+---------|-------------|--------
+*location* | Localisation du lieu | { "latitude": 49.18165, "longitude": -0.34709 }
+*title* | Titre du lieu | "Le Dôme"
+*isVerified* | État de vérification du lieu | true
+*type* | Type du lieu | 0
+*description* | Description | "Maison de la Recherche et de l’Imagination"
+*startDate* | Date de création | "2015-01-01T13:00:00.000Z"
+*endDate* | Date de suppression | "2016-09-09T08:00:00.000Z"
+*manager* | Gérant du lieu | "57dbe334c3eaf116f8a33e7"
+*moderateComments* | Modération des commentaires | true
+*moderatePictures* | Modération des photos | true
+*moderateDocuments* | Modération des documents | true
+*denyComments* | Interdiction des commentaires | true
+*denyPictures* | Interdiction des photos | true
+*denyDocuments* | Interdiction des documents | true
+
+#### Réponse
+
+Le lieu modifié :
+
+Attribut | Description | Exemple
+---------|-------------|--------
+_id | Identifiant du lieu | "57dbe334c3eaf116f88e0318"
+location | Localisation du lieu | { "latitude": 49.18165, "longitude": -0.34709 }
+title | Titre du lieu | "Le Dôme"
+isVerified | État de vérification du lieu | true
+*proposedBy* | Utilisateur ayant proposé le lieu | { "id": "57dbe334c3eaf116f88eca27", "name": "Jean Dupont" }
+*type* | Type du lieu | 0
+*description* | Description | "Maison de la Recherche et de l’Imagination"
+*startDate* | Date de création | "2015-01-01T13:00:00.000Z"
+*endDate* | Date de suppression | "2016-09-09T08:00:00.000Z"
+*manager* | Gérant du lieu | "57dbe334c3eaf116f8a33e7"
+*moderateComments* | Modération des commentaires | true
+*moderatePictures* | Modération des photos | true
+*moderateDocuments* | Modération des documents | true
+*denyComments* | Interdiction des commentaires | true
+*denyPictures* | Interdiction des photos | true
+*denyDocuments* | Interdiction des documents | true
+
+#### Exemple
+
+```sh
+$ curl -X PUT -H "Content-Type: application/json" \
+    -d '{"location":{"latitude":49.18165,"longitude":-0.34709},"title":"Le Dôme modifié"}' \
+    https://api.participamap.org/places/57dbe334c3eaf116f88e0318
+```
+
+```json
+{
+  "_id": "57dbe334c3eaf116f88e0318",
+  "location": {
+    "latitude": 49.18165,
+    "longitude": -0.34709
+  },
+  "title": "Le Dôme modifié"
+}
+```
+
 ### Suppression d’un lieu
 
 #### Nom de la requête
@@ -459,7 +547,7 @@ id | Identifiant du lieu | 57dbe334c3eaf116f88e0318
 
 #### Réponse
 
-`HTTP/1.1 200 OK`
+`HTTP/1.1 204 No Content`
 
 #### Exemple
 
