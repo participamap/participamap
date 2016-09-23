@@ -6,9 +6,23 @@ var Checks = require('../modules/checks');
 var Place = require('../models/place');
 
 router.param('id', Checks.isValidObjectId);
+router.param('id', placeExists);
 
 router.get('/', Checks.db, getPlacesHeaders);
 router.get('/:id', Checks.db, getPlaceInfo);
+
+
+function placeExists(req, res, next, id) {
+  Place.findById(id, { "_id": true }, function onPlaceFound(err, place) {
+    if (!place) {
+      var err = new Error('Not Found');
+      err.status = 404;
+      return next(err);
+    }
+
+    next();
+  });
+}
 
 
 function getPlacesHeaders(req, res, next) {
