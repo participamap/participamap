@@ -5,6 +5,8 @@ var router = express.Router();
 var Checks = require('../modules/checks');
 var Place = require('../models/place');
 
+router.param('id', Checks.isValidObjectId);
+
 router.get('/', Checks.db, getPlacesHeaders);
 router.get('/:id', Checks.db, getPlaceInfo);
 
