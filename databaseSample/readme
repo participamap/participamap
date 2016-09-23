@@ -1,0 +1,15 @@
+Pour exporter une base de données mongodb, au format bson:
+
+mongodump -d [DATABASE] -o [FICHIERVERSLEQUELEXPORTER]
+ex:
+mongodump -d 21205243_dev -o databaseSample/
+
+
+Pour importer:
+
+mongorestore -d [DATABASE] [CHEMINVERSLEDOSSIERDELABASE]
+ex:
+mongorestore -d 21205243_dev databaseSample/21205243_dev
+
+/!\ Avant d'importer un bson, pour supprimer la base de données:
+db.dropDatabase()
