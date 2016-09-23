@@ -94,19 +94,9 @@ function getPlaceInfo(req, res, next) {
 
 
 function deletePlace(req, res, next) {
-  Place.findById(req.params.id, function removePlace(error, place) {
+  place.remove(function onPlaceRemoved(error) {
     if (error) return next(error);
-
-    if (!place) {
-      var err = new Error('Not found');
-      err.status = 404;
-      return next(err);
-    }
-
-    place.remove(function onPlaceRemoved(error) {
-      if (error) return next(error);
-      res.status(204).end();
-    });
+    res.status(204).end();
   });
 }
 
