@@ -7,6 +7,7 @@ var Place = require('../models/place');
 
 router.get('/', Checks.db, getPlacesHeaders);
 router.get('/:id', Checks.db, getPlaceInfo);
+router.delete('/:id', Checks.db, deletePlace);
 
 
 function getPlacesHeaders(req, res, next) {
@@ -89,6 +90,24 @@ function getPlaceInfo(req, res, next) {
   var err = new Error('Not Implemented');
   err.status = 501;
   next(err);
+}
+
+
+function deletePlace(req, res, next) {
+  Place.findById(req.params.id, function removePlace(error, place) {
+    if (error) return next(error);
+
+    if (!place) {
+      var err = new Error('Not found');
+      err.status = 404;
+      return next(err);
+    }
+
+    place.remove(function onPlaceRemoved(error) {
+      if (error) return next(error);
+      res.status(204).end();
+    });
+  });
 }
 
 
