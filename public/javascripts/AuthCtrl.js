@@ -1,5 +1,5 @@
 
-angular.module('demoapp').controller('AuthCtrl',['$scope','$state','auth',function ($scope, $state,auth) {
+angular.module('demoapp').controller('AuthCtrl',['$scope','$state','auth','Place', function ($scope, $state, auth, Place) {
   $scope.user={};
 
   $scope.register = function(){

@@ -3,24 +3,37 @@ var path = require('path');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
+require('./models/users');
+require('./models/place');
 
 var config = require('./config.json');
 
 var routes = require('./routes/index');
 var places = require('./routes/places');
 
+// Routes pour FONT
+var users = require('./routes/users');
+
+
 mongoose.connect(config.mongodb.uri, config.mongodb.options);
+
 var db = mongoose.connection;
+
 db.on('error', function onDBConnectionError() {
   console.error('Error: impossible to connect to MongoDB. Exiting...');
   process.exit(1);
 });
+
 db.once('open', function onDBOpen() {
   console.log('Successfully connected to MongoDB!\n');
 });
 
-var app = express();
+//utiliser passport pout auth
+var passport = require('passport');
+require('./config/passport');
 
+
+var app = express();
 
 //view engine setup
 app.set('views', path.join(__dirname,'views'));
@@ -33,9 +46,13 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // Routes declarations
 app.use('/', routes);
 app.use('/places', places);
+app.use('/users', users);
 
-var webroutes = require('./routes/webroutes');
+
+//Route static express
 app.use(express.static(path.join(__dirname,'public')));
+//Initialisation du passport
+app.use(passport.initialize());
 
 // catch 404 and forward to error handler
 app.use(function notFound(req, res, next) {

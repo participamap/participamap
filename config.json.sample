@@ -1,0 +1,6 @@
+{
+  "mongodb": {
+    "uri": "mongodb://localhost/participamap",
+    "options": {}
+  }
+}
