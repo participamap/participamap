@@ -94,7 +94,7 @@ function getPlaceInfo(req, res, next) {
 
 
 function deletePlace(req, res, next) {
-  place.remove(function onPlaceRemoved(error) {
+  req.place.remove(function onPlaceRemoved(error) {
     if (error) return next(error);
     res.status(204).end();
   });
