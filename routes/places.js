@@ -7,6 +7,7 @@ var Place = require('../models/place');
 
 router.get('/', Checks.db, getPlacesHeaders);
 router.get('/:id', Checks.db, getPlaceInfo);
+router.get('/:id/comments', Checks.db, getComments);
 
 
 function getPlacesHeaders(req, res, next) {
@@ -91,6 +92,17 @@ function getPlaceInfo(req, res, next) {
   next(err);
 }
 
+
+function getComments(req,res,next) {
+  var projection = {
+      comments: true
+  };
+        
+  Place.findById(req.params.id, projection, function returnComments(error, result) {
+    if (error) return next(error);    
+    res.json(result.comments);
+  });
+}
 
 module.exports = router;
 
