@@ -85,10 +85,74 @@ function getPlacesHeaders(req, res, next) {
 
 function getPlaceInfo(req, res, next) {
   // TODO: Implémenter la requête
+  var filter = {};
+  
+  
+  var projection1 = {
+    location: true,
+    title: true,
+    isVerified:true,
+    proposedBy:true,
+    type:true,
+    description:true,
+    startDate:true,
+    endDate:true,
+    comments:true,
+    pictures:true,
+    documents:true,
+    votes:true,
+    manager:true,
+    moderateComments:true,
+    moderatePictures:true,
+    moderateDocuments:true,
+    denyComments:true,
+    denyPictures:true,
+    denyDocuments:true
+   
+  };
+  var projection2 = {
+    location: true,
+    title: true,
+    isVerified:true,
+    
+    type:true,
+    description:true,
+    startDate:true,
+    endDate:true,
+    comments:true,
+    pictures:true,
+    documents:true,
+    votes:true,
+    manager:true,
+    
+    denyComments:true,
+    denyPictures:true,
+    denyDocuments:true
+   
+  };
+  
+  
+  if ((req.query.admin !=true)) {
+		Place.find(filter,projection1,function returnPlaceInfo(err,placeInfo){
+	  if (err) return next(err);
+			res.send(placeInfo);
+	  
+	  });
+      
+	  
+  }
+  else{
+	  
+	  Place.find(filter,projection2,function returnPlaceInfo(err,placeInfo){
+	  if (err) return next(err);
+			res.send(placeInfo);
+	  
+	  });
+	  
+  }
+  
 
-  var err = new Error('Not Implemented');
-  err.status = 501;
-  next(err);
+  
 }
 
 
