@@ -13,6 +13,7 @@
     * [Modification d’un lieu](#modification-dun-lieu)
     * [Suppression d’un lieu](#suppression-dun-lieu)
     * [Commentaires d’un lieu](#commentaires-dun-lieu)
+    * [Poster un commentaire](#poster-un-commentaire)
     * [Images d’un lieu](#images-dun-lieu)
 
 ## Informations générales
@@ -491,6 +492,69 @@ $ curl https://api.participamap.org/places/57dbe334c3eaf116f88e0318/comments?pag
     "content": "Je plussoie Jean"
   }
 ]
+```
+
+### Poster un commentaire
+
+#### Nom de la requête
+
+`postComment`
+
+#### Description
+
+Poste un commentaire.
+
+#### Point d’accès
+
+Méthode | Chemin | autorisation
+:------:|:------:|:-----------:
+POST | /places/{id}/comments | utilisateur
+
+#### Paramètres de chemin
+
+Nom | Description | Exemple
+----|-------------|--------
+id | Identifiant du lieu | 57dbe334c3eaf116f88e0318
+
+#### Paramètres de requête
+
+*Néant*
+
+#### Charge
+
+Un commentaire :
+
+Attribut | Description | Exemple
+---------|-------------|--------
+content | Contenu du commentaire | "Très bel endroit"
+
+#### Réponse
+
+Un commentaire :
+
+Attribut | Description | Exemple
+---------|-------------|--------
+author | Auteur du commentaire | { "id": "57dbe334c3eaf116f88eca27", "name": "Jean Dupont" }
+date | Date du commentaire | "2016-09-19T19:30:26.037Z"
+content | Contenu du commentaire | "Très bel endroit"
+
+#### Exemple
+
+```sh
+$ curl -X POST -H "Content-Type: application/json" \
+    -d '{"content": "Très bel endroit"}' \
+    https://api.participamap.org/places/57dbe334c3eaf116f88e0318/comments
+```
+
+```json
+{
+  "author": {
+    "id": "57dbe334c3eaf116f88eca27",
+    "name": "Jean Dupont"
+  },
+  "date": "2016-09-19T19:30:26.037Z",
+  "content": "Très bel endroit"
+}
 ```
 
 ### Images d’un lieu
