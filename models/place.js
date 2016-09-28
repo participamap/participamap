@@ -20,8 +20,8 @@ var placeSchema = new Schema({
   endDate: Date,
   comments: [commentSchema],
   pictures: [pictureSchema],
-  documents:[],
-  votes:[],
+  // TODO: documents
+  // TODO: votes
   manager: Schema.Types.ObjectId,
   moderateComments: Boolean,
   moderatePictures: Boolean,
