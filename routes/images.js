@@ -11,8 +11,10 @@ var storeImg = multer.diskStorage({
   destination: function(req,file,callback) {
     callback(null, './upload/images');
   },
-  filename: function(req,file, callback){
-    callback(null, file.filename + '-' +Date.now()+'.'+file.originalname);
+  filename: function(req, file, callback){
+    namePic = 'image-'+Date.now()+'-'+file.originalname;
+    console.log(namePic.toString());
+    callback(null, namePic);
   }
 });
 
@@ -25,7 +27,7 @@ router.post('/upload',function(req,res){
     if(err){
       return res.end("Error uploading file."+"");
     }
-    res.end("File is uploaded");
+    res.json({name : "success"});
   });
 });
 
