@@ -57,13 +57,13 @@ function getPlacesHeaders(req, res, next) {
   if (req.query.when) {
     var date = (req.query.when === 'now')
       ? new Date()
-      : new Date(req.query.when)
+      : new Date(req.query.when);
 
-      if (isNaN(date.valueOf())) {
-        var err = new Error('Bad request: invalid date');
-        err.status = 400;
-        return next(err);
-      }
+    if (isNaN(date.valueOf())) {
+      var err = new Error('Bad request: invalid date');
+      err.status = 400;
+      return next(err);
+    }
 
     filter.$and = [
       { $or: [
@@ -105,10 +105,10 @@ function getPlacesHeaders(req, res, next) {
       filter.$and = [];
 
     filter.$and.push(
-        { "location.latitude": { $gte: minLatitude } },
-        { "location.latitude": { $lte: maxLatitude } },
-        { "location.longitude": { $gte: minLongitude } },
-        { "location.longitude": { $lte: maxLongitude } });
+      { "location.latitude": { $gte: minLatitude } },
+      { "location.latitude": { $lte: maxLatitude } },
+      { "location.longitude": { $gte: minLongitude } },
+      { "location.longitude": { $lte: maxLongitude } });
   }
 
   // Get only the header
