@@ -11,6 +11,8 @@ router.param('id', getPlace);
 router.get('/', Checks.db, getPlacesHeaders);
 router.get('/:id', Checks.db, getPlaceInfo);
 router.post('/',Checks.db,createPlace);
+router.delete('/:id', Checks.db, deletePlace);
+
 
 function getPlace(req, res, next, id) {
   // Get the place without heavy content like comments, …
@@ -32,32 +34,19 @@ function getPlace(req, res, next, id) {
     denyDocuments: true
   };
 
-  Place.findById(id, projection, function onPlaceFound(err, place) {
+  Place.findById(id, projection, function onPlaceFound(error, place) {
+    if (error) return next(error);
+
     if (!place) {
       var err = new Error('Not Found');
       err.status = 404;
       return next(err);
     }
 
-    req.place = place
+    req.place = place;
 
     next();
   });
-}
-
-
-function createPlace(req, res, next) {
-
-  var newplace = new Place(req.body);
-
-  newplace.save(function(err, result) {
-    if(err){
-      return next(err);
-    }
-    console.log("The location is Inserted ");
-    res.status(201);
-    res.json(newplace);
-  }); 
 }
 
 
@@ -128,9 +117,9 @@ function getPlacesHeaders(req, res, next) {
     title: true
   };
 
-  Place.find(filter, projection, function returnPlacesHeaders(error, placeHeaders) {
+  Place.find(filter, projection, function returnPlacesHeaders(error, placesHeaders) {
     if (error) return next(error);
-    res.send(placeHeaders);
+    res.json(placesHeaders);
   });
 }
 
@@ -141,6 +130,24 @@ function getPlaceInfo(req, res, next) {
   var err = new Error('Not Implemented');
   err.status = 501;
   next(err);
+}
+
+
+function createPlace(req, res, next) {
+  var place = new Place(req.body);
+
+  place.save(function onPlaceSaved(error, newPlace) {
+    if(error) return next(error);
+    res.status(201).json(newPlace);
+  }); 
+}
+
+
+function deletePlace(req, res, next) {
+  req.place.remove(function onPlaceRemoved(error) {
+    if (error) return next(error);
+    res.status(204).end();
+  });
 }
 
 
