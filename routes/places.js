@@ -5,9 +5,46 @@ var router = express.Router();
 var Checks = require('../modules/checks');
 var Place = require('../models/place');
 
+router.param('id', Checks.isValidObjectId);
+router.param('id', getPlace);
+
 router.get('/', Checks.db, getPlacesHeaders);
 router.get('/:id', Checks.db, getPlaceInfo);
 router.get('/:id/comments', Checks.db, getComments);
+
+
+function getPlace(req, res, next, id) {
+  // Get the place without heavy content like comments, …
+  var projection = {
+    location: true,
+    title: true,
+    isVerified: true,
+    proposedBy: true,
+    type: true,
+    description: true,
+    startDate: true,
+    endDate: true,
+    manager: true,
+    moderateComments: true,
+    moderatePictures: true,
+    moderateDocuments: true,
+    denyComments: true,
+    denyPictures: true,
+    denyDocuments: true
+  };
+
+  Place.findById(id, projection, function onPlaceFound(err, place) {
+    if (!place) {
+      var err = new Error('Not Found');
+      err.status = 404;
+      return next(err);
+    }
+
+    req.place = place
+
+    next();
+  });
+}
 
 
 function getPlacesHeaders(req, res, next) {

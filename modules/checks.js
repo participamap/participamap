@@ -3,9 +3,11 @@
  */
 
 var mongoose = require('mongoose');
+var ObjectId = require('mongodb').ObjectId;
 
 function Checks() {
   this.db = Checks.db;
+  this.isValidObjectId = Checks.isValidObjectId;
 }
 
 /**
@@ -15,12 +17,24 @@ Checks.db = function(req, res, next) {
   if (mongoose.connection.readyState !== 1) {
     var err = new Error('Database Error');
     err.details = 'MongoDB is not connected';
-
     return next(err);
   }
 
   next();
 };
+
+/**
+ * Checks if an ObjectId is valid
+ */
+Checks.isValidObjectId = function(req, res, next, id) {
+  if (!ObjectId.isValid(id)) {
+    var err = new Error('Bad request: Invalid ID');
+    err.status = 400;
+    return next(err);
+  }
+
+  next();
+}
 
 module.exports = Checks;
 
