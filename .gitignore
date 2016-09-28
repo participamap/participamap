@@ -1,3 +1,15 @@
+##########
+# Projet #
+##########
+
+# Configuration
+config.json
+
+
+###########
+# node.js #
+###########
+
 # Logs
 logs
 *.log
@@ -36,6 +48,7 @@ jspm_packages
 # Optional REPL history
 .node_repl_history
 
+<<<<<<< HEAD
 # Configuration
 config.json
 
@@ -51,3 +64,23 @@ public/libs
 .idea
 
 
+=======
+
+#######
+# vim #
+#######
+
+# swap
+[._]*.s[a-w][a-z]
+[._]s[a-w][a-z]
+
+# session
+Session.vim
+
+# temporary
+.netrwhist
+*~
+
+# auto-generated tag files
+tags
+>>>>>>> 378a35371d14632f8325689adc61d785f9e90837
