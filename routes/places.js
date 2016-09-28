@@ -125,11 +125,17 @@ function getPlacesHeaders(req, res, next) {
 
 
 function getPlaceInfo(req, res, next) {
-  // TODO: Implémenter la requête
-
-  var err = new Error('Not Implemented');
-  err.status = 501;
-  next(err);
+  place = req.place;
+  
+  if (!req.query.admin) {
+    delete place.proposedBy;
+    delete place.manager;
+    delete place.moderateComments;
+    delete place.moderateDocuments;
+    delete place.moderatePictures; 
+  }
+  
+  res.json(place); 
 }
 
 
