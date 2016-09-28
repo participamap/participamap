@@ -7,7 +7,7 @@ var Schema = mongoose.Schema;
 
 var locationSchema = require('./schemas/location');
 var commentSchema = require('./schemas/comment');
-var pictureSchema = require('./schemas/picture')
+var pictureSchema = require('./schemas/picture');
 
 var placeSchema = new Schema({
   location: {type: locationSchema, required: true },

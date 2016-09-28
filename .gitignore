@@ -38,3 +38,16 @@ jspm_packages
 
 # Configuration
 config.json
+
+# base de donnes
+data
+
+#Apple Files
+.DS_*
+
+#libs pour FONT
+public/libs
+
+.idea
+
+

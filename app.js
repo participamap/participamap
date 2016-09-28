@@ -1,14 +1,24 @@
 var express = require('express');
+var multer = require('multer');
+var path = require('path');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
+require('./models/users');
+require('./models/place');
 
 var config = require('./config.json');
 
 var routes = require('./routes/index');
 var places = require('./routes/places');
 
+// Routes pour FONT
+var users = require('./routes/users');
+var images = require('./routes/images');
+
+
 mongoose.connect(config.mongodb.uri, config.mongodb.options);
+
 var db = mongoose.connection;
 
 db.on('error', function onDBConnectionError() {
@@ -20,7 +30,20 @@ db.once('open', function onDBOpen() {
   console.log('Successfully connected to MongoDB!\n');
 });
 
+//utiliser passport pout auth
+var passport = require('passport');
+require('./config/passport');
+
+
 var app = express();
+app.get('/',function(req,res){
+  res.sendfile('./public/index.html');
+});
+
+
+//view engine setup
+app.set('views', path.join(__dirname,'views'));
+app.set('view engine', 'hbs');
 
 app.use(logger('dev'));
 app.use(bodyParser.json());
@@ -29,6 +52,14 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // Routes declarations
 app.use('/', routes);
 app.use('/places', places);
+app.use('/users', users);
+app.use('/images',images);
+
+
+//Route static express
+app.use(express.static(path.join(__dirname,'public')));
+//Initialisation du passport
+app.use(passport.initialize());
 
 // catch 404 and forward to error handler
 app.use(function notFound(req, res, next) {
