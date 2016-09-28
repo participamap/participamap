@@ -10,7 +10,7 @@ router.param('id', getPlace);
 
 router.get('/', Checks.db, getPlacesHeaders);
 router.get('/:id', Checks.db, getPlaceInfo);
-
+router.post('/',Checks.db,createPlace);
 
 function getPlace(req, res, next, id) {
   // Get the place without heavy content like comments, …
@@ -46,6 +46,21 @@ function getPlace(req, res, next, id) {
 }
 
 
+function createPlace(req, res, next) {
+
+  var newplace = new Place(req.body);
+
+  newplace.save(function(err, result) {
+    if(err){
+      return next(err);
+    }
+    console.log("The location is Inserted ");
+    res.status(201);
+    res.json(newplace);
+  }); 
+}
+
+
 function getPlacesHeaders(req, res, next) {
   var filter = {};
 
@@ -61,16 +76,16 @@ function getPlacesHeaders(req, res, next) {
         return next(err);
       }
 
-      filter.$and = [
-        { $or: [
-            { startDate: { $lte: date } },
-            { startDate: null }
-          ] },
-        { $or: [
-            { endDate: { $gte: date } },
-            { endDate: null }
-          ] }
-      ];
+    filter.$and = [
+    { $or: [
+      { startDate: { $lte: date } },
+      { startDate: null }
+    ] },
+    { $or: [
+      { endDate: { $gte: date } },
+      { endDate: null }
+    ] }
+    ];
   }
 
   // Location filter
@@ -87,9 +102,9 @@ function getPlacesHeaders(req, res, next) {
     var width = parseFloat(req.query.width);
 
     if (isNaN(latitude) || isNaN(longitude) || isNaN(height) || isNaN(width)) {
-       var err = new Error('Bad request: lat, long, height and width must be numbers');
-       err.status = 400;
-       return next(err);
+      var err = new Error('Bad request: lat, long, height and width must be numbers');
+      err.status = 400;
+      return next(err);
     }
 
     var minLatitude = latitude - height / 2.0;
@@ -101,12 +116,12 @@ function getPlacesHeaders(req, res, next) {
       filter.$and = [];
 
     filter.$and.push(
-      { "location.latitude": { $gte: minLatitude } },
-      { "location.latitude": { $lte: maxLatitude } },
-      { "location.longitude": { $gte: minLongitude } },
-      { "location.longitude": { $lte: maxLongitude } });
+        { "location.latitude": { $gte: minLatitude } },
+        { "location.latitude": { $lte: maxLatitude } },
+        { "location.longitude": { $gte: minLongitude } },
+        { "location.longitude": { $lte: maxLongitude } });
   }
-  
+
   // Get only the header
   var projection = {
     location: true,
