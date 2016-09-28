@@ -1,26 +1,20 @@
-<div class="container-fluid">
 
-    <div class="row-fluid">
-        <div class="col-md-3">
-            <div class="well sidebar-nav">
-                <ul class="nav nav-list">
+    <div class="row">
+        <div class="col-md-2">
+            <div class="left">
+                <div class="well sidebar-nav">
+                    <ul class="nav nav-list">
 
-                    <li><a ui-sref="nav.regclient.views">Views</a></li>
-                    <li><a ui-sref="#">Lancer une activite</a></li>
-                    <li><a href="#">Export</a></li>
-                    <li><a ui-sref="#">autres</a> </li>
-                    <li><a ui-sref="#">chose</a> </li>
-                </ul>
+                        <li><a ui-sref="nav.regclient.views">Views</a></li>
+                        <li><a ui-sref="nav.regclient.create">Create A Place</a></li>
+                        <li><a ui-sref="nav.regclient.upload">Telecharger</a></li>
+                        <li><a ui-sref="#">autres</a> </li>
+                        <li><a ui-sref="#">chose</a> </li>
+                    </ul>
+                </div>
             </div>
         </div>
-        <div class="col-md-9">
+        <div class="container">
             <ui-view></ui-view>
         </div>
-
     </div>
-
-
-
-
-
-</div>

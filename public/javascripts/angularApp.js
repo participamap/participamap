@@ -120,6 +120,20 @@ app.config(
         templateUrl:'tpls/regclient-view.html',
         controller: 'ClientViewCtrl'
       });
+    $stateProvider
+      .state('nav.regclient.create',{
+        url:'/create',
+        templateUrl:'tpls/create-place.html',
+        controller:'CreatePlaceCtrl'
+      });
+    $stateProvider
+      .state('nav.regclient.upload',{
+        utl:'/upload',
+        templateUrl:'tpls/upload.html',
+        controller:'CreatePlaceCtrl'
+      });
+
+
 
 
 

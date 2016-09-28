@@ -1,6 +1,6 @@
 <div>
     <nav class="navbar navbar-fixed-top" role="navigation" >
-        <div class="container-fluid">
+        <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
                     <span class="sr-only"></span>
@@ -13,7 +13,6 @@
 
             <nav class="navbar navbar-default pull-right">
                 <ul class="nav navbar-nav">
-                    <!--<li> <a ui-sref="ifclient">Client</a></li>-->
                     <li ng-hide="isLoggedIn()"><a ui-sref="login">Log In</a></li>
                     <li ng-hide="isLoggedIn()"><a href="/#/register">Register</a></li>
 
@@ -22,6 +21,7 @@
 
                     <li><a ui-sref="#">Admin</a></li>
                     <li><a ui-sref="#">Help</a></li>
+
                 </ul>
                 <form class="navbar-form navbar-right">
                     <input class="form-control" placeholder="Recherche" type="text"/>
@@ -31,60 +31,43 @@
     </nav>
 </div>
 
-<ui-view>
-    <div ng-app ="" ng-controller="CarouselCtrl">
-        <div style="height: 500px">
-            <div uib-carousel active="active" interval="myInterval" no-wrap="noWrapSlides">
-                <div uib-slide ng-repeat="slide in slides track by slide.id" index="slide.id">
-                    <img ng-src="{[{slide.image}]}" style="margin:auto;">
-                    <div class="carousel-caption">
-                        <h5>Slide {[{slide.id}]}</h5>
-                        <h2>{[{slide.text}]}</h2>
+    <ui-view>
+        <div>
+            <div style="height: 500px">
+                <div uib-carousel active="active" interval="myInterval" no-wrap="noWrapSlides">
+                    <div uib-slide ng-repeat="slide in slides track by slide.id" index="slide.id">
+                        <img ng-src="{[{slide.image}]}" style="margin:auto;">
+                        <div class="carousel-caption">
+                            <h5>Slide {[{slide.id}]}</h5>
+                            <h2>{[{slide.text}]}</h2>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        <!--<div class="row">
-            <div class="col-md-6">
-                <button type="button" class="btn btn-info" ng-click="addSlide()">Add Slide</button>
-                <button type="button" class="btn btn-info" ng-click="randomize()">Randomize slides</button>
-                <div class="checkbox">
-                    <label>
-                        <input type="checkbox" ng-model="noWrapSlides">
-                        Disable Slide Looping
-                    </label>
+        <div>
+            <h1>Bienvenue à la ParticipaMap</h1>
+            <p>ParticipaMap est une carte basée sur le MEAN Stack</p>
+            <div class="row">
+                <div class="col-md-4 jumbotron">
+                    <h2>Je suis Guest</h2>
+                    <h4><a ui-sref="nav.regclient">Click Moi</a> </h4>
+                </div>
+                <div class="col-md-4 jumbotron">
+                    <h2>J'ai un compte</h2>
+                    <h4>Click ici pour <a ui-sref="#">Login</a> </h4>
+                </div>
+                <div class="col-md-4 jumbotron">
+                    <h2>Je suis proprietaire</h2>
+                    <h4>Click ici pour entrer mon <a ui-sref="#">Espace</a> </h4>
                 </div>
             </div>
-            <div class="col-md-6">
-                Interval, in milliseconds: <input type="number" class="form-control" ng-model="myInterval">
-                <br />Enter a negative number or 0 to stop the interval.
-            </div>
-        </div>-->
-    </div>
 
-
-    <div>
-        <h1>Bienvenue à la ParticipaMap</h1>
-        <p>ParticipaMap est une carte basée sur le MEAN Stack</p>
-        <div class="row">
-            <div class="col-md-4 jumbotron">
-                <h2>Je suis Guest</h2>
-                <h4><a ui-sref="nav.regclient">Click Moi</a> </h4>
-            </div>
-            <div class="col-md-4 jumbotron">
-                <h2>J'ai un compte</h2>
-                <h4>Click ici pour <a ui-sref="">Login</a> </h4>
-            </div>
-            <div class="col-md-4 jumbotron">
-                <h2>Je suis proprietaire</h2>
-                <h4>Click ici pour entrer mon <a ui-sref="">Espace</a> </h4>
-            </div>
         </div>
-
-    </div>
-</ui-view>
+    </ui-view>
 
 
-<div class="row col-md-3">
-    <h2></h2>
-</div>
+
+
+
+

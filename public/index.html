@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html ng-app="demoapp">
+<head>
+    <meta charset=utf-8>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="content-type" content="text/html">
+    <title>DEMO ParticipaMAP</title>
+
+    <!-- jquery pour bootstrap -->
+    <script src="./javascripts/jquery.min.js"></script>
+    <!-- bootstrap -->
+    <script src="libs/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="./libs/bootstrap-3.3.7-dist/css/bootstrap.min.css">
+
+    <!--angular JS -->
+    <!--<script src="libs/angular.min.js"></script>-->
+    <script src="libs/angular-1.5.8/angular.min.js"></script>
+
+    <!--open layer 3 -->
+    <script src="libs/openlayer-dist/ol.js"></script>
+
+    <!-- angular JS openlayer directive -->
+    <script src="libs/angular_openlayer/angular-openlayers-directive.min.js"></script>
+
+    <!-- angular bootstrap UI -->
+    <script src="libs/angular-1.5.8/angular-animate.min.js"></script>
+    <script src="libs/angular-1.5.8/angular-sanitize.js"></script>
+    <script src="libs/angular-1.5.8/angular-touch.min.js"></script>
+    <script src="libs/ui-bootstrap-tpls-2.1.3.min.1.js"></script>
+
+    <!-- angular route ui -->
+    <script src="libs/angular-ui-router.js"></script>
+
+    <!--self defined style sheet -->
+    <link rel='stylesheet' href='./stylesheets/style.css'/>
+    <style>.glyphicon-thumbs-up{cursor:pointer}</style>
+
+    <!-- Controller et Directive angulars self defined -->
+    <script src="./javascripts/angularApp.js"></script>
+    <script src="./javascripts/CarouselCtrl.js"></script>
+    <script src="./javascripts/AuthCtrl.js"></script>
+    <script src="./javascripts/NavCtrl.js"></script>
+    <script src="./javascripts/ClientViewCtrl.js"></script>
+    <script src="./javascripts/CreatePlaceCtrl.js"></script>
+
+
+</head>
+<body>
+<ui-view></ui-view>
+</body>
+</html>
