@@ -131,13 +131,32 @@ function getPlaceInfo(req, res, next) {
 
 
 function getComments(req,res,next) {
+  if (!req.query.page) req.query.page=1;
+  if (!req.query.n) req.query.n=10;
+  if ((!Number.isInteger(req.query.page)) && (!Number.isInteger(req.query.n)) && (req.query.n < 0) && (req.query.page <0))
+  {
+  	 var err = new Error('Bad request: page and n must be positive integers');
+	 err.status = 400;
+	 return next(err);
+  };
+  
+  var page = req.query.page;
+  var n = req.query.n;
   var projection = {
       comments: true
   };
+  
+  if(!n) n=10;
+  if(!page) page=1;
+  
         
   Place.findById(req.params.id, projection, function returnComments(error, result) {
-    if (error) return next(error);    
-    res.json(result.comments);
+    if (error) return next(error);
+    var commentsSelected=[];
+    for (i=(page-1)*n;i<page*n;i++) {
+    	    commentsSelected.push(result.comments[i]);
+    	 };
+    res.json(commentsSelected);
   });
 }
 
