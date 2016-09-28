@@ -10,6 +10,7 @@ router.param('id', getPlace);
 
 router.get('/', Checks.db, getPlacesHeaders);
 router.get('/:id', Checks.db, getPlaceInfo);
+router.post('/', Checks.db, createPlace);
 router.delete('/:id', Checks.db, deletePlace);
 
 
@@ -33,14 +34,16 @@ function getPlace(req, res, next, id) {
     denyDocuments: true
   };
 
-  Place.findById(id, projection, function onPlaceFound(err, place) {
+  Place.findById(id, projection, function onPlaceFound(error, place) {
+    if (error) return next(error);
+
     if (!place) {
       var err = new Error('Not Found');
       err.status = 404;
       return next(err);
     }
 
-    req.place = place
+    req.place = place;
 
     next();
   });
@@ -54,23 +57,23 @@ function getPlacesHeaders(req, res, next) {
   if (req.query.when) {
     var date = (req.query.when === 'now')
       ? new Date()
-      : new Date(req.query.when)
+      : new Date(req.query.when);
 
-      if (isNaN(date.valueOf())) {
-        var err = new Error('Bad request: invalid date');
-        err.status = 400;
-        return next(err);
-      }
+    if (isNaN(date.valueOf())) {
+      var err = new Error('Bad request: invalid date');
+      err.status = 400;
+      return next(err);
+    }
 
-      filter.$and = [
-        { $or: [
-            { startDate: { $lte: date } },
-            { startDate: null }
-          ] },
-        { $or: [
-            { endDate: { $gte: date } },
-            { endDate: null }
-          ] }
+    filter.$and = [
+      { $or: [
+          { startDate: { $lte: date } },
+          { startDate: null }
+        ] },
+      { $or: [
+          { endDate: { $gte: date } },
+          { endDate: null }
+        ] }
       ];
   }
 
@@ -88,9 +91,9 @@ function getPlacesHeaders(req, res, next) {
     var width = parseFloat(req.query.width);
 
     if (isNaN(latitude) || isNaN(longitude) || isNaN(height) || isNaN(width)) {
-       var err = new Error('Bad request: lat, long, height and width must be numbers');
-       err.status = 400;
-       return next(err);
+      var err = new Error('Bad request: lat, long, height and width must be numbers');
+      err.status = 400;
+      return next(err);
     }
 
     var minLatitude = latitude - height / 2.0;
@@ -107,16 +110,16 @@ function getPlacesHeaders(req, res, next) {
       { "location.longitude": { $gte: minLongitude } },
       { "location.longitude": { $lte: maxLongitude } });
   }
-  
+
   // Get only the header
   var projection = {
     location: true,
     title: true
   };
 
-  Place.find(filter, projection, function returnPlacesHeaders(error, placeHeaders) {
+  Place.find(filter, projection, function returnPlacesHeaders(error, placesHeaders) {
     if (error) return next(error);
-    res.send(placeHeaders);
+    res.json(placesHeaders);
   });
 }
 
@@ -127,6 +130,16 @@ function getPlaceInfo(req, res, next) {
   var err = new Error('Not Implemented');
   err.status = 501;
   next(err);
+}
+
+
+function createPlace(req, res, next) {
+  var place = new Place(req.body);
+
+  place.save(function onPlaceSaved(error, newPlace) {
+    if(error) return next(error);
+    res.status(201).json(newPlace);
+  }); 
 }
 
 
