@@ -10,7 +10,7 @@ router.param('id', getPlace);
 
 router.get('/', Checks.db, getPlacesHeaders);
 router.get('/:id', Checks.db, getPlaceInfo);
-router.post('/',Checks.db,createPlace);
+router.post('/', Checks.db, createPlace);
 router.delete('/:id', Checks.db, deletePlace);
 
 
@@ -66,15 +66,15 @@ function getPlacesHeaders(req, res, next) {
       }
 
     filter.$and = [
-    { $or: [
-      { startDate: { $lte: date } },
-      { startDate: null }
-    ] },
-    { $or: [
-      { endDate: { $gte: date } },
-      { endDate: null }
-    ] }
-    ];
+      { $or: [
+          { startDate: { $lte: date } },
+          { startDate: null }
+        ] },
+      { $or: [
+          { endDate: { $gte: date } },
+          { endDate: null }
+        ] }
+      ];
   }
 
   // Location filter
