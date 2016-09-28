@@ -154,8 +154,115 @@ function getPlaceInfo(req, res, next) {
     err.status = 400;
     return next(err);
   }
+
+  // TODO: Réécrire pour éviter la redondance de code
+
+  if (req.query.comms) {
+    var nComments = parseInt(req.query.comms);
+
+    if (isNaN(nComments)) {
+      var err = new Error('Bad request: comms must be an integer');
+      err.status = 400;
+      return next(err);
+    }
+
+    if (nComments <= 0) {
+      var err = new Error('Bad request: comms must be strictly positive');
+      err.status = 400;
+      return next(err);
+    }
+
+    var projection = {
+      _id: true,
+      // Note: $slice: nb ou $slice: [skip, limit]
+      comments: { $slice: nComments }
+    };
+  }
+
+  if (req.query.pics) {
+    var nPictures = parseInt(req.query.pics);
+
+    if (isNaN(nPictures)) {
+      var err = new Error('Bad request: pics must be an integer');
+      err.status = 400;
+      return next(err);
+    }
+
+    if (nPictures <= 0) {
+      var err = new Error('Bad request: pics must be strictly positive');
+      err.status = 400;
+      return next(err);
+    }
+    
+    if (!projection)
+      var projection = { _id: true };
+
+    projection.pictures = { $slice: nPictures };
+  }
+
+  if (req.query.docs) {
+    var nDocuments = parseInt(req.query.docs);
+
+    if (isNaN(nDocuments)) {
+      var err = new Error('Bad request: docs must be an integer');
+      err.status = 400;
+      return next(err);
+    }
+
+    if (nDocuments <= 0) {
+      var err = new Error('Bad request: docs must be strictly positive');
+      err.status = 400;
+      return next(err);
+    }
+    
+    if (!projection)
+      var projection = { _id: true };
+
+    projection.documents = { $slice: nDocuments };
+  }
+
+  if (req.query.votes) {
+    var nVotes = parseInt(req.query.votes);
+
+    if (isNaN(nVotes)) {
+      var err = new Error('Bad request: votes must be an integer');
+      err.status = 400;
+      return next(err);
+    }
+
+    if (nVotes <= 0) {
+      var err = new Error('Bad request: votes must be strictly positive');
+      err.status = 400;
+      return next(err);
+    }
+    
+    if (!projection)
+      var projection = { _id: true };
+
+    projection.votes = { $slice: nVotes };
+  }
   
-  res.json(place); 
+  if (!projection)
+    return res.json(place); 
+  
+  // Get additional info in the database
+  Place.findById(place._id, projection, function onPlaceInfoGot(error, info) {
+    if (error) return next(error);
+
+    if (info.comments && info.comments.length !== 0)
+      place.comments = info.comments;
+
+    if (info.pictures && info.pictures.length !== 0)
+      place.pictures = info.pictures;
+
+    if (info.documents && info.documents.length !== 0)
+      place.documents = info.documents;
+
+    if (info.votes && info.votes.length !== 0)
+      place.votes = info.votes;
+
+    res.json(place);
+  });
 }
 
 
