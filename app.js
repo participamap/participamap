@@ -7,6 +7,7 @@ var config = require('./config.json');
 
 var routes = require('./routes/index');
 var places = require('./routes/places');
+var createPlace = require('./routes/createPlace');
 
 mongoose.connect(config.mongodb.uri, config.mongodb.options);
 var db = mongoose.connection;
@@ -29,6 +30,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // Routes declarations
 app.use('/', routes);
 app.use('/places', places);
+app.use('/createPlace', createPlace);
 
 // catch 404 and forward to error handler
 app.use(function notFound(req, res, next) {
