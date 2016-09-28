@@ -7,9 +7,9 @@ mongodump -d 21205243_dev -o databaseSample/
 
 Pour importer:
 
-mongorestore -d [DATABASE] [CHEMINVERSLEDOSSIERDELABASE]
+mongorestore --host mongodb.info.unicaen.fr --port 27017 --db <numEtu>_dev --authenticationDatabase admin --username <numEtu> -p --drop databaseSample/participamap/
 ex:
-mongorestore -d 21205243_dev databaseSample/21205243_dev
+mongorestore --host mongodb.info.unicaen.fr --port 27017 --db 21205243_dev --authenticationDatabase admin --username 21205243 -p --drop databaseSample/participamap/
 
 /!\ Avant d'importer un bson, pour supprimer la base de données:
-db.dropDatabase()
+db.dropDatabase() (Nous n'avons pas les droits pour dropper nore base <numEtu>_dev, il faut donc spécifier l'option --drop dans la commande ci-dessus pour supprimer les données précédemment présentes.

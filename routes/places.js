@@ -10,6 +10,8 @@ router.param('id', getPlace);
 
 router.get('/', Checks.db, getPlacesHeaders);
 router.get('/:id', Checks.db, getPlaceInfo);
+router.post('/', Checks.db, createPlace);
+router.delete('/:id', Checks.db, deletePlace);
 
 
 function getPlace(req, res, next, id) {
@@ -33,6 +35,8 @@ function getPlace(req, res, next, id) {
   };
 
   Place.findById(id, projection, function onPlaceFound(error, place) {
+    if (error) return next(error);
+
     if (!place) {
       var err = new Error('Not Found');
       err.status = 404;
@@ -53,23 +57,23 @@ function getPlacesHeaders(req, res, next) {
   if (req.query.when) {
     var date = (req.query.when === 'now')
       ? new Date()
-      : new Date(req.query.when)
+      : new Date(req.query.when);
 
-      if (isNaN(date.valueOf())) {
-        var err = new Error('Bad request: invalid date');
-        err.status = 400;
-        return next(err);
-      }
+    if (isNaN(date.valueOf())) {
+      var err = new Error('Bad request: invalid date');
+      err.status = 400;
+      return next(err);
+    }
 
-      filter.$and = [
-        { $or: [
-            { startDate: { $lte: date } },
-            { startDate: null }
-          ] },
-        { $or: [
-            { endDate: { $gte: date } },
-            { endDate: null }
-          ] }
+    filter.$and = [
+      { $or: [
+          { startDate: { $lte: date } },
+          { startDate: null }
+        ] },
+      { $or: [
+          { endDate: { $gte: date } },
+          { endDate: null }
+        ] }
       ];
   }
 
@@ -87,9 +91,9 @@ function getPlacesHeaders(req, res, next) {
     var width = parseFloat(req.query.width);
 
     if (isNaN(latitude) || isNaN(longitude) || isNaN(height) || isNaN(width)) {
-       var err = new Error('Bad request: lat, long, height and width must be numbers');
-       err.status = 400;
-       return next(err);
+      var err = new Error('Bad request: lat, long, height and width must be numbers');
+      err.status = 400;
+      return next(err);
     }
 
     var minLatitude = latitude - height / 2.0;
@@ -106,7 +110,7 @@ function getPlacesHeaders(req, res, next) {
       { "location.longitude": { $gte: minLongitude } },
       { "location.longitude": { $lte: maxLongitude } });
   }
-  
+
   // Get only the header
   var projection = {
     location: true,
@@ -115,7 +119,7 @@ function getPlacesHeaders(req, res, next) {
 
   Place.find(filter, projection, function returnPlacesHeaders(error, placesHeaders) {
     if (error) return next(error);
-    res.send(placesHeaders);
+    res.json(placesHeaders);
   });
 }
 
@@ -123,20 +127,36 @@ function getPlacesHeaders(req, res, next) {
 function getPlaceInfo(req, res, next) {
   place = req.place;
   
-  if (!req.query.admin){
-	  delete place.proposedBy;
-	  delete place.manager;
-	  delete place.moderateComments;
-	  delete place.moderateDocuments;
-	  delete place.moderatePictures;
-	  
+  if (!req.query.admin) {
+    delete place.proposedBy;
+    delete place.manager;
+    delete place.moderateComments;
+    delete place.moderateDocuments;
+    delete place.moderatePictures; 
   }
   
   res.json(place); 
 }
 
 
+function createPlace(req, res, next) {
+  var place = new Place(req.body);
+
+  place.save(function onPlaceSaved(error, newPlace) {
+    if(error) return next(error);
+    res.status(201).json(newPlace);
+  }); 
+}
+
+
+function deletePlace(req, res, next) {
+  req.place.remove(function onPlaceRemoved(error) {
+    if (error) return next(error);
+    res.status(204).end();
+  });
+}
+
+
 module.exports = router;
 
-
-
+/* vim: set ts=2 sw=2 et si : */
