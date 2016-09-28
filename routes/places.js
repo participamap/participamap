@@ -9,7 +9,7 @@ router.param('id', Checks.isValidObjectId);
 router.param('id', getPlace);
 
 router.get('/', Checks.db, getPlacesHeaders);
-router.get('/:id', Checks.db, getPlaceInfo);
+router.get('/:id', Checks.db, Checks.setAdminFlag, getPlaceInfo);
 router.post('/', Checks.db, createPlace);
 router.delete('/:id', Checks.db, deletePlace);
 
@@ -130,14 +130,29 @@ function getPlacesHeaders(req, res, next) {
 
 
 function getPlaceInfo(req, res, next) {
-  place = req.place;
+  var place = req.place;
   
-  if (!req.query.admin) {
-    delete place.proposedBy;
-    delete place.manager;
-    delete place.moderateComments;
-    delete place.moderateDocuments;
-    delete place.moderatePictures; 
+  // TODO: À réécrire de façon plus jolie (gestion des erreurs avant action)
+  if (!req.query.admin || req.query.admin === 'false') {
+    // Remove admin-olny info
+    place.proposedBy = undefined;
+    place.manager = undefined;
+    place.moderateComments = undefined;
+    place.moderateDocuments = undefined;
+    place.moderatePictures = undefined; 
+  }
+  else if (req.query.admin === 'true') {
+    // Check if admin flag is set by Checks.setAdminFlag
+    if (!req.admin) {
+      var err = new Error('Unauthorized');
+      err.status = 401;
+      return next(err);
+    }
+  }
+  else {
+    var err = new Error('Bad request: admin must be true or false');
+    err.status = 400;
+    return next(err);
   }
   
   res.json(place); 
