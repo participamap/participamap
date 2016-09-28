@@ -32,14 +32,14 @@ function getPlace(req, res, next, id) {
     denyDocuments: true
   };
 
-  Place.findById(id, projection, function onPlaceFound(err, place) {
+  Place.findById(id, projection, function onPlaceFound(error, place) {
     if (!place) {
       var err = new Error('Not Found');
       err.status = 404;
       return next(err);
     }
 
-    req.place = place
+    req.place = place;
 
     next();
   });
@@ -113,86 +113,30 @@ function getPlacesHeaders(req, res, next) {
     title: true
   };
 
-  Place.find(filter, projection, function returnPlacesHeaders(error, placeHeaders) {
+  Place.find(filter, projection, function returnPlacesHeaders(error, placesHeaders) {
     if (error) return next(error);
-    res.send(placeHeaders);
+    res.send(placesHeaders);
   });
 }
 
 
 function getPlaceInfo(req, res, next) {
-  // TODO: Implémenter la requête
-  var filter = {};
+  place = req.place;
   
-  
-  var projection1 = {
-    location: true,
-    title: true,
-    isVerified:true,
-    proposedBy:true,
-    type:true,
-    description:true,
-    startDate:true,
-    endDate:true,
-    comments:true,
-    pictures:true,
-    documents:true,
-    votes:true,
-    manager:true,
-    moderateComments:true,
-    moderatePictures:true,
-    moderateDocuments:true,
-    denyComments:true,
-    denyPictures:true,
-    denyDocuments:true
-   
-  };
-  var projection2 = {
-    location: true,
-    title: true,
-    isVerified:true,
-    
-    type:true,
-    description:true,
-    startDate:true,
-    endDate:true,
-    comments:true,
-    pictures:true,
-    documents:true,
-    votes:true,
-    manager:true,
-    
-    denyComments:true,
-    denyPictures:true,
-    denyDocuments:true
-   
-  };
-  
-  
-  if ((req.query.admin !=true)) {
-		Place.find(filter,projection1,function returnPlaceInfo(err,placeInfo){
-	  if (err) return next(err);
-			res.send(placeInfo);
-	  
-	  });
-      
-	  
-  }
-  else{
-	  
-	  Place.find(filter,projection2,function returnPlaceInfo(err,placeInfo){
-	  if (err) return next(err);
-			res.send(placeInfo);
-	  
-	  });
+  if (!req.query.admin){
+	  delete place.proposedBy;
+	  delete place.manager;
+	  delete place.moderateComments;
+	  delete place.moderateDocuments;
+	  delete place.moderatePictures;
 	  
   }
   
-
-  
+  res.json(place); 
 }
 
 
 module.exports = router;
 
-/* vim: set ts=2 sw=2 et si : */
+
+
