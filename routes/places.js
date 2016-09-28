@@ -79,8 +79,11 @@ function getPlacesHeaders(req, res, next) {
 
   // Location filter
   if (req.query.lat || req.query.long || req.query.height || req.query.width) {
-    if (!(req.query.lat && req.query.long && req.query.height && req.query.width)) {
-      var err = new Error('Bad request: lat, long, height and width must be set together');
+    if (!(req.query.lat && req.query.long 
+      && req.query.height && req.query.width))
+    {
+      var err = new Error('Bad request: lat, long, height and width must be '
+        + 'set together');
       err.status = 400;
       return next(err);
     }
@@ -91,7 +94,8 @@ function getPlacesHeaders(req, res, next) {
     var width = parseFloat(req.query.width);
 
     if (isNaN(latitude) || isNaN(longitude) || isNaN(height) || isNaN(width)) {
-      var err = new Error('Bad request: lat, long, height and width must be numbers');
+      var err = new Error('Bad request: lat, long, height and width must be '
+        + 'numbers');
       err.status = 400;
       return next(err);
     }
@@ -117,9 +121,10 @@ function getPlacesHeaders(req, res, next) {
     title: true
   };
 
-  Place.find(filter, projection, function returnPlacesHeaders(error, placesHeaders) {
-    if (error) return next(error);
-    res.json(placesHeaders);
+  Place.find(filter, projection,
+    function returnPlacesHeaders(error, placesHeaders) {
+      if (error) return next(error);
+      res.json(placesHeaders);
   });
 }
 
@@ -159,4 +164,4 @@ function deletePlace(req, res, next) {
 
 module.exports = router;
 
-/* vim: set ts=2 sw=2 et si : */
+/* vim: set ts=2 sw=2 et si colorcolumn=80 : */

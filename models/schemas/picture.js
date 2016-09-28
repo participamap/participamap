@@ -13,4 +13,4 @@ var pictureSchema = new Schema({
 
 module.exports = pictureSchema;
 
-/* vim: set ts=2 sw=2 et si : */
+/* vim: set ts=2 sw=2 et si colorcolumn=80 : */

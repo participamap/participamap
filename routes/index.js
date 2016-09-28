@@ -8,4 +8,4 @@ router.get('/', function getRoot(req, res, next) {
 
 module.exports = router;
 
-/* vim: set ts=2 sw=2 et si : */
+/* vim: set ts=2 sw=2 et si colorcolumn=80 : */
