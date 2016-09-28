@@ -10,6 +10,7 @@ router.param('id', getPlace);
 
 router.get('/', Checks.db, getPlacesHeaders);
 router.get('/:id', Checks.db, getPlaceInfo);
+router.delete('/:id', Checks.db, deletePlace);
 
 
 function getPlace(req, res, next, id) {
@@ -126,6 +127,14 @@ function getPlaceInfo(req, res, next) {
   var err = new Error('Not Implemented');
   err.status = 501;
   next(err);
+}
+
+
+function deletePlace(req, res, next) {
+  req.place.remove(function onPlaceRemoved(error) {
+    if (error) return next(error);
+    res.status(204).end();
+  });
 }
 
 
