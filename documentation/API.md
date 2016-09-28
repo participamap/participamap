@@ -9,10 +9,12 @@
 * [**Lieux**](#lieux)
     * [En-têtes de lieux](#en-têtes-de-lieux)
     * [Informations d’un lieu](#informations-dun-lieu)
-    * [Commentaires d’un lieu](#commentaires-dun-lieu)
-    * [Images d’un lieu](#images-dun-lieu)
     * [Création d’un lieu](#création-dun-lieu)
+    * [Modification d’un lieu](#modification-dun-lieu)
     * [Suppression d’un lieu](#suppression-dun-lieu)
+    * [Commentaires d’un lieu](#commentaires-dun-lieu)
+    * [Poster un commentaire](#poster-un-commentaire)
+    * [Images d’un lieu](#images-dun-lieu)
 
 ## Informations générales
 
@@ -24,7 +26,7 @@ L’API utilise le protocole HTTP. Les charges des requêtes doivent être pass�
 
 Si un appel API est réussi, le service web répond avec :
 
-* un statut HTTP 200 (OK) ou HTTP 201 (Created),
+* un statut HTTP 200 (OK), HTTP 201 (Created) ou HTTP 204 (No Content),
 * une représentation JSON de l’entité demandée, créée ou modifiée le cas échéant.
 
 ### Gestion des erreurs
@@ -66,7 +68,7 @@ GET | /places | non requis
 
 #### Paramètres de chemin
 
-*Néan*
+*Néant*
 
 #### Paramètres de requête
 
@@ -82,7 +84,7 @@ width | Largeur du cadre de recherche en degrés | 0.06 | Tout
 
 #### Charge
 
-*Néan*
+*Néant*
 
 #### Réponse
 
@@ -155,7 +157,7 @@ admin | Récupérer des informations administrateur | true | false
 
 #### Charge
 
-*Néan*
+*Néant*
 
 #### Réponse
 
@@ -206,138 +208,6 @@ $ curl https://api.participamap.org/places/57dbe334c3eaf116f88e0318
 }
 ```
 
-### Commentaires d’un lieu
-
-#### Nom de la requête
-
-`getComments`
-
-#### Description
-
-Récupère les commentaires d’un lieu.
-
-#### Point d’accès
-
-Méthode | Chemin | autorisation
-:------:|:------:|:-----------:
-GET | /places/{id}/comments | non requis
-
-#### Paramètres de chemin
-
-Nom | Description | Exemple
-----|-------------|--------
-id | Identifiant du lieu | 57dbe334c3eaf116f88e0318
-
-#### Paramètres de requête
-
-Nom | Description | Exemple | Absence
-----|-------------|---------|--------
-page | Numéro de page | 3 | 1
-n | Nombre de commentaires par page | 10 | 10 si `page` est fixé, infini sinon
-
-#### Charge
-
-*Néan*
-
-#### Réponse
-
-Liste de commentaires :
-
-Attribut | Description | Exemple
----------|-------------|--------
-author | Auteur du commentaire | { "id": "57dbe334c3eaf116f88eca27", "name": "Jean Dupont" }
-date | Date du commentaire | "2016-09-19T19:30:26.037Z"
-content | Contenu du commentaire | "Très bel endroit"
-
-#### Exemple
-
-```sh
-$ curl https://api.participamap.org/places/57dbe334c3eaf116f88e0318/comments?page=1&n=2
-```
-
-```json
-[
-  {
-    "author": {
-      "id": "57dbe334c3eaf116f88eca27",
-      "name": "Jean Dupont"
-    },
-    "date": "2016-09-19T19:30:26.037Z",
-    "content": "Très bel endroit"
-  },
-  {
-    "author": {
-      "id": "57dbe334c3eaf116f88eca2c",
-      "name": "Alexis de caen"
-    },
-    "date": "2016-09-19T19:30:32.739Z",
-    "content": "Je plussoie Jean"
-  }
-]
-```
-
-### Images d’un lieu
-
-#### Nom de la requête
-
-`getPictures`
-
-#### Description
-
-Récupère les images d’un lieu.
-
-#### Point d’accès
-
-Méthode | Chemin | autorisation
-:------:|:------:|:-----------:
-GET | /places/{id}/pictures | non requis
-
-#### Paramètres de chemin
-
-Nom | Description | Exemple
-----|-------------|--------
-id | Identifiant du lieu | 57dbe334c3eaf116f88e0318
-
-#### Paramètres de requête
-
-Nom | Description | Exemple | Absence
-----|-------------|---------|--------
-page | Numéro de page | 3 | 1
-n | Nombre d’images par page | 12 | 12 si `page` est fixé, infini sinon
-
-#### Charge
-
-*Néan*
-
-#### Réponse
-
-Liste de liens vers des images :
-
-Attribut | Description | Exemple
----------|-------------|--------
-author | Auteur de la photo | { "id": "57dbe334c3eaf116f88eca27", "name": "Jean Dupont" }
-date | Date de mise en ligne | "2016-09-19T19:30:26.037Z"
-link | Lien vers la photo | "https://photos.participamap.org/83ca8f82.jpg"
-
-#### Exemple
-
-```sh
-$ curl https://api.participamap.org/places/57dbe334c3eaf116f88e0318/pitcures?page=1
-```
-
-```json
-[
-  {
-    "author": {
-      "id": "57dbe334c3eaf116f88eca27",
-      "name": "Jean Dupont"
-    },
-    "date": "2016-09-19T19:30:45.173Z",
-    "link": "https://photos.participamap.org/83ca8f82.jpg"
-  }
-]
-```
-
 ### Création d’un lieu
 
 #### Nom de la requête
@@ -356,11 +226,11 @@ POST | /places | utilisateur / modérateur si champs modérateurs soumis
 
 #### Paramètres de chemin
 
-*Néan*
+*Néant*
 
 #### Paramètres de requête
 
-*Néan*
+*Néant*
 
 #### Charge
 
@@ -427,6 +297,93 @@ $ curl -X POST -H "Content-Type: application/json" \
 }
 ```
 
+### Modification d’un lieu
+
+#### Nom de la requête
+
+`updatePlace`
+
+#### Description
+
+Modifie un lieu existant.
+
+#### Point d’accès
+
+Méthode | Chemin | autorisation
+:------:|:------:|:-----------:
+PUT | /places/{id} | modérateur
+
+#### Paramètres de chemin
+
+*Néant*
+
+#### Paramètres de requête
+
+*Néant*
+
+#### Charge
+
+Un lieu :
+
+Attribut | Description | Exemple
+---------|-------------|--------
+*location* | Localisation du lieu | { "latitude": 49.18165, "longitude": -0.34709 }
+*title* | Titre du lieu | "Le Dôme"
+*isVerified* | État de vérification du lieu | true
+*type* | Type du lieu | 0
+*description* | Description | "Maison de la Recherche et de l’Imagination"
+*startDate* | Date de création | "2015-01-01T13:00:00.000Z"
+*endDate* | Date de suppression | "2016-09-09T08:00:00.000Z"
+*manager* | Gérant du lieu | "57dbe334c3eaf116f8a33e7"
+*moderateComments* | Modération des commentaires | true
+*moderatePictures* | Modération des photos | true
+*moderateDocuments* | Modération des documents | true
+*denyComments* | Interdiction des commentaires | true
+*denyPictures* | Interdiction des photos | true
+*denyDocuments* | Interdiction des documents | true
+
+#### Réponse
+
+Le lieu modifié :
+
+Attribut | Description | Exemple
+---------|-------------|--------
+_id | Identifiant du lieu | "57dbe334c3eaf116f88e0318"
+location | Localisation du lieu | { "latitude": 49.18165, "longitude": -0.34709 }
+title | Titre du lieu | "Le Dôme"
+isVerified | État de vérification du lieu | true
+*proposedBy* | Utilisateur ayant proposé le lieu | { "id": "57dbe334c3eaf116f88eca27", "name": "Jean Dupont" }
+*type* | Type du lieu | 0
+*description* | Description | "Maison de la Recherche et de l’Imagination"
+*startDate* | Date de création | "2015-01-01T13:00:00.000Z"
+*endDate* | Date de suppression | "2016-09-09T08:00:00.000Z"
+*manager* | Gérant du lieu | "57dbe334c3eaf116f8a33e7"
+*moderateComments* | Modération des commentaires | true
+*moderatePictures* | Modération des photos | true
+*moderateDocuments* | Modération des documents | true
+*denyComments* | Interdiction des commentaires | true
+*denyPictures* | Interdiction des photos | true
+*denyDocuments* | Interdiction des documents | true
+
+#### Exemple
+
+```sh
+$ curl -X PUT -H "Content-Type: application/json" \
+    -d '{"location":{"latitude":49.18165,"longitude":-0.34709},"title":"Le Dôme modifié"}' \
+    https://api.participamap.org/places/57dbe334c3eaf116f88e0318
+```
+
+```json
+{
+  "_id": "57dbe334c3eaf116f88e0318",
+  "location": {
+    "latitude": 49.18165,
+    "longitude": -0.34709
+  },
+  "title": "Le Dôme modifié"
+}
+```
+
 ### Suppression d’un lieu
 
 #### Nom de la requête
@@ -451,18 +408,213 @@ id | Identifiant du lieu | 57dbe334c3eaf116f88e0318
 
 #### Paramètres de requête
 
-*Néan*
+*Néant*
 
 #### Charge
 
-*Néan*
+*Néant*
 
 #### Réponse
 
-`HTTP/1.1 200 OK`
+`HTTP/1.1 204 No Content`
 
 #### Exemple
 
 ```sh
 $ curl -X DELETE https://api.participamap.org/places/57dbe334c3eaf116f88e0318
+```
+
+### Commentaires d’un lieu
+
+#### Nom de la requête
+
+`getComments`
+
+#### Description
+
+Récupère les commentaires d’un lieu.
+
+#### Point d’accès
+
+Méthode | Chemin | autorisation
+:------:|:------:|:-----------:
+GET | /places/{id}/comments | non requis
+
+#### Paramètres de chemin
+
+Nom | Description | Exemple
+----|-------------|--------
+id | Identifiant du lieu | 57dbe334c3eaf116f88e0318
+
+#### Paramètres de requête
+
+Nom | Description | Exemple | Absence
+----|-------------|---------|--------
+page | Numéro de page | 3 | 1
+n | Nombre de commentaires par page | 10 | 10 si `page` est fixé, infini sinon
+
+#### Charge
+
+*Néant*
+
+#### Réponse
+
+Liste de commentaires :
+
+Attribut | Description | Exemple
+---------|-------------|--------
+author | Auteur du commentaire | { "id": "57dbe334c3eaf116f88eca27", "name": "Jean Dupont" }
+date | Date du commentaire | "2016-09-19T19:30:26.037Z"
+content | Contenu du commentaire | "Très bel endroit"
+
+#### Exemple
+
+```sh
+$ curl https://api.participamap.org/places/57dbe334c3eaf116f88e0318/comments?page=1&n=2
+```
+
+```json
+[
+  {
+    "author": {
+      "id": "57dbe334c3eaf116f88eca27",
+      "name": "Jean Dupont"
+    },
+    "date": "2016-09-19T19:30:26.037Z",
+    "content": "Très bel endroit"
+  },
+  {
+    "author": {
+      "id": "57dbe334c3eaf116f88eca2c",
+      "name": "Alexis de caen"
+    },
+    "date": "2016-09-19T19:30:32.739Z",
+    "content": "Je plussoie Jean"
+  }
+]
+```
+
+### Poster un commentaire
+
+#### Nom de la requête
+
+`postComment`
+
+#### Description
+
+Poste un commentaire.
+
+#### Point d’accès
+
+Méthode | Chemin | autorisation
+:------:|:------:|:-----------:
+POST | /places/{id}/comments | utilisateur
+
+#### Paramètres de chemin
+
+Nom | Description | Exemple
+----|-------------|--------
+id | Identifiant du lieu | 57dbe334c3eaf116f88e0318
+
+#### Paramètres de requête
+
+*Néant*
+
+#### Charge
+
+Un commentaire :
+
+Attribut | Description | Exemple
+---------|-------------|--------
+content | Contenu du commentaire | "Très bel endroit"
+
+#### Réponse
+
+Un commentaire :
+
+Attribut | Description | Exemple
+---------|-------------|--------
+author | Auteur du commentaire | { "id": "57dbe334c3eaf116f88eca27", "name": "Jean Dupont" }
+date | Date du commentaire | "2016-09-19T19:30:26.037Z"
+content | Contenu du commentaire | "Très bel endroit"
+
+#### Exemple
+
+```sh
+$ curl -X POST -H "Content-Type: application/json" \
+    -d '{"content": "Très bel endroit"}' \
+    https://api.participamap.org/places/57dbe334c3eaf116f88e0318/comments
+```
+
+```json
+{
+  "author": {
+    "id": "57dbe334c3eaf116f88eca27",
+    "name": "Jean Dupont"
+  },
+  "date": "2016-09-19T19:30:26.037Z",
+  "content": "Très bel endroit"
+}
+```
+
+### Images d’un lieu
+
+#### Nom de la requête
+
+`getPictures`
+
+#### Description
+
+Récupère les images d’un lieu.
+
+#### Point d’accès
+
+Méthode | Chemin | autorisation
+:------:|:------:|:-----------:
+GET | /places/{id}/pictures | non requis
+
+#### Paramètres de chemin
+
+Nom | Description | Exemple
+----|-------------|--------
+id | Identifiant du lieu | 57dbe334c3eaf116f88e0318
+
+#### Paramètres de requête
+
+Nom | Description | Exemple | Absence
+----|-------------|---------|--------
+page | Numéro de page | 3 | 1
+n | Nombre d’images par page | 12 | 12 si `page` est fixé, infini sinon
+
+#### Charge
+
+*Néant*
+
+#### Réponse
+
+Liste de liens vers des images :
+
+Attribut | Description | Exemple
+---------|-------------|--------
+author | Auteur de la photo | { "id": "57dbe334c3eaf116f88eca27", "name": "Jean Dupont" }
+date | Date de mise en ligne | "2016-09-19T19:30:26.037Z"
+link | Lien vers la photo | "https://photos.participamap.org/83ca8f82.jpg"
+
+#### Exemple
+
+```sh
+$ curl https://api.participamap.org/places/57dbe334c3eaf116f88e0318/pitcures?page=1
+```
+
+```json
+[
+  {
+    "author": {
+      "id": "57dbe334c3eaf116f88eca27",
+      "name": "Jean Dupont"
+    },
+    "date": "2016-09-19T19:30:45.173Z",
+    "link": "https://photos.participamap.org/83ca8f82.jpg"
+  }
+]
 ```
