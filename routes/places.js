@@ -271,6 +271,14 @@ function createPlace(req, res, next) {
 
   place.save(function onPlaceSaved(error, newPlace) {
     if(error) return next(error);
+
+    // Remove unwanted info
+    newPlace.__v = undefined;
+    newPlace.comments = undefined;
+    newPlace.pictures = undefined;
+    newPlace.documents = undefined;
+    newPlace.votes = undefined;
+
     res.status(201).json(newPlace);
   }); 
 }
