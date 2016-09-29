@@ -2,8 +2,11 @@ var express = require('express');
 var mongoose = require('mongoose');
 var router = express.Router();
 
+var config = require('../config.json');
+
 var Checks = require('../modules/checks');
 var Place = require('../models/place');
+var Pending = require('../models/pending');
 
 router.param('id', Checks.isValidObjectId);
 router.param('id', getPlace);
@@ -269,18 +272,38 @@ function getPlaceInfo(req, res, next) {
 function createPlace(req, res, next) {
   var place = new Place(req.body);
 
-  place.save(function onPlaceSaved(error, newPlace) {
-    if(error) return next(error);
+  if (!req.body.setHeaderPhoto) {
+    place.save(function onPlaceSaved(error, newPlace) {
+      if (error) return next(error);
 
-    // Remove unwanted info
-    newPlace.__v = undefined;
-    newPlace.comments = undefined;
-    newPlace.pictures = undefined;
-    newPlace.documents = undefined;
-    newPlace.votes = undefined;
+      // Remove unwanted info
+      newPlace.__v = undefined;
+      newPlace.comments = undefined;
+      newPlace.pictures = undefined;
+      newPlace.documents = undefined;
+      newPlace.votes = undefined;
 
-    res.status(201).json(newPlace);
-  }); 
+      res.status(201).json(newPlace);
+    });
+  }
+  else { 
+    place.validate(function onPlaceValidated(error) {
+      if (error) return next(error);
+
+      var pending = new Pending({ content: place });
+      pending.save(sendUploadURL);
+    });
+  }
+
+  function sendUploadURL(error, pending) {
+    if (error) return next(error);
+
+    var uploadURL = config.serverURL + '/upload/' + pending._id;
+    res.redirect(204, uploadURL);
+
+    // TODO ailleurs: gérer la requête vers ce lien de mise en ligne
+    // TODO ailleurs: supprimer le Pending s’il est trop vieux
+  }
 }
 
 
