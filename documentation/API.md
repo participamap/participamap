@@ -13,7 +13,8 @@
     * [Modification d’un lieu](#modification-dun-lieu)
     * [Suppression d’un lieu](#suppression-dun-lieu)
     * [Commentaires d’un lieu](#commentaires-dun-lieu)
-    * [Créer un commentaire](#créer-un-commentaire)
+    * [Création d’un commentaire](#création-dun-commentaire)
+    * [Suppression d’un commentaire](#suppression-dun-commentaire)
     * [Images d’un lieu](#images-dun-lieu)
 
 ## Informations générales
@@ -463,7 +464,7 @@ Liste de commentaires :
 
 Attribut | Description | Exemple
 ---------|-------------|--------
-_id | Identifiant du commentaire | "57dbe334c3eaf116f93e2cad"
+_id | Identifiant du commentaire | 162
 author | Auteur du commentaire | { "id": "57dbe334c3eaf116f88eca27", "name": "Jean Dupont" }
 date | Date du commentaire | "2016-09-19T19:30:26.037Z"
 content | Contenu du commentaire | "Très bel endroit"
@@ -477,7 +478,7 @@ $ curl https://api.participamap.org/places/57dbe334c3eaf116f88e0318/comments?pag
 ```json
 [
   {
-    "_id": "57dbe334c3eaf116f93e2cad",
+    "_id": 162,
     "author": {
       "id": "57dbe334c3eaf116f88eca27",
       "name": "Jean Dupont"
@@ -486,7 +487,7 @@ $ curl https://api.participamap.org/places/57dbe334c3eaf116f88e0318/comments?pag
     "content": "Très bel endroit"
   },
   {
-    "_id": "57dbe334c3eaf116f93e2cae",
+    "_id": 163,
     "author": {
       "id": "57dbe334c3eaf116f88eca2c",
       "name": "Alexis de caen"
@@ -497,7 +498,7 @@ $ curl https://api.participamap.org/places/57dbe334c3eaf116f88e0318/comments?pag
 ]
 ```
 
-### Créer un commentaire
+### Création d’un commentaire
 
 #### Nom de la requête
 
@@ -537,7 +538,7 @@ Un commentaire :
 
 Attribut | Description | Exemple
 ---------|-------------|--------
-_id | Identifiant du commentaire | "57dbe334c3eaf116f93e2cad"
+_id | Identifiant du commentaire | 162
 author | Auteur du commentaire | { "id": "57dbe334c3eaf116f88eca27", "name": "Jean Dupont" }
 date | Date du commentaire | "2016-09-19T19:30:26.037Z"
 content | Contenu du commentaire | "Très bel endroit"
@@ -552,7 +553,7 @@ $ curl -X POST -H "Content-Type: application/json" \
 
 ```json
 {
-  "_id": "57dbe334c3eaf116f93e2cad",
+  "_id": 162,
   "author": {
     "id": "57dbe334c3eaf116f88eca27",
     "name": "Jean Dupont"
@@ -560,6 +561,46 @@ $ curl -X POST -H "Content-Type: application/json" \
   "date": "2016-09-19T19:30:26.037Z",
   "content": "Très bel endroit"
 }
+```
+
+### Suppression d’un commentaire
+
+#### Nom de la requête
+
+`deleteComment`
+
+#### Description
+
+Supprime un commentaire.
+
+#### Point d’accès
+
+Méthode | Chemin | autorisation
+:------:|:------:|:-----------:
+DELETE | /places/{id}/comments/{comment_id} | modérateur
+
+#### Paramètres de chemin
+
+Nom | Description | Exemple
+----|-------------|--------
+id | Identifiant du lieu | 57dbe334c3eaf116f88e0318
+
+#### Paramètres de requête
+
+*Néant*
+
+#### Charge
+
+*Néant*
+
+#### Réponse
+
+`HTTP/1.1 204 No Content`
+
+#### Exemple
+
+```sh
+$ curl -X DELETE https://api.participamap.org/places/57dbe334c3eaf116f88e0318/comments/162
 ```
 
 ### Images d’un lieu
@@ -601,7 +642,7 @@ Liste de liens vers des images :
 
 Attribut | Description | Exemple
 ---------|-------------|--------
-_id | Identifiant de l’image | "57dbe334c3eaf116f93e2cad",
+_id | Identifiant de l’image | 2127
 author | Auteur de la photo | { "id": "57dbe334c3eaf116f88eca27", "name": "Jean Dupont" }
 date | Date de mise en ligne | "2016-09-19T19:30:26.037Z"
 link | Lien vers la photo | "https://photos.participamap.org/83ca8f82.jpg"
@@ -615,7 +656,7 @@ $ curl https://api.participamap.org/places/57dbe334c3eaf116f88e0318/pitcures?pag
 ```json
 [
   {
-    "_id": "57dbe334c3eaf116f93e2cad",
+    "_id": 2127,
     "author": {
       "id": "57dbe334c3eaf116f88eca27",
       "name": "Jean Dupont"
