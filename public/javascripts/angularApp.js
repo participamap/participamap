@@ -59,7 +59,8 @@ app.factory('Place',['$http', function($http){
   };
 
   o.getAll = function(){
-    return $http.get('/places').success(function(data){
+    return $http.get('places').success(function(data){
+      console.log(data);
       angular.copy(data,o.places);
     });
   };
@@ -68,10 +69,9 @@ app.factory('Place',['$http', function($http){
       o.places.push(data);
     });
   };
+
   return o;
 }]);
-
-
 
 app.config(
   function($interpolateProvider,$stateProvider,$urlRouterProvider) {

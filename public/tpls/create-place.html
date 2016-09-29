@@ -2,6 +2,7 @@
     <div class="col-md-9">
         <div class="container">
             <div class="col-md-5">
+                <h2>Veuillez remplir les informations ci-dessus: </h2>
                 <form name="information" ng-submit="saveLocation()">
                     <uib-tabset active="activeForm">
                         <uib-tab index="0" heading="Basic Info">
@@ -13,10 +14,10 @@
                                     <input type="text" class="form-control" placeholder="Nom de Location" required ng-model="centerP.title">
                                     <br/>
                                     <label>Latitude</label>
-                                    <input type="text" class="form-control" required ng-model="centerP.location.lat">
+                                    <input type="text" class="form-control" required ng-model="centerP.lat">
                                     <br/>
                                     <label>Longitude</label>
-                                    <input type="text" class="form-control" required ng-model="centerP.location.lon">
+                                    <input type="text" class="form-control" required ng-model="centerP.lon">
                                     <br/>
                                 </div>
                             </ng-form>
@@ -27,20 +28,35 @@
                             <textarea class="form-control" required ng-model="centerP.description">
                             </textarea>
                         </uib-tab>
-
                     </uib-tabset>
-
+                    <button class="btn btn-danger" type="submit">Submit</button>
                 </form>
             </div>
             <div class="container">
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-7">
                         <h2>MAP</h2>
+
+                        <style type="text/css">
+                            #openlayerFrame{
+                                border: darkseagreen 5px solid;
+                            }
+                        </style>
+
+                        <openlayers id="openlayerFrame" ol-center="centerP"  height="300px">
+                            <ol-marker ng-repeat="mark in domeLocations" name="mark.title" lat="mark.location.latitude" lon="mark.location.longitude"></ol-marker>
+                        </openlayers>
+
+                        <button class="btn btn-block" ng-click="centerP.autodiscover=true;">Discover Position</button>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-4">
-                        <h2>Comments</h2>
+
+                    <div class="col-md-5">
+                        <h2>DEJA CREE</h2>
+                        <div ng-repeat="eachL in domeLocations">
+                            <a ng-click="centerP.lat = eachL.location.latitude; centerP.lon = eachL.location.longitude "> Location de - {[{eachL.title}]}</a>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -3,27 +3,55 @@
  */
 
 
-app.controller('CreatePlaceCtrl',['$scope','$location', '$timeout','Place','$http', function ($scope,$rootScope, $location, Place, $state, $http) {
-  $scope.centerP = {
-    title: '',
-    location:{
-      lat: 0,
-      lon: 0
+app.controller('CreatePlaceCtrl',['$scope','$location', '$timeout','Place','$http', function ($scope,$location,$rootScope,Place, $timeout ,$state, $http) {
+  angular.extend($scope, {
+
+    defatults: {
+      events: {
+        map: ['singleclick']
+      }
     },
-    zoom: 17,
-    description: '',
-    autodiscover: true,
-    centerUrlHash: true
-  };
-
-  var promise;
-
-  $scope.$on("centerUrlHash", function (event, centerHash) {
-    $location.search({c: centerHash});
+    markers: []
   });
 
-  $scope.domeLocations = [];
+  $scope.$on('openlayers.map.singleclick', function (event, data) {
+    var prj = ol.proj.transform([data.coord[0], data.coord[1]], data.projection, 'EPSG:4326').map(function (c) {
+      return c.toFixed(4);
+    });
 
+    $scope.$apply(function () {
+      console.log(data);
+      $scope.markers.push({
+        lat: data.coord[1],
+        lon: data.coord[0],
+        projection: data.projection,
+        label: {
+          message: "Lat: " + prj[1] + ", Lon: " + prj[0],
+          show: true,
+          showOnMouseOver: true
+        }
+      });
+    });
+  });
+
+
+
+  $scope.centerP = {
+    title: '',
+    lat:49.181650423226046 ,
+    lon:-0.34701264804824783,
+    zoom:18,
+    centerUrlHash:true,
+    description: '',
+    autodiscover: false
+  };
+
+  $scope.domeLocations = Place.places;
+
+  var promise;
+  $scope.$on("centerUrlHash", function(event, centerHash) {
+    $location.search({ c: centerHash });
+  });
 
 
 
@@ -34,14 +62,21 @@ app.controller('CreatePlaceCtrl',['$scope','$location', '$timeout','Place','$htt
       Place.create({
         title: $scope.centerP.title,
         author:$scope.currentUser,
-        latitude: $scope.centerP.lat,
-        longitude: $scope.centerP.lon,
-        zoom : $scope.centerP.zoom,
+        location:{
+          latitude: $scope.centerP.lat,
+          longitude: $scope.centerP.lon
+        },
         description: $scope.centerP.description,
         isVerified : false
         //commentaire: [{author:'anonyme', body: $scope.centerP.commentaire}],
       });
     }
+  $scope.jumpToAnother = function (eachL){
+    centerP.title = eachL.title;
+    centerP.lat = eachL.location.latitude;
+    centerP.lon = eachL.location.longitude;
+    centerP.description = eachL.description;
+  }
 
   };
 

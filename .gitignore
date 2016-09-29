@@ -49,6 +49,7 @@ jspm_packages
 .node_repl_history
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 # Configuration
 config.json
 
@@ -65,6 +66,8 @@ public/libs
 
 
 =======
+=======
+>>>>>>> origin/master
 
 #######
 # vim #
@@ -83,4 +86,8 @@ Session.vim
 
 # auto-generated tag files
 tags
+<<<<<<< HEAD
 >>>>>>> 378a35371d14632f8325689adc61d785f9e90837
+=======
+>>>>>>> origin/master
+databaseSample/participamap/
