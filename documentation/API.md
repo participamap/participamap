@@ -291,7 +291,7 @@ title | Titre du lieu | "Le Dôme"
 \*\* Pour ajouter une photo d’en-tête, la procédure est la suivante :
 
 1. créer le lieu avec le champ `setHeaderPhoto = true` ;
-2. le serveur répond avec un statut HTTP `100 Continue` et une en-tête `Location` précisant une adresse de mise en ligne ;
+2. le serveur répond avec un statut HTTP `100 Continue` et un en-tête `Location` précisant une adresse de mise en ligne ;
 3. envoyer la photo au serveur avec une requête `PUT` vers l’adresse précisée par la réponse précédente, en précisant bien le bon `Content-Type` ;
 4. le serveur répond avec le lieu créé si tout s’est bien passé.
 
@@ -433,7 +433,7 @@ isVerified | État de vérification du lieu | true
 \* Pour changer la photo d’en-tête, la procédure est la suivante :
 
 1. modifier le lieu avec le champ `setHeaderPhoto = true` ;
-2. le serveur répond avec un statut HTTP `100 Continue` et une en-tête `Location` précisant une adresse de mise en ligne ;
+2. le serveur répond avec un statut HTTP `100 Continue` et un en-tête `Location` précisant une adresse de mise en ligne ;
 3. envoyer la photo au serveur avec une requête `PUT` vers l’adresse précisée par la réponse précédente, en précisant bien le bon `Content-Type` ;
 4. le serveur répond avec le lieu créé si tout s’est bien passé.
 
