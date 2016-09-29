@@ -9,7 +9,7 @@ router.param('id', Checks.isValidObjectId);
 router.param('id', getPlace);
 
 router.get('/', Checks.db, getPlacesHeaders);
-router.get('/:id', Checks.db, getPlaceInfo);
+router.get('/:id', Checks.db, Checks.setAdminFlag, getPlaceInfo);
 router.post('/', Checks.db, createPlace);
 router.delete('/:id', Checks.db, deletePlace);
 
@@ -130,17 +130,139 @@ function getPlacesHeaders(req, res, next) {
 
 
 function getPlaceInfo(req, res, next) {
-  place = req.place;
+  var place = req.place;
   
-  if (!req.query.admin) {
-    delete place.proposedBy;
-    delete place.manager;
-    delete place.moderateComments;
-    delete place.moderateDocuments;
-    delete place.moderatePictures; 
+  // TODO: À réécrire de façon plus jolie (gestion des erreurs avant action)
+  if (!req.query.admin || req.query.admin === 'false') {
+    // Remove admin-olny info
+    place.proposedBy = undefined;
+    place.manager = undefined;
+    place.moderateComments = undefined;
+    place.moderateDocuments = undefined;
+    place.moderatePictures = undefined; 
+  }
+  else if (req.query.admin === 'true') {
+    // Check if admin flag is set by Checks.setAdminFlag
+    if (!req.admin) {
+      var err = new Error('Unauthorized');
+      err.status = 401;
+      return next(err);
+    }
+  }
+  else {
+    var err = new Error('Bad request: admin must be true or false');
+    err.status = 400;
+    return next(err);
+  }
+
+  // TODO: Réécrire pour éviter la redondance de code
+
+  if (req.query.comms) {
+    var nComments = parseInt(req.query.comms);
+
+    if (isNaN(nComments)) {
+      var err = new Error('Bad request: comms must be an integer');
+      err.status = 400;
+      return next(err);
+    }
+
+    if (nComments <= 0) {
+      var err = new Error('Bad request: comms must be strictly positive');
+      err.status = 400;
+      return next(err);
+    }
+
+    var projection = {
+      _id: true,
+      // Note: $slice: nb ou $slice: [skip, limit]
+      comments: { $slice: nComments }
+    };
+  }
+
+  if (req.query.pics) {
+    var nPictures = parseInt(req.query.pics);
+
+    if (isNaN(nPictures)) {
+      var err = new Error('Bad request: pics must be an integer');
+      err.status = 400;
+      return next(err);
+    }
+
+    if (nPictures <= 0) {
+      var err = new Error('Bad request: pics must be strictly positive');
+      err.status = 400;
+      return next(err);
+    }
+    
+    if (!projection)
+      var projection = { _id: true };
+
+    projection.pictures = { $slice: nPictures };
+  }
+
+  if (req.query.docs) {
+    var nDocuments = parseInt(req.query.docs);
+
+    if (isNaN(nDocuments)) {
+      var err = new Error('Bad request: docs must be an integer');
+      err.status = 400;
+      return next(err);
+    }
+
+    if (nDocuments <= 0) {
+      var err = new Error('Bad request: docs must be strictly positive');
+      err.status = 400;
+      return next(err);
+    }
+    
+    if (!projection)
+      var projection = { _id: true };
+
+    projection.documents = { $slice: nDocuments };
+  }
+
+  if (req.query.votes) {
+    var nVotes = parseInt(req.query.votes);
+
+    if (isNaN(nVotes)) {
+      var err = new Error('Bad request: votes must be an integer');
+      err.status = 400;
+      return next(err);
+    }
+
+    if (nVotes <= 0) {
+      var err = new Error('Bad request: votes must be strictly positive');
+      err.status = 400;
+      return next(err);
+    }
+    
+    if (!projection)
+      var projection = { _id: true };
+
+    projection.votes = { $slice: nVotes };
   }
   
-  res.json(place); 
+  if (!projection)
+    return res.json(place); 
+  
+  // Get additional info in the database
+  Place.findById(place._id, projection, function onPlaceInfoGot(error, info) {
+    if (error) return next(error);
+
+    if (info.comments && info.comments.length !== 0)
+      place.comments = info.comments;
+
+    if (info.pictures && info.pictures.length !== 0)
+      place.pictures = info.pictures;
+
+    if (info.documents && info.documents.length !== 0)
+      place.documents = info.documents;
+
+    if (info.votes && info.votes.length !== 0)
+      place.votes = info.votes;
+
+    res.json(place);
+  });
 }
 
 
