@@ -21,8 +21,8 @@ var placeSchema = new Schema({
   endDate: Date,
   comments: [commentSchema],
   pictures: [pictureSchema],
-  // TODO: documents
-  // TODO: votes
+  documents: [], // TODO: documentSchema
+  votes: [String],
   moderateComments: Boolean,
   moderatePictures: Boolean,
   moderateDocuments: Boolean,
