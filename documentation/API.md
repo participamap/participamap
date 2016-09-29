@@ -555,7 +555,7 @@ Liste de commentaires :
 
 Attribut | Description | Exemple
 ---------|-------------|--------
-_id | Identifiant du commentaire | 162
+_id | Identifiant du commentaire | "57ed7489c6358c1278552be5"
 author | Auteur du commentaire | { "id": "57dbe334c3eaf116f88eca27", "name": "Jean Dupont" }
 date | Date du commentaire | "2016-09-19T19:30:26.037Z"
 content | Contenu du commentaire | "Très bel endroit"
@@ -578,7 +578,7 @@ Content-Type: application/json; charset=utf-8
 ```json
 [
   {
-    "_id": 162,
+    "_id": "57ed7489c6358c1278552be5",
     "author": {
       "id": "57dbe334c3eaf116f88eca27",
       "name": "Jean Dupont"
@@ -587,7 +587,7 @@ Content-Type: application/json; charset=utf-8
     "content": "Très bel endroit"
   },
   {
-    "_id": 163,
+    "_id": "57ed7489c6358c1278552be6",
     "author": {
       "id": "57dbe334c3eaf116f88eca2c",
       "name": "Alexis de caen"
@@ -638,7 +638,7 @@ Un commentaire :
 
 Attribut | Description | Exemple
 ---------|-------------|--------
-_id | Identifiant du commentaire | 162
+_id | Identifiant du commentaire | "57ed7489c6358c1278552be5"
 author | Auteur du commentaire | { "id": "57dbe334c3eaf116f88eca27", "name": "Jean Dupont" }
 date | Date du commentaire | "2016-09-19T19:30:26.037Z"
 content | Contenu du commentaire | "Très bel endroit"
@@ -662,7 +662,7 @@ Content-Type: application/json; charset=utf-8
 
 ```json
 {
-  "_id": 162,
+  "_id": "57ed7489c6358c1278552be5",
   "author": {
     "id": "57dbe334c3eaf116f88eca27",
     "name": "Jean Dupont"
