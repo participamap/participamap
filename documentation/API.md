@@ -121,7 +121,6 @@ Réponse :
 ```http
 HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-[...]
 ```
 
 ```json
@@ -225,7 +224,6 @@ Réponse :
 ```http
 HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-[...]
 ```
 
 ```json
@@ -350,7 +348,6 @@ Réponse :
 ```http
 HTTP/1.1 201 Created
 Content-Type: application/json; charset=utf-8
-[...]
 ```
 
 ```json
@@ -455,7 +452,6 @@ Comme il n’y a pas de changement de photo d’en-tête, le serveur répond dir
 ```http
 HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-[...]
 ```
 
 ```json
@@ -577,7 +573,6 @@ Réponse :
 ```http
 HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-[...]
 ```
 
 ```json
@@ -663,7 +658,6 @@ Réponse :
 ```http
 HTTP/1.1 201 Created
 Content-Type: application/json; charset=utf-8
-[...]
 ```
 
 ```json
@@ -785,7 +779,6 @@ Réponse :
 ```http
 HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-[...]
 ```
 
 ```json
