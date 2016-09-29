@@ -27,7 +27,7 @@ L’API utilise le protocole HTTP. Les charges des requêtes doivent être pass�
 
 Si un appel API est réussi, le service web répond avec :
 
-* un statut HTTP 200 (OK), HTTP 201 (Created) ou HTTP 204 (No Content),
+* un statut HTTP `200 OK`, `201 Created` ou `204 No Content`,
 * une représentation JSON de l’entité demandée, créée ou modifiée le cas échéant.
 
 ### Gestion des erreurs
@@ -37,17 +37,27 @@ Si une erreur a lieu, le service web répond avec :
 * un statut HTTP correspondant à l’erreur,
 * un objet JSON `error` :
 
-        {
-            "error": {
-                "code": <code>,
-                "message": <message>,
-                "err": <err>
-            }
-        }
+    ```json
+    {
+      "error": {
+        "code": <code>,
+        "message": <message>,
+        "err": <err>
+      }
+    }
+    ```
     
     où `<err>` est :
     * un objet vide en mode production
     * l’erreur en mode débug
+
+### Exemples
+
+Chaque requête est détaillée avec un exemple montrant :
+
+* la requête exécutée avec `curl`,
+* les en-têtes HTTP importants de la réponse,
+* le contenu de la réponse en JSON le cas échéant.
 
 ## Lieux
 
@@ -96,11 +106,22 @@ Attribut | Description | Exemple
 _id | Identifiant du lieu | "57dbe334c3eaf116f88e0318"
 location | Localisation du lieu | { "latitude": 49.18165, "longitude": -0.34709 }
 title | Titre du lieu | "Le Dôme"
+*headerPhoto* | Photo d’en-tête | "https://photos.participamap.org/83ca8f82.jpg"
 
 #### Exemple
 
+Requête :
+
 ```sh
 $ curl https://api.participamap.org/places?when=now
+```
+
+Réponse :
+
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+[...]
 ```
 
 ```json
@@ -111,7 +132,8 @@ $ curl https://api.participamap.org/places?when=now
       "latitude": 49.18165,
       "longitude": -0.34709
     },
-    "title": "Le Dôme"
+    "title": "Le Dôme",
+    "headerPhoto": "https://photos.participamap.org/83ca8f82.jpg"
   },
   {
     "_id": "57dbe738c3eaf116f88e0319",
@@ -119,7 +141,8 @@ $ curl https://api.participamap.org/places?when=now
       "latitude": 49.21272,
       "longitude": -0.36847
     },
-    "title": "Salle 417"
+    "title": "Salle 417",
+    "headerPhoto": "https://photos.participamap.org/83ca8f9d.jpg"
   }     
 ]
 ```
@@ -172,6 +195,7 @@ title | Titre du lieu | "Le Dôme"
 isVerified | État de vérification du lieu | true
 *proposedBy*\* | Utilisateur ayant proposé le lieu | { "id": "57dbe334c3eaf116f88eca27", "name": "Jean Dupont" }
 *type* | Type du lieu | 0
+*headerPhoto* | Photo d’en-tête | "https://photos.participamap.org/83ca8f82.jpg"
 *description* | Description | "Maison de la Recherche et de l’Imagination"
 *startDate* | Date de création | "2015-01-01T13:00:00.000Z"
 *endDate* | Date de suppression | "2016-09-09T08:00:00.000Z"
@@ -179,7 +203,6 @@ isVerified | État de vérification du lieu | true
 *pictures* | Photos | *Liste de photos*
 *documents* | Documents | *Liste de documents*
 *votes* | Votes | *Liste de votes*
-*manager*\* | Gérant du lieu | { "id": "57dbe334c3eaf116f8a33e7", "name": "Gilles Dumesnil" }
 *moderateComments*\* | Modération des commentaires | true
 *moderatePictures*\* | Modération des photos | true
 *moderateDocuments*\* | Modération des documents | true
@@ -191,8 +214,18 @@ isVerified | État de vérification du lieu | true
 
 #### Exemple
 
+Requête :
+
 ```sh
 $ curl https://api.participamap.org/places/57dbe334c3eaf116f88e0318
+```
+
+Réponse :
+
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+[...]
 ```
 
 ```json
@@ -204,6 +237,7 @@ $ curl https://api.participamap.org/places/57dbe334c3eaf116f88e0318
   },
   "title": "Le Dôme",
   "isVerified": true,
+  "headerPhoto": "https://photos.participamap.org/83ca8f82.jpg",
   "description": "Maison de la Recherche et de l’Imagination",
   "startDate": "2015-01-01T13:00:00.000Z"
 }
@@ -243,10 +277,10 @@ location | Localisation du lieu | { "latitude": 49.18165, "longitude": -0.34709 
 title | Titre du lieu | "Le Dôme"
 *isVerified*\* | État de vérification du lieu | true
 *type* | Type du lieu | 0
+*setHeaderPhoto*\*\* | Chargement d’une photo d’en-tête | true
 *description* | Description | "Maison de la Recherche et de l’Imagination"
 *startDate* | Date de création | "2015-01-01T13:00:00.000Z"
 *endDate* | Date de suppression | "2016-09-09T08:00:00.000Z"
-*manager*\* | Gérant du lieu | "57dbe334c3eaf116f8a33e7"
 *moderateComments*\* | Modération des commentaires | true
 *moderatePictures*\* | Modération des photos | true
 *moderateDocuments*\* | Modération des documents | true
@@ -255,6 +289,13 @@ title | Titre du lieu | "Le Dôme"
 *denyDocuments*\* | Interdiction des documents | true
 
 \* N’est paramétrable qu’avec un niveau modérateur.
+
+\*\* Pour ajouter une photo d’en-tête, la procédure est la suivante :
+
+1. créer le lieu avec le champ `setHeaderPhoto = true` ;
+2. le serveur répond avec un statut HTTP `100 Continue` et une en-tête `Location` précisant une adresse de mise en ligne ;
+3. envoyer la photo au serveur avec une requête `PUT` vers l’adresse précisée par la réponse précédente, en précisant bien le bon `Content-Type` ;
+4. le serveur répond avec le lieu créé si tout s’est bien passé.
 
 #### Réponse
 
@@ -268,10 +309,10 @@ title | Titre du lieu | "Le Dôme"
 isVerified | État de vérification du lieu | true
 *proposedBy* | Utilisateur ayant proposé le lieu | { "id": "57dbe334c3eaf116f88eca27", "name": "Jean Dupont" }
 *type* | Type du lieu | 0
+*headerPhoto* | Photo d’en-tête | "https://photos.participamap.org/83ca8f82.jpg"
 *description* | Description | "Maison de la Recherche et de l’Imagination"
 *startDate* | Date de création | "2015-01-01T13:00:00.000Z"
 *endDate* | Date de suppression | "2016-09-09T08:00:00.000Z"
-*manager* | Gérant du lieu | "57dbe334c3eaf116f8a33e7"
 *moderateComments* | Modération des commentaires | true
 *moderatePictures* | Modération des photos | true
 *moderateDocuments* | Modération des documents | true
@@ -281,10 +322,35 @@ isVerified | État de vérification du lieu | true
 
 #### Exemple
 
+Requête :
+
 ```sh
 $ curl -X POST -H "Content-Type: application/json" \
-    -d '{"location":{"latitude":49.18165,"longitude":-0.34709},"title":"Le Dôme"}' \
+    -d '{"location":{"latitude":49.18165,"longitude":-0.34709},"title":"Le Dôme","setHeaderPhoto":true}' \
     https://api.participamap.org/places
+```
+
+Comme `setHeaderPhoto = true`, le serveur répond avec :
+
+```http
+HTTP/1.1 100 Continue
+Location: https://api.participamap.org/upload/83ca8f82
+Content-Length: 0
+```
+
+On poursuit alors avec la requête suivante :
+
+```sh
+$ curl -X PUT -H "Content-Type:image/jpeg" --data-binary "@le-dome.jpg" \
+    https://api.participamap.org/upload/83ca8f82
+```
+
+Réponse :
+
+```http
+HTTP/1.1 201 Created
+Content-Type: application/json; charset=utf-8
+[...]
 ```
 
 ```json
@@ -294,7 +360,8 @@ $ curl -X POST -H "Content-Type: application/json" \
     "latitude": 49.18165,
     "longitude": -0.34709
   },
-  "title": "Le Dôme"
+  "title": "Le Dôme",
+  "headerPhoto": "https://photos.participamap.org/83ca8f82.jpg"
 }
 ```
 
@@ -332,10 +399,10 @@ Attribut | Description | Exemple
 *title* | Titre du lieu | "Le Dôme"
 *isVerified* | État de vérification du lieu | true
 *type* | Type du lieu | 0
+*setHeaderPhoto*\* | Chargement d’une photo d’en-tête | true
 *description* | Description | "Maison de la Recherche et de l’Imagination"
 *startDate* | Date de création | "2015-01-01T13:00:00.000Z"
 *endDate* | Date de suppression | "2016-09-09T08:00:00.000Z"
-*manager* | Gérant du lieu | "57dbe334c3eaf116f8a33e7"
 *moderateComments* | Modération des commentaires | true
 *moderatePictures* | Modération des photos | true
 *moderateDocuments* | Modération des documents | true
@@ -355,10 +422,10 @@ title | Titre du lieu | "Le Dôme"
 isVerified | État de vérification du lieu | true
 *proposedBy* | Utilisateur ayant proposé le lieu | { "id": "57dbe334c3eaf116f88eca27", "name": "Jean Dupont" }
 *type* | Type du lieu | 0
+*headerPhoto* | Photo d’en-tête | "https://photos.participamap.org/83ca8f82.jpg"
 *description* | Description | "Maison de la Recherche et de l’Imagination"
 *startDate* | Date de création | "2015-01-01T13:00:00.000Z"
 *endDate* | Date de suppression | "2016-09-09T08:00:00.000Z"
-*manager* | Gérant du lieu | "57dbe334c3eaf116f8a33e7"
 *moderateComments* | Modération des commentaires | true
 *moderatePictures* | Modération des photos | true
 *moderateDocuments* | Modération des documents | true
@@ -366,12 +433,29 @@ isVerified | État de vérification du lieu | true
 *denyPictures* | Interdiction des photos | true
 *denyDocuments* | Interdiction des documents | true
 
+\* Pour changer la photo d’en-tête, la procédure est la suivante :
+
+1. modifier le lieu avec le champ `setHeaderPhoto = true` ;
+2. le serveur répond avec un statut HTTP `100 Continue` et une en-tête `Location` précisant une adresse de mise en ligne ;
+3. envoyer la photo au serveur avec une requête `PUT` vers l’adresse précisée par la réponse précédente, en précisant bien le bon `Content-Type` ;
+4. le serveur répond avec le lieu créé si tout s’est bien passé.
+
 #### Exemple
+
+Requête :
 
 ```sh
 $ curl -X PUT -H "Content-Type: application/json" \
     -d '{"location":{"latitude":49.18165,"longitude":-0.34709},"title":"Le Dôme modifié"}' \
     https://api.participamap.org/places/57dbe334c3eaf116f88e0318
+```
+
+Comme il n’y a pas de changement de photo d’en-tête, le serveur répond directement :
+
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+[...]
 ```
 
 ```json
@@ -381,7 +465,8 @@ $ curl -X PUT -H "Content-Type: application/json" \
     "latitude": 49.18165,
     "longitude": -0.34709
   },
-  "title": "Le Dôme modifié"
+  "title": "Le Dôme modifié",
+  "headerPhoto": "https://photos.participamap.org/83ca8f82.jpg"
 }
 ```
 
@@ -417,12 +502,22 @@ id | Identifiant du lieu | 57dbe334c3eaf116f88e0318
 
 #### Réponse
 
-`HTTP/1.1 204 No Content`
+```http
+HTTP/1.1 204 No Content
+```
 
 #### Exemple
 
+Requête :
+
 ```sh
 $ curl -X DELETE https://api.participamap.org/places/57dbe334c3eaf116f88e0318
+```
+
+Réponse :
+
+```http
+HTTP/1.1 204 No Content
 ```
 
 ### Commentaires d’un lieu
@@ -471,8 +566,18 @@ content | Contenu du commentaire | "Très bel endroit"
 
 #### Exemple
 
+Requête :
+
 ```sh
 $ curl https://api.participamap.org/places/57dbe334c3eaf116f88e0318/comments?page=1&n=2
+```
+
+Réponse :
+
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+[...]
 ```
 
 ```json
@@ -545,10 +650,20 @@ content | Contenu du commentaire | "Très bel endroit"
 
 #### Exemple
 
+Requête :
+
 ```sh
 $ curl -X POST -H "Content-Type: application/json" \
     -d '{"content": "Très bel endroit"}' \
     https://api.participamap.org/places/57dbe334c3eaf116f88e0318/comments
+```
+
+Réponse :
+
+```http
+HTTP/1.1 201 Created
+Content-Type: application/json; charset=utf-8
+[...]
 ```
 
 ```json
@@ -595,12 +710,22 @@ id | Identifiant du lieu | 57dbe334c3eaf116f88e0318
 
 #### Réponse
 
-`HTTP/1.1 204 No Content`
+```http
+HTTP/1.1 204 No Content
+```
 
 #### Exemple
 
+Requête :
+
 ```sh
 $ curl -X DELETE https://api.participamap.org/places/57dbe334c3eaf116f88e0318/comments/162
+```
+
+Réponse :
+
+```http
+HTTP/1.1 204 No Content
 ```
 
 ### Images d’un lieu
@@ -649,8 +774,18 @@ link | Lien vers la photo | "https://photos.participamap.org/83ca8f82.jpg"
 
 #### Exemple
 
+Requête :
+
 ```sh
 $ curl https://api.participamap.org/places/57dbe334c3eaf116f88e0318/pitcures?page=1
+```
+
+Réponse :
+
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+[...]
 ```
 
 ```json
