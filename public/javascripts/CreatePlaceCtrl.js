@@ -53,6 +53,10 @@ app.controller('CreatePlaceCtrl',['$scope','$location', '$timeout','Place','$htt
     $location.search({ c: centerHash });
   });
 
+  $scope.delPlace = function(identity){
+    console.log("running controller deletePlace");
+    Place.delete(identity);
+  };
 
 
   $scope.saveLocation=function (){
@@ -71,13 +75,8 @@ app.controller('CreatePlaceCtrl',['$scope','$location', '$timeout','Place','$htt
         //commentaire: [{author:'anonyme', body: $scope.centerP.commentaire}],
       });
     }
-  $scope.jumpToAnother = function (eachL){
-    centerP.title = eachL.title;
-    centerP.lat = eachL.location.latitude;
-    centerP.lon = eachL.location.longitude;
-    centerP.description = eachL.description;
   }
 
-  };
+
 
 }]);

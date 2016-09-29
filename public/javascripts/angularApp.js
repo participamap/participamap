@@ -60,7 +60,6 @@ app.factory('Place',['$http', function($http){
 
   o.getAll = function(){
     return $http.get('places').success(function(data){
-      console.log(data);
       angular.copy(data,o.places);
     });
   };
@@ -68,6 +67,19 @@ app.factory('Place',['$http', function($http){
     return $http.post('places',place).success(function(data){
       o.places.push(data);
     });
+  };
+
+  o.delete = function(identity){
+    return $http.delete('http://127.0.0.1:3000/places/'+identity.toString()).success(function(data){
+      console.log(o.places);
+      for (i=0;i < o.places.length;i++){
+        if (o.places[i]._id===identity.toString()) {
+          o.places.splice(i,1);
+          break;
+        }
+      }
+      console.log(o.places); // verifer and faire deep copy a faire!
+    })
   };
 
   return o;

@@ -56,6 +56,7 @@
                         <h2>DEJA CREE</h2>
                         <div ng-repeat="eachL in domeLocations">
                             <a ng-click="centerP.lat = eachL.location.latitude; centerP.lon = eachL.location.longitude "> Location de - {[{eachL.title}]}</a>
+                            <span class="glyphicon glyphicon-remove" ng-click="delPlace(eachL._id)"></span>
                         </div>
                     </div>
                 </div>
