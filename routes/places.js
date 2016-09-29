@@ -22,10 +22,10 @@ function getPlace(req, res, next, id) {
     isVerified: true,
     proposedBy: true,
     type: true,
+    headerPhoto: true,
     description: true,
     startDate: true,
     endDate: true,
-    manager: true,
     moderateComments: true,
     moderatePictures: true,
     moderateDocuments: true,
@@ -118,7 +118,8 @@ function getPlacesHeaders(req, res, next) {
   // Get only the header
   var projection = {
     location: true,
-    title: true
+    title: true,
+    headerPhoto: true
   };
 
   Place.find(filter, projection,
@@ -136,7 +137,6 @@ function getPlaceInfo(req, res, next) {
   if (!req.query.admin || req.query.admin === 'false') {
     // Remove admin-olny info
     place.proposedBy = undefined;
-    place.manager = undefined;
     place.moderateComments = undefined;
     place.moderateDocuments = undefined;
     place.moderatePictures = undefined; 
