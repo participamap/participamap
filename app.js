@@ -100,4 +100,4 @@ app.use(function errorHandler(err, req, res, next) {
 
 module.exports = app;
 
-/* vim: set ts=2 sw=2 et si : */
+/* vim: set ts=2 sw=2 et si colorcolumn=80 : */
