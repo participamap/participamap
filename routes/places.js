@@ -12,6 +12,7 @@ router.get('/', Checks.db, getPlacesHeaders);
 router.get('/:id', Checks.db, Checks.setAdminFlag, getPlaceInfo);
 router.post('/', Checks.db, createPlace);
 router.delete('/:id', Checks.db, deletePlace);
+router.get('/:id/comments', Checks.db, getComments);
 
 
 function getPlace(req, res, next, id) {
@@ -283,6 +284,58 @@ function deletePlace(req, res, next) {
   });
 }
 
+
+function getComments(req,res,next) {
+  var place = req.place;
+  var page = 1;
+  var n = 0;
+
+  if (req.query.page) {
+    page = parseInt(req.query.page)
+
+    if (isNaN(page)) {
+      var err = new Error('Bad Request: page must be an integer');
+      err.status = 400;
+      return next(err);
+    }
+
+    if (page <= 0) {
+      var err = new Error('Bad Request: page must be strictly positive');
+      err.status = 400;
+      return next(err);
+    }
+
+    n = 10;
+  }
+
+  if (req.query.n) {
+    n = parseInt(req.query.n);
+
+    if (isNaN(n)) {
+      var err = new Error('Bad Request: n must be an integer');
+      err.status = 400;
+      return next(err);
+    }
+
+    if (n <= 0) {
+      var err = new Error('Bad Request: n must be strictly positive');
+      err.status = 400;
+      return next(err);
+    }
+  }
+
+  var projection = { _id: true };
+
+  projection.comments = (n !== 0)
+    ? { $slice: [(page - 1) * n, n] }
+    : true;
+  
+  Place.findById(place._id, projection,
+    function returnComments(error, result) {
+      if (error) return next(error);
+      res.json(result.comments);
+    });
+}
 
 module.exports = router;
 
