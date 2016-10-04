@@ -15,14 +15,14 @@ var placeSchema = new Schema({
   isVerified: { type: Boolean, default: false, required: true },
   proposedBy: Schema.Types.ObjectId,
   type: Number, // TODO: Autre type ?
+  headerPhoto: String,
   description: String,
   startDate: { type: Date, default: Date.now },
   endDate: Date,
   comments: [commentSchema],
   pictures: [pictureSchema],
-  // TODO: documents
-  // TODO: votes
-  manager: Schema.Types.ObjectId,
+  documents: [], // TODO: documentSchema
+  votes: [String],
   moderateComments: Boolean,
   moderatePictures: Boolean,
   moderateDocuments: Boolean,
@@ -30,6 +30,24 @@ var placeSchema = new Schema({
   denyPictures: Boolean,
   denyDocuments: Boolean
 });
+
+/**
+ * Create a callback function
+ */
+placeSchema.statics.onSaved = function (res, next) {
+  return function (error, savedPlace) {
+    if (error) return next(error);
+
+    // Remove unwanted info
+    savedPlace.__v = undefined;
+    savedPlace.comments = undefined;
+    savedPlace.pictures = undefined;
+    savedPlace.documents = undefined;
+    savedPlace.votes = undefined;
+
+    res.status(201).json(savedPlace);
+  };
+};
 
 var Place = mongoose.model('Place', placeSchema);
 

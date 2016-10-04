@@ -2,8 +2,11 @@ var express = require('express');
 var mongoose = require('mongoose');
 var router = express.Router();
 
+var config = require('../config.json');
+
 var Checks = require('../modules/checks');
 var Place = require('../models/place');
+var PendingUpload = require('../models/pending_upload');
 
 router.param('id', Checks.isValidObjectId);
 router.param('id', getPlace);
@@ -23,10 +26,10 @@ function getPlace(req, res, next, id) {
     isVerified: true,
     proposedBy: true,
     type: true,
+    headerPhoto: true,
     description: true,
     startDate: true,
     endDate: true,
-    manager: true,
     moderateComments: true,
     moderatePictures: true,
     moderateDocuments: true,
@@ -61,7 +64,7 @@ function getPlacesHeaders(req, res, next) {
       : new Date(req.query.when);
 
     if (isNaN(date.valueOf())) {
-      var err = new Error('Bad request: invalid date');
+      var err = new Error('Bad Request: Invalid date');
       err.status = 400;
       return next(err);
     }
@@ -83,7 +86,7 @@ function getPlacesHeaders(req, res, next) {
     if (!(req.query.lat && req.query.long 
       && req.query.height && req.query.width))
     {
-      var err = new Error('Bad request: lat, long, height and width must be '
+      var err = new Error('Bad Request: lat, long, height and width must be '
         + 'set together');
       err.status = 400;
       return next(err);
@@ -95,7 +98,7 @@ function getPlacesHeaders(req, res, next) {
     var width = parseFloat(req.query.width);
 
     if (isNaN(latitude) || isNaN(longitude) || isNaN(height) || isNaN(width)) {
-      var err = new Error('Bad request: lat, long, height and width must be '
+      var err = new Error('Bad Request: lat, long, height and width must be '
         + 'numbers');
       err.status = 400;
       return next(err);
@@ -119,7 +122,8 @@ function getPlacesHeaders(req, res, next) {
   // Get only the header
   var projection = {
     location: true,
-    title: true
+    title: true,
+    headerPhoto: true
   };
 
   Place.find(filter, projection,
@@ -137,7 +141,6 @@ function getPlaceInfo(req, res, next) {
   if (!req.query.admin || req.query.admin === 'false') {
     // Remove admin-olny info
     place.proposedBy = undefined;
-    place.manager = undefined;
     place.moderateComments = undefined;
     place.moderateDocuments = undefined;
     place.moderatePictures = undefined; 
@@ -151,7 +154,7 @@ function getPlaceInfo(req, res, next) {
     }
   }
   else {
-    var err = new Error('Bad request: admin must be true or false');
+    var err = new Error('Bad Request: admin must be true or false');
     err.status = 400;
     return next(err);
   }
@@ -162,13 +165,13 @@ function getPlaceInfo(req, res, next) {
     var nComments = parseInt(req.query.comms);
 
     if (isNaN(nComments)) {
-      var err = new Error('Bad request: comms must be an integer');
+      var err = new Error('Bad Request: comms must be an integer');
       err.status = 400;
       return next(err);
     }
 
     if (nComments <= 0) {
-      var err = new Error('Bad request: comms must be strictly positive');
+      var err = new Error('Bad Request: comms must be strictly positive');
       err.status = 400;
       return next(err);
     }
@@ -184,13 +187,13 @@ function getPlaceInfo(req, res, next) {
     var nPictures = parseInt(req.query.pics);
 
     if (isNaN(nPictures)) {
-      var err = new Error('Bad request: pics must be an integer');
+      var err = new Error('Bad Request: pics must be an integer');
       err.status = 400;
       return next(err);
     }
 
     if (nPictures <= 0) {
-      var err = new Error('Bad request: pics must be strictly positive');
+      var err = new Error('Bad Request: pics must be strictly positive');
       err.status = 400;
       return next(err);
     }
@@ -205,13 +208,13 @@ function getPlaceInfo(req, res, next) {
     var nDocuments = parseInt(req.query.docs);
 
     if (isNaN(nDocuments)) {
-      var err = new Error('Bad request: docs must be an integer');
+      var err = new Error('Bad Request: docs must be an integer');
       err.status = 400;
       return next(err);
     }
 
     if (nDocuments <= 0) {
-      var err = new Error('Bad request: docs must be strictly positive');
+      var err = new Error('Bad Request: docs must be strictly positive');
       err.status = 400;
       return next(err);
     }
@@ -226,13 +229,13 @@ function getPlaceInfo(req, res, next) {
     var nVotes = parseInt(req.query.votes);
 
     if (isNaN(nVotes)) {
-      var err = new Error('Bad request: votes must be an integer');
+      var err = new Error('Bad Request: votes must be an integer');
       err.status = 400;
       return next(err);
     }
 
     if (nVotes <= 0) {
-      var err = new Error('Bad request: votes must be strictly positive');
+      var err = new Error('Bad Request: votes must be strictly positive');
       err.status = 400;
       return next(err);
     }
@@ -270,16 +273,38 @@ function getPlaceInfo(req, res, next) {
 function createPlace(req, res, next) {
   var place = new Place(req.body);
 
-  place.save(function onPlaceSaved(error, newPlace) {
-    if(error) return next(error);
-    res.status(201).json(newPlace);
-  }); 
+  var onPlaceSaved = Place.onSaved(res, next);
+
+  if (!req.body.setHeaderPhoto) {
+    place.save(onPlaceSaved);
+  }
+  else { 
+    place.validate(function onPlaceValidated(error) {
+      if (error) return next(error);
+
+      var pendingUpload = new PendingUpload({
+        contentType: 'place',
+        content: place
+      });
+      pendingUpload.save(sendUploadURL);
+    });
+  }
+
+  function sendUploadURL(error, pendingUpload) {
+    if (error) return next(error);
+
+    var uploadURL = config.serverURL + '/upload/' + pendingUpload._id;
+    res.redirect(204, uploadURL);
+  }
 }
 
 
 function deletePlace(req, res, next) {
   req.place.remove(function onPlaceRemoved(error) {
     if (error) return next(error);
+
+    // TODO: Supprimer les fichiers liés (headerPhoto, photos, documents, …)
+
     res.status(204).end();
   });
 }

@@ -8,7 +8,7 @@ var Schema = mongoose.Schema;
 var pictureSchema = new Schema({
   author: { type: Schema.Types.ObjectId, required: true },
   date: { type: Date, default: Date.now, required: true },
-  link: { type: String, required: true }
+  url: { type: String, required: true }
 });
 
 module.exports = pictureSchema;
