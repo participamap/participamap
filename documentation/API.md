@@ -106,7 +106,7 @@ Attribut | Description | Exemple
 _id | Identifiant du lieu | "57dbe334c3eaf116f88e0318"
 location | Localisation du lieu | { "latitude": 49.18165, "longitude": -0.34709 }
 title | Titre du lieu | "Le Dôme"
-*headerPhoto* | Photo d’en-tête | "https://photos.participamap.org/83ca8f82.jpg"
+*headerPhoto* | Photo d’en-tête | "https://photos.participamap.org/97a15d97-847e-450c-8bd0-1f922883f523.jpg"
 
 #### Exemple
 
@@ -132,7 +132,7 @@ Content-Type: application/json; charset=utf-8
       "longitude": -0.34709
     },
     "title": "Le Dôme",
-    "headerPhoto": "https://photos.participamap.org/83ca8f82.jpg"
+    "headerPhoto": "https://photos.participamap.org/97a15d97-847e-450c-8bd0-1f922883f523.jpg"
   },
   {
     "_id": "57dbe738c3eaf116f88e0319",
@@ -194,7 +194,7 @@ title | Titre du lieu | "Le Dôme"
 isVerified | État de vérification du lieu | true
 *proposedBy*\* | Utilisateur ayant proposé le lieu | { "id": "57dbe334c3eaf116f88eca27", "name": "Jean Dupont" }
 *type* | Type du lieu | 0
-*headerPhoto* | Photo d’en-tête | "https://photos.participamap.org/83ca8f82.jpg"
+*headerPhoto* | Photo d’en-tête | "https://photos.participamap.org/97a15d97-847e-450c-8bd0-1f922883f523.jpg"
 *description* | Description | "Maison de la Recherche et de l’Imagination"
 *startDate* | Date de création | "2015-01-01T13:00:00.000Z"
 *endDate* | Date de suppression | "2016-09-09T08:00:00.000Z"
@@ -235,7 +235,7 @@ Content-Type: application/json; charset=utf-8
   },
   "title": "Le Dôme",
   "isVerified": true,
-  "headerPhoto": "https://photos.participamap.org/83ca8f82.jpg",
+  "headerPhoto": "https://photos.participamap.org/97a15d97-847e-450c-8bd0-1f922883f523.jpg",
   "description": "Maison de la Recherche et de l’Imagination",
   "startDate": "2015-01-01T13:00:00.000Z"
 }
@@ -307,7 +307,7 @@ title | Titre du lieu | "Le Dôme"
 isVerified | État de vérification du lieu | true
 *proposedBy* | Utilisateur ayant proposé le lieu | { "id": "57dbe334c3eaf116f88eca27", "name": "Jean Dupont" }
 *type* | Type du lieu | 0
-*headerPhoto* | Photo d’en-tête | "https://photos.participamap.org/83ca8f82.jpg"
+*headerPhoto* | Photo d’en-tête | "https://photos.participamap.org/97a15d97-847e-450c-8bd0-1f922883f523.jpg"
 *description* | Description | "Maison de la Recherche et de l’Imagination"
 *startDate* | Date de création | "2015-01-01T13:00:00.000Z"
 *endDate* | Date de suppression | "2016-09-09T08:00:00.000Z"
@@ -332,7 +332,7 @@ Comme `setHeaderPhoto = true`, le serveur répond avec :
 
 ```http
 HTTP/1.1 204 No Content
-Location: https://api.participamap.org/upload/83ca8f82
+Location: https://api.participamap.org/upload/57f3d7cf0a7cc112cb8ae23c
 Content-Length: 0
 ```
 
@@ -340,7 +340,7 @@ On poursuit alors avec la requête suivante :
 
 ```sh
 $ curl -X PUT -H "Content-Type:image/jpeg" --data-binary "@le-dome.jpg" \
-    https://api.participamap.org/upload/83ca8f82
+    https://api.participamap.org/upload/57f3d7cf0a7cc112cb8ae23c
 ```
 
 Réponse :
@@ -358,7 +358,7 @@ Content-Type: application/json; charset=utf-8
     "longitude": -0.34709
   },
   "title": "Le Dôme",
-  "headerPhoto": "https://photos.participamap.org/83ca8f82.jpg"
+  "headerPhoto": "https://photos.participamap.org/97a15d97-847e-450c-8bd0-1f922883f523.jpg"
 }
 ```
 
@@ -419,7 +419,7 @@ title | Titre du lieu | "Le Dôme"
 isVerified | État de vérification du lieu | true
 *proposedBy* | Utilisateur ayant proposé le lieu | { "id": "57dbe334c3eaf116f88eca27", "name": "Jean Dupont" }
 *type* | Type du lieu | 0
-*headerPhoto* | Photo d’en-tête | "https://photos.participamap.org/83ca8f82.jpg"
+*headerPhoto* | Photo d’en-tête | "https://photos.participamap.org/97a15d97-847e-450c-8bd0-1f922883f523.jpg"
 *description* | Description | "Maison de la Recherche et de l’Imagination"
 *startDate* | Date de création | "2015-01-01T13:00:00.000Z"
 *endDate* | Date de suppression | "2016-09-09T08:00:00.000Z"
@@ -462,7 +462,7 @@ Content-Type: application/json; charset=utf-8
     "longitude": -0.34709
   },
   "title": "Le Dôme modifié",
-  "headerPhoto": "https://photos.participamap.org/83ca8f82.jpg"
+  "headerPhoto": "https://photos.participamap.org/97a15d97-847e-450c-8bd0-1f922883f523.jpg"
 }
 ```
 
@@ -764,7 +764,7 @@ Attribut | Description | Exemple
 _id | Identifiant de l’image | 2127
 author | Auteur de la photo | { "id": "57dbe334c3eaf116f88eca27", "name": "Jean Dupont" }
 date | Date de mise en ligne | "2016-09-19T19:30:26.037Z"
-url | URL de la photo | "https://photos.participamap.org/83ca8f82.jpg"
+url | URL de la photo | "https://photos.participamap.org/97a15d97-847e-450c-8bd0-1f922883f523.jpg"
 
 #### Exemple
 
@@ -790,7 +790,7 @@ Content-Type: application/json; charset=utf-8
       "name": "Jean Dupont"
     },
     "date": "2016-09-19T19:30:45.173Z",
-    "url": "https://photos.participamap.org/83ca8f82.jpg"
+    "url": "https://photos.participamap.org/97a15d97-847e-450c-8bd0-1f922883f523.jpg"
   }
 ]
 ```
