@@ -131,35 +131,57 @@ function getPlaceInfo(req, res, next) {
 
 
 function getComments(req,res,next) {
-  if (!req.query.page) req.query.page=1;
-  if (!req.query.n) req.query.n=10;
-  if ((!Number.isInteger(req.query.page)) && (!Number.isInteger(req.query.n)) && (req.query.n < 0) && (req.query.page <0))
-  {
-  	 var err = new Error('Bad request: page and n must be positive integers');
-	 err.status = 400;
-	 return next(err);
-  };
+  var place = req.place;
+  var page = 1;
+  var n = 0;
+
+  if (req.query.page) {
+    page = parseInt(req.query.page)
+
+    if (isNaN(page)) {
+      var err = new Error('Bad Request: page must be an integer');
+      err.status = 400;
+      return next(err);
+    }
+
+    if (page <= 0) {
+      var err = new Error('Bad Request: page must be strictly positive');
+      err.status = 400;
+      return next(err);
+    }
+
+    n = 10;
+  }
+
+  if (req.query.n) {
+    n = parseInt(req.query.n);
+
+    if (isNaN(n)) {
+      var err = new Error('Bad Request: n must be an integer');
+      err.status = 400;
+      return next(err);
+    }
+
+    if (n <= 0) {
+      var err = new Error('Bad Request: n must be strictly positive');
+      err.status = 400;
+      return next(err);
+    }
+  }
+
+  var projection = { _id: true };
+
+  projection.comments = (n !== 0)
+    ? { $slice: [(page - 1) * n, n] }
+    : true;
   
-  var page = req.query.page;
-  var n = req.query.n;
-  var projection = {
-      comments: true
-  };
-  
-  if(!n) n=10;
-  if(!page) page=1;
-  
-        
-  Place.findById(req.params.id, projection, function returnComments(error, result) {
-    if (error) return next(error);
-    var commentsSelected=[];
-    for (i=(page-1)*n;i<page*n;i++) {
-    	    commentsSelected.push(result.comments[i]);
-    	 };
-    res.json(commentsSelected);
-  });
+  Place.findById(place._id, projection,
+    function returnComments(error, result) {
+      if (error) return next(error);
+      res.json(result.comments);
+    });
 }
 
 module.exports = router;
 
-/* vim: set ts=2 sw=2 et si : */
+/* vim: set ts=2 sw=2 et si colorcolumn=80 : */
