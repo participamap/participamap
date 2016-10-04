@@ -16,6 +16,7 @@ router.get('/:id', Checks.db, Checks.setAdminFlag, getPlaceInfo);
 router.post('/', Checks.db, createPlace);
 router.delete('/:id', Checks.db, deletePlace);
 router.get('/:id/comments', Checks.db, getComments);
+router.get('/:id/pictures', Checks.db, getPictures);
 
 
 function getPlace(req, res, next, id) {
@@ -359,6 +360,60 @@ function getComments(req,res,next) {
     function returnComments(error, result) {
       if (error) return next(error);
       res.json(result.comments);
+    });
+}
+
+
+// TODO: Factoriser le code avec getComments
+function getPictures(req,res,next) {
+  var place = req.place;
+  var page = 1;
+  var n = 0;
+
+  if (req.query.page) {
+    page = parseInt(req.query.page)
+
+    if (isNaN(page)) {
+      var err = new Error('Bad Request: page must be an integer');
+      err.status = 400;
+      return next(err);
+    }
+
+    if (page <= 0) {
+      var err = new Error('Bad Request: page must be strictly positive');
+      err.status = 400;
+      return next(err);
+    }
+
+    n = 12;
+  }
+
+  if (req.query.n) {
+    n = parseInt(req.query.n);
+
+    if (isNaN(n)) {
+      var err = new Error('Bad Request: n must be an integer');
+      err.status = 400;
+      return next(err);
+    }
+
+    if (n <= 0) {
+      var err = new Error('Bad Request: n must be strictly positive');
+      err.status = 400;
+      return next(err);
+    }
+  }
+
+  var projection = { _id: true };
+
+  projection.pictures = (n !== 0)
+    ? { $slice: [(page - 1) * n, n] }
+    : true;
+  
+  Place.findById(place._id, projection,
+    function returnPictures(error, result) {
+      if (error) return next(error);
+      res.json(result.pictures);
     });
 }
 
