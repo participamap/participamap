@@ -16,7 +16,7 @@
     * [Création d’un commentaire](#création-dun-commentaire)
     * [Suppression d’un commentaire](#suppression-dun-commentaire)
     * [Images d’un lieu](#images-dun-lieu)
-    * [Création d’une image](#creation-dune-image)
+    * [Création d’une image](#création-dune-image)
 
 ## Informations générales
 
