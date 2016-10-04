@@ -31,6 +31,24 @@ var placeSchema = new Schema({
   denyDocuments: Boolean
 });
 
+/**
+ * Create a callback function
+ */
+placeSchema.statics.onSaved = function (res, next) {
+  return function (error, savedPlace) {
+    if (error) return next(error);
+
+    // Remove unwanted info
+    savedPlace.__v = undefined;
+    savedPlace.comments = undefined;
+    savedPlace.pictures = undefined;
+    savedPlace.documents = undefined;
+    savedPlace.votes = undefined;
+
+    res.status(201).json(savedPlace);
+  };
+};
+
 var Place = mongoose.model('Place', placeSchema);
 
 module.exports = Place;

@@ -5,8 +5,12 @@ var mongoose = require('mongoose');
 
 var config = require('./config.json');
 
+var Supervisor = require('./modules/supervisor');
+
 var routes = require('./routes/index');
 var places = require('./routes/places');
+var upload = require('./routes/upload');
+var uploads = express.static('./uploads');
 
 mongoose.connect(config.mongodb.uri, config.mongodb.options);
 var db = mongoose.connection;
@@ -20,15 +24,21 @@ db.once('open', function onDBOpen() {
   console.log('Successfully connected to MongoDB!\n');
 });
 
+// Supervisor to automate some actions
+var supervisor = new Supervisor(config.supervisor);
+
 var app = express();
 
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.raw({ type: 'image/jpeg', limit: '5MB' }));
+app.use(bodyParser.raw({ type: 'image/png', limit: '5MB' }));
 
 // Routes declarations
 app.use('/', routes);
 app.use('/places', places);
+app.use('/upload', upload);
+app.use('/uploads', uploads);
 
 // catch 404 and forward to error handler
 app.use(function notFound(req, res, next) {

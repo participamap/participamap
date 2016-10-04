@@ -764,7 +764,7 @@ Attribut | Description | Exemple
 _id | Identifiant de l’image | 2127
 author | Auteur de la photo | { "id": "57dbe334c3eaf116f88eca27", "name": "Jean Dupont" }
 date | Date de mise en ligne | "2016-09-19T19:30:26.037Z"
-link | Lien vers la photo | "https://photos.participamap.org/83ca8f82.jpg"
+url | URL de la photo | "https://photos.participamap.org/83ca8f82.jpg"
 
 #### Exemple
 
@@ -790,7 +790,7 @@ Content-Type: application/json; charset=utf-8
       "name": "Jean Dupont"
     },
     "date": "2016-09-19T19:30:45.173Z",
-    "link": "https://photos.participamap.org/83ca8f82.jpg"
+    "url": "https://photos.participamap.org/83ca8f82.jpg"
   }
 ]
 ```
