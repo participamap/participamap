@@ -9,7 +9,6 @@ router.param('id', Checks.isValidObjectId);
 router.param('id', getPlace);
 
 router.get('/', Checks.db, getPlacesHeaders);
-router.get('/:id', Checks.db, getPlaceInfo);
 router.get('/:id', Checks.db, Checks.setAdminFlag, getPlaceInfo);
 router.post('/', Checks.db, createPlace);
 router.delete('/:id', Checks.db, deletePlace);
