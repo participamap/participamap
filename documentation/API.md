@@ -407,6 +407,13 @@ Attribut | Description | Exemple
 *denyPictures* | Interdiction des photos | true
 *denyDocuments* | Interdiction des documents | true
 
+\* Pour changer la photo d’en-tête, la procédure est la suivante :
+
+1. modifier le lieu avec le champ `setHeaderPhoto = true` ;
+2. le serveur répond avec un statut HTTP `204 No Content` et un en-tête `Location` précisant une adresse de mise en ligne ;
+3. envoyer la photo au serveur avec une requête `PUT` vers l’adresse précisée par la réponse précédente, en précisant bien le bon `Content-Type` ;
+4. le serveur répond avec le lieu créé si tout s’est bien passé.
+
 #### Réponse
 
 Le lieu modifié :
@@ -430,20 +437,13 @@ isVerified | État de vérification du lieu | true
 *denyPictures* | Interdiction des photos | true
 *denyDocuments* | Interdiction des documents | true
 
-\* Pour changer la photo d’en-tête, la procédure est la suivante :
-
-1. modifier le lieu avec le champ `setHeaderPhoto = true` ;
-2. le serveur répond avec un statut HTTP `204 No Content` et un en-tête `Location` précisant une adresse de mise en ligne ;
-3. envoyer la photo au serveur avec une requête `PUT` vers l’adresse précisée par la réponse précédente, en précisant bien le bon `Content-Type` ;
-4. le serveur répond avec le lieu créé si tout s’est bien passé.
-
 #### Exemple
 
 Requête :
 
 ```sh
 $ curl -X PUT -H "Content-Type: application/json" \
-    -d '{"location":{"latitude":49.18165,"longitude":-0.34709},"title":"Le Dôme modifié"}' \
+    -d '{"title":"Le Dôme modifié"}' \
     https://api.participamap.org/places/57dbe334c3eaf116f88e0318
 ```
 
@@ -693,6 +693,7 @@ DELETE | /places/{id}/comments/{comment_id} | modérateur
 Nom | Description | Exemple
 ----|-------------|--------
 id | Identifiant du lieu | 57dbe334c3eaf116f88e0318
+comment_id | Identifiant du commentaire | 57ed7489c6358c1278552be5
 
 #### Paramètres de requête
 
@@ -713,7 +714,7 @@ HTTP/1.1 204 No Content
 Requête :
 
 ```sh
-$ curl -X DELETE https://api.participamap.org/places/57dbe334c3eaf116f88e0318/comments/162
+$ curl -X DELETE https://api.participamap.org/places/57dbe334c3eaf116f88e0318/comments/57ed7489c6358c1278552be5
 ```
 
 Réponse :
@@ -761,7 +762,7 @@ Liste de liens vers des images :
 
 Attribut | Description | Exemple
 ---------|-------------|--------
-_id | Identifiant de l’image | 2127
+_id | Identifiant de l’image | 57ed7489c6358c1278552be5
 author | Auteur de la photo | { "id": "57dbe334c3eaf116f88eca27", "name": "Jean Dupont" }
 date | Date de mise en ligne | "2016-09-19T19:30:26.037Z"
 url | URL de la photo | "https://photos.participamap.org/97a15d97-847e-450c-8bd0-1f922883f523.jpg"
@@ -784,7 +785,7 @@ Content-Type: application/json; charset=utf-8
 ```json
 [
   {
-    "_id": 2127,
+    "_id": "57ed7489c6358c1278552be5",
     "author": {
       "id": "57dbe334c3eaf116f88eca27",
       "name": "Jean Dupont"
