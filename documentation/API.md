@@ -16,6 +16,7 @@
     * [Création d’un commentaire](#création-dun-commentaire)
     * [Suppression d’un commentaire](#suppression-dun-commentaire)
     * [Images d’un lieu](#images-dun-lieu)
+    * [Création d’une image](#creation-dune-image)
 
 ## Informations générales
 
@@ -192,7 +193,7 @@ _id | Identifiant du lieu | "57dbe334c3eaf116f88e0318"
 location | Localisation du lieu | { "latitude": 49.18165, "longitude": -0.34709 }
 title | Titre du lieu | "Le Dôme"
 isVerified | État de vérification du lieu | true
-*proposedBy*\* | Utilisateur ayant proposé le lieu | { "id": "57dbe334c3eaf116f88eca27", "name": "Jean Dupont" }
+*proposedBy\** | Utilisateur ayant proposé le lieu | { "id": "57dbe334c3eaf116f88eca27", "name": "Jean Dupont" }
 *type* | Type du lieu | 0
 *headerPhoto* | Photo d’en-tête | "https://photos.participamap.org/97a15d97-847e-450c-8bd0-1f922883f523.jpg"
 *description* | Description | "Maison de la Recherche et de l’Imagination"
@@ -202,9 +203,9 @@ isVerified | État de vérification du lieu | true
 *pictures* | Photos | *Liste de photos*
 *documents* | Documents | *Liste de documents*
 *votes* | Votes | *Liste de votes*
-*moderateComments*\* | Modération des commentaires | true
-*moderatePictures*\* | Modération des photos | true
-*moderateDocuments*\* | Modération des documents | true
+*moderateComments\** | Modération des commentaires | true
+*moderatePictures\** | Modération des photos | true
+*moderateDocuments\** | Modération des documents | true
 *denyComments* | Interdiction des commentaires | true
 *denyPictures* | Interdiction des photos | true
 *denyDocuments* | Interdiction des documents | true
@@ -273,18 +274,18 @@ Attribut | Description | Exemple
 ---------|-------------|--------
 location | Localisation du lieu | { "latitude": 49.18165, "longitude": -0.34709 }
 title | Titre du lieu | "Le Dôme"
-*isVerified*\* | État de vérification du lieu | true
+*isVerified\** | État de vérification du lieu | true
 *type* | Type du lieu | 0
-*setHeaderPhoto*\*\* | Chargement d’une photo d’en-tête | true
+*setHeaderPhoto\*\** | Chargement d’une photo d’en-tête | true
 *description* | Description | "Maison de la Recherche et de l’Imagination"
 *startDate* | Date de création | "2015-01-01T13:00:00.000Z"
 *endDate* | Date de suppression | "2016-09-09T08:00:00.000Z"
-*moderateComments*\* | Modération des commentaires | true
-*moderatePictures*\* | Modération des photos | true
-*moderateDocuments*\* | Modération des documents | true
-*denyComments*\* | Interdiction des commentaires | true
-*denyPictures*\* | Interdiction des photos | true
-*denyDocuments*\* | Interdiction des documents | true
+*moderateComments\** | Modération des commentaires | true
+*moderatePictures\** | Modération des photos | true
+*moderateDocuments\** | Modération des documents | true
+*denyComments\*\**| Interdiction des commentaires | true
+*denyPictures\** | Interdiction des photos | true
+*denyDocuments\** | Interdiction des documents | true
 
 \* N’est paramétrable qu’avec un niveau modérateur.
 
@@ -396,7 +397,7 @@ Attribut | Description | Exemple
 *title* | Titre du lieu | "Le Dôme"
 *isVerified* | État de vérification du lieu | true
 *type* | Type du lieu | 0
-*setHeaderPhoto*\* | Chargement d’une photo d’en-tête | true
+*setHeaderPhoto\** | Chargement d’une photo d’en-tête | true
 *description* | Description | "Maison de la Recherche et de l’Imagination"
 *startDate* | Date de création | "2015-01-01T13:00:00.000Z"
 *endDate* | Date de suppression | "2016-09-09T08:00:00.000Z"
@@ -794,4 +795,97 @@ Content-Type: application/json; charset=utf-8
     "url": "https://photos.participamap.org/97a15d97-847e-450c-8bd0-1f922883f523.jpg"
   }
 ]
+```
+
+### Création d’une image
+
+#### Nom de la requête
+
+`createPicture`
+
+#### Description
+
+Ajoute une image à un lieu.
+
+#### Point d’accès
+
+Méthode | Chemin | autorisation
+:------:|:------:|:-----------:
+POST | /places/{id}/pictures | utilisateur
+
+#### Paramètres de chemin
+
+Nom | Description | Exemple
+----|-------------|--------
+id | Identifiant du lieu | 57dbe334c3eaf116f88e0318
+
+#### Paramètres de requête
+
+*Néant*
+
+#### Charge
+
+*Néant\**
+
+\* Pour poster une image, la procédure est la suivante :
+
+1. créer une image avec une charge vide\*\*
+2. le serveur répond avec un statut HTTP `204 No Content` et un en-tête `Location` précisant une adresse de mise en ligne ;
+3. envoyer la photo au serveur avec une requête `PUT` vers l’adresse précisée par la réponse précédente, en précisant bien le bon `Content-Type` ;
+4. le serveur répond avec l’image créée si tout s’est bien passé
+
+\*\* L’intérêt de garder deux requêtes est de garder la possibilité d’ajouter facilement des métadonnées aux images en cas de besoin futur.
+
+#### Réponse
+
+Lien vers une image :
+
+Attribut | Description | Exemple
+---------|-------------|--------
+_id | Identifiant de l’image | 57ed7489c6358c1278552be5
+author | Auteur de la photo | { "id": "57dbe334c3eaf116f88eca27", "name": "Jean Dupont" }
+date | Date de mise en ligne | "2016-09-19T19:30:26.037Z"
+url | URL de la photo | "https://photos.participamap.org/97a15d97-847e-450c-8bd0-1f922883f523.jpg"
+
+#### Exemple
+
+Requête :
+
+```sh
+$ curl -X POST https://api.participamap.org/places/57dbe334c3eaf116f88e0318/pitcures
+```
+
+Le serveur répond avec :
+
+```http
+HTTP/1.1 204 No Content
+Location: https://api.participamap.org/upload/57f3d7cf0a7cc112cb8ae23c
+Content-Length: 0
+```
+
+On poursuit alors avec la requête suivante :
+
+```sh
+$ curl -X PUT -H "Content-Type:image/jpeg" --data-binary "@test.jpg" \
+    https://api.participamap.org/upload/57f3d7cf0a7cc112cb8ae23c
+```
+
+
+Réponse :
+
+```http
+HTTP/1.1 201 Created
+Content-Type: application/json; charset=utf-8
+```
+
+```json
+{
+  "_id": "57ed7489c6358c1278552be5",
+  "author": {
+    "id": "57dbe334c3eaf116f88eca27",
+    "name": "Jean Dupont"
+  },
+  "date": "2016-09-19T19:30:45.173Z",
+  "url": "https://photos.participamap.org/97a15d97-847e-450c-8bd0-1f922883f523.jpg"
+}
 ```
