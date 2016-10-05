@@ -2,6 +2,7 @@ var express = require('express');
 var mongoose = require('mongoose');
 
 var Checks = require('../modules/checks');
+var Utils = require('../modules/utils');
 
 var Place = require('../models/place');
 var Comment = require('../models/comment');
@@ -115,14 +116,13 @@ function getPlacesHeaders(req, res, next) {
     headerPhoto: true
   };
 
-  Place.find(filter, projection,
-    function returnPlacesHeaders(error, placesHeaders) {
-      if (error) return next(error);
-      res.json(placesHeaders);
-    });
+  var returnPlacesHeaders = Utils.returnEntity(res, next);
+  
+  Place.find(filter, projection, returnPlacesHeaders);
 }
 
 
+// TODO: Modifier
 function getPlaceInfo(req, res, next) {
   var place = req.place;
   
@@ -263,12 +263,8 @@ function createPlace(req, res, next) {
   var place = new Place(req.body);
 
   if (!req.body.setHeaderPhoto) {
-    place.save(function onPlaceSaved(error, savedPlace) {
-      if (error) return next(error);
-      
-      savedPlace.__v = undefined;
-      res.status(201).json(savedPlace);
-    });
+    var onPlaceSaved = Utils.returnEntity(res, next, 201);
+    place.save(onPlaceSaved);
   }
   else { 
     place.validate(function onPlaceValidated(error) {
@@ -342,14 +338,13 @@ function getComments(req,res,next) {
     }
   }
   
-  Comment.find({ place: place._id })
+  var returnComments = Utils.returnEntity(res, next);
+  
+  Comment.find({ place: place._id }, { __v: false })
     .sort('-date')
     .skip((page - 1) * n)
     .limit(n)
-    .exec(function returnComments(error, comments) {
-      if (error) return next(error);
-      res.json(comments);
-    });
+    .exec(returnComments);
 }
 
 
@@ -393,14 +388,13 @@ function getPictures(req,res,next) {
     }
   }
 
-  Picture.find({ place: place._id })
+  var returnPictures = Utils.returnEntity(res, next);
+
+  Picture.find({ place: place._id }, { __v: false })
     .sort('-date')
     .skip((page - 1) * n)
     .limit(n)
-    .exec(function returnPictures(error, pictures) {
-      if (error) return next(error);
-      res.json(pictures);
-    });
+    .exec(returnPictures);
 }
 
 

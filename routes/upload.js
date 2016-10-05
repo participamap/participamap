@@ -4,6 +4,7 @@ var fileType = require('file-type');
 var uuid = require('uuid');
 
 var Checks = require('../modules/checks');
+var Utils = require('../modules/utils');
 
 var PendingUpload = require('../models/pending_upload');
 var FileSaver = require('../modules/filesaver');
@@ -97,24 +98,15 @@ function upload(req, res, next) {
         var place = new Place(pendingUpload.content);
         place.headerPhoto = url;
 
-        place.save(function onPlaceSaved(error, savedPlace) {
-          if (error) return next(error);
-          
-          savedPlace.__v = undefined;
-          res.status(201).json(savedPlace);
-        });
+        var onPlaceSaved = Utils.returnEntity(res, next, 201);
+        place.save(onPlaceSaved);
 
       case 'picture':
         var picture = new Picture(pendingUpload.content);
         picture.url = url;
 
-        // TODO: Factoriser le code
-        picture.save(function onPictureSaved(error, savedPicture) {
-          if (error) return next(error);
-
-          savedPicture.__v = undefined;
-          res.status(201).json(savedPicture);
-        });
+        var onPictureSaved = Utils.returnEntity(res, next, 201);
+        picture.save(onPictureSaved);
     }
   }
 }
