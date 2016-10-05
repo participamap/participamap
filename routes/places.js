@@ -17,6 +17,7 @@ router.post('/', Checks.db, createPlace);
 router.delete('/:id', Checks.db, deletePlace);
 router.get('/:id/comments', Checks.db, getComments);
 router.get('/:id/pictures', Checks.db, getPictures);
+router.post('/:id/pictures', Checks.db, createPicture);
 
 
 function getPlace(req, res, next, id) {
@@ -131,7 +132,7 @@ function getPlacesHeaders(req, res, next) {
     function returnPlacesHeaders(error, placesHeaders) {
       if (error) return next(error);
       res.json(placesHeaders);
-  });
+    });
 }
 
 
@@ -416,6 +417,34 @@ function getPictures(req,res,next) {
       res.json(result.pictures);
     });
 }
+
+
+function createPicture(req, res, next) {
+  var place = req.place;
+
+  var pictureInfo = {
+    place: place._id,
+    picture: {
+      // TODO: Mettre le véritable auteur
+      author: mongoose.Types.ObjectId("57dbe334c3eaf116f88eca27")
+    }
+  };
+
+  var pendingUpload = new PendingUpload({
+    contentType: 'picture-info',
+    content: pictureInfo
+  });
+  pendingUpload.save(sendUploadURL);
+
+  // TODO: Factoriser avec les autres requêtes utilisant l’upload
+  function sendUploadURL(error, pendingUpload) {
+    if (error) return next(error);
+
+    var uploadURL = config.serverURL + '/upload/' + pendingUpload._id;
+    res.redirect(204, uploadURL);
+  }
+}
+
 
 module.exports = router;
 
