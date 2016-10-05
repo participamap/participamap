@@ -49,7 +49,7 @@ function upload(req, res, next) {
       if (fileType(req.body).mime !== 'image/jpeg')
         return badContentType();
       
-      if (!(contentType === 'place' || contentType === 'picture'))
+      if (!(contentType === 'place' || contentType === 'picture-info'))
         return unsupportedMediaType();
       
       var fileName = uuid.v4() + '.jpg';
@@ -60,7 +60,7 @@ function upload(req, res, next) {
       if (fileType(req.body).mime !== 'image/png')
         return badContentType();
       
-      if (!(contentType === 'place' || contentType === 'picture'))
+      if (!(contentType === 'place' || contentType === 'picture-info'))
         return unsupportedMediaType();
       
       var fileName = uuid.v4() + '.png';
@@ -93,6 +93,21 @@ function upload(req, res, next) {
 
         var onPlaceSaved = Place.onSaved(res, next);
         place.save(onPlaceSaved);
+
+      case 'picture-info':
+        var picture = pendingUpload.content.picture;
+        picture.url = url;
+
+        var onPictureAdded = function (error, savedPlace) {
+          if (error) return next(error);
+          res.status(201).json(savedPlace.pictures.slice(-1)[0]);
+        };
+
+        Place.findById(pendingUpload.content.place,
+          function addPicture(error, place) {
+            place.pictures.push(picture);
+            place.save(onPictureAdded);
+          });
     }
   }
 }

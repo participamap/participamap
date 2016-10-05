@@ -174,7 +174,7 @@ id | Identifiant du lieu | 57dbe334c3eaf116f88e0318
 Nom | Description | Exemple | Absence
 ----|-------------|---------|--------
 comms | Nombre de commentaires à transmettre | 10 | Aucun
-pics | Nombre de photos à transmettre | 5 | Aucun
+pics | Nombre de photos à*\* transmettre | 5 | Aucun
 docs | Nombre de documents à transmettre | 5 | Aucun
 votes | Nombre de votes à transmettre | 2 | Aucun
 admin | Récupérer des informations administrateur | true | false
@@ -193,7 +193,7 @@ _id | Identifiant du lieu | "57dbe334c3eaf116f88e0318"
 location | Localisation du lieu | { "latitude": 49.18165, "longitude": -0.34709 }
 title | Titre du lieu | "Le Dôme"
 isVerified | État de vérification du lieu | true
-*proposedBy\** | Utilisateur ayant proposé le lieu | { "id": "57dbe334c3eaf116f88eca27", "name": "Jean Dupont" }
+*proposedBy*\* | Utilisateur ayant proposé le lieu | { "id": "57dbe334c3eaf116f88eca27", "name": "Jean Dupont" }
 *type* | Type du lieu | 0
 *headerPhoto* | Photo d’en-tête | "https://photos.participamap.org/97a15d97-847e-450c-8bd0-1f922883f523.jpg"
 *description* | Description | "Maison de la Recherche et de l’Imagination"
@@ -203,9 +203,9 @@ isVerified | État de vérification du lieu | true
 *pictures* | Photos | *Liste de photos*
 *documents* | Documents | *Liste de documents*
 *votes* | Votes | *Liste de votes*
-*moderateComments\** | Modération des commentaires | true
-*moderatePictures\** | Modération des photos | true
-*moderateDocuments\** | Modération des documents | true
+*moderateComments*\* | Modération des commentaires | true
+*moderatePictures*\* | Modération des photos | true
+*moderateDocuments*\* | Modération des documents | true
 *denyComments* | Interdiction des commentaires | true
 *denyPictures* | Interdiction des photos | true
 *denyDocuments* | Interdiction des documents | true
@@ -274,18 +274,18 @@ Attribut | Description | Exemple
 ---------|-------------|--------
 location | Localisation du lieu | { "latitude": 49.18165, "longitude": -0.34709 }
 title | Titre du lieu | "Le Dôme"
-*isVerified\** | État de vérification du lieu | true
+*isVerified*\* | État de vérification du lieu | true
 *type* | Type du lieu | 0
-*setHeaderPhoto\*\** | Chargement d’une photo d’en-tête | true
+*setHeaderPhoto*\*\* | Chargement d’une photo d’en-tête | true
 *description* | Description | "Maison de la Recherche et de l’Imagination"
 *startDate* | Date de création | "2015-01-01T13:00:00.000Z"
 *endDate* | Date de suppression | "2016-09-09T08:00:00.000Z"
-*moderateComments\** | Modération des commentaires | true
-*moderatePictures\** | Modération des photos | true
-*moderateDocuments\** | Modération des documents | true
-*denyComments\*\**| Interdiction des commentaires | true
-*denyPictures\** | Interdiction des photos | true
-*denyDocuments\** | Interdiction des documents | true
+*moderateComments*\* | Modération des commentaires | true
+*moderatePictures*\* | Modération des photos | true
+*moderateDocuments*\* | Modération des documents | true
+*denyComments*\*\*| Interdiction des commentaires | true
+*denyPictures*\* | Interdiction des photos | true
+*denyDocuments*\* | Interdiction des documents | true
 
 \* N’est paramétrable qu’avec un niveau modérateur.
 
@@ -397,7 +397,7 @@ Attribut | Description | Exemple
 *title* | Titre du lieu | "Le Dôme"
 *isVerified* | État de vérification du lieu | true
 *type* | Type du lieu | 0
-*setHeaderPhoto\** | Chargement d’une photo d’en-tête | true
+*setHeaderPhoto*\* | Chargement d’une photo d’en-tête | true
 *description* | Description | "Maison de la Recherche et de l’Imagination"
 *startDate* | Date de création | "2015-01-01T13:00:00.000Z"
 *endDate* | Date de suppression | "2016-09-09T08:00:00.000Z"
@@ -825,7 +825,7 @@ id | Identifiant du lieu | 57dbe334c3eaf116f88e0318
 
 #### Charge
 
-*Néant\**
+*Néant*\*
 
 \* Pour poster une image, la procédure est la suivante :
 
