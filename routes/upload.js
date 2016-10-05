@@ -2,14 +2,20 @@ var express = require('express');
 var mongoose = require('mongoose');
 var fileType = require('file-type');
 var uuid = require('uuid');
-var router = express.Router();
-
-var config = require('../config.json');
 
 var Checks = require('../modules/checks');
+
 var PendingUpload = require('../models/pending_upload');
 var FileSaver = require('../modules/filesaver');
 var Place = require('../models/place');
+var Comment = require('../models/comment');
+var Picture = require('../models/picture');
+var Document = require('../models/document');
+var Vote = require('../models/vote');
+
+var config = require('../config.json');
+
+var router = express.Router();
 
 router.param('id', Checks.isValidObjectId);
 router.param('id', getPendingUpload);
@@ -49,7 +55,7 @@ function upload(req, res, next) {
       if (fileType(req.body).mime !== 'image/jpeg')
         return badContentType();
       
-      if (!(contentType === 'place' || contentType === 'picture-info'))
+      if (!(contentType === 'place' || contentType === 'picture'))
         return unsupportedMediaType();
       
       var fileName = uuid.v4() + '.jpg';
@@ -60,7 +66,7 @@ function upload(req, res, next) {
       if (fileType(req.body).mime !== 'image/png')
         return badContentType();
       
-      if (!(contentType === 'place' || contentType === 'picture-info'))
+      if (!(contentType === 'place' || contentType === 'picture'))
         return unsupportedMediaType();
       
       var fileName = uuid.v4() + '.png';
@@ -98,20 +104,17 @@ function upload(req, res, next) {
           res.status(201).json(savedPlace);
         });
 
-      case 'picture-info':
-        var picture = pendingUpload.content.picture;
+      case 'picture':
+        var picture = new Picture(pendingUpload.content);
         picture.url = url;
 
-        var onPictureAdded = function (error, savedPlace) {
+        // TODO: Factoriser le code
+        picture.save(function onPictureSaved(error, savedPicture) {
           if (error) return next(error);
-          res.status(201).json(savedPlace.pictures.slice(-1)[0]);
-        };
 
-        Place.findById(pendingUpload.content.place,
-          function addPicture(error, place) {
-            place.pictures.push(picture);
-            place.save(onPictureAdded);
-          });
+          savedPicture.__v = undefined;
+          res.status(201).json(savedPicture);
+        });
     }
   }
 }

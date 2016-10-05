@@ -406,18 +406,16 @@ function getPictures(req,res,next) {
 
 function createPicture(req, res, next) {
   var place = req.place;
-
-  var pictureInfo = {
+  
+  // Not a Picture object in order to get the real timestamp on picture upload
+  var picture = {
     place: place._id,
-    picture: {
-      // TODO: Mettre le véritable auteur
-      author: mongoose.Types.ObjectId("57dbe334c3eaf116f88eca27")
-    }
+    author: mongoose.Types.ObjectId("57dbe334c3eaf116f88eca27")
   };
 
   var pendingUpload = new PendingUpload({
-    contentType: 'picture-info',
-    content: pictureInfo
+    contentType: 'picture',
+    content: picture
   });
   pendingUpload.save(sendUploadURL);
 
