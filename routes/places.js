@@ -1,12 +1,18 @@
 var express = require('express');
 var mongoose = require('mongoose');
-var router = express.Router();
+
+var Checks = require('../modules/checks');
+
+var Place = require('../models/place');
+var Comment = require('../models/comment');
+var Picture = require('../models/picture');
+var Document = require('../models/document');
+var Vote = require('../models/vote');
+var PendingUpload = require('../models/pending_upload');
 
 var config = require('../config.json');
 
-var Checks = require('../modules/checks');
-var Place = require('../models/place');
-var PendingUpload = require('../models/pending_upload');
+var router = express.Router();
 
 router.param('id', Checks.isValidObjectId);
 router.param('id', getPlace);
@@ -335,17 +341,14 @@ function getComments(req,res,next) {
       return next(err);
     }
   }
-
-  var projection = { _id: true };
-
-  projection.comments = (n !== 0)
-    ? { $slice: [(page - 1) * n, n] }
-    : true;
   
-  Place.findById(place._id, projection,
-    function returnComments(error, result) {
+  Comment.find({ place: place._id })
+    .sort('-date')
+    .skip((page - 1) * n)
+    .limit(n)
+    .exec(function returnComments(error, comments) {
       if (error) return next(error);
-      res.json(result.comments);
+      res.json(comments);
     });
 }
 
@@ -390,16 +393,13 @@ function getPictures(req,res,next) {
     }
   }
 
-  var projection = { _id: true };
-
-  projection.pictures = (n !== 0)
-    ? { $slice: [(page - 1) * n, n] }
-    : true;
-  
-  Place.findById(place._id, projection,
-    function returnPictures(error, result) {
+  Picture.find({ place: place._id })
+    .sort('-date')
+    .skip((page - 1) * n)
+    .limit(n)
+    .exec(function returnPictures(error, pictures) {
       if (error) return next(error);
-      res.json(result.pictures);
+      res.json(pictures);
     });
 }
 
