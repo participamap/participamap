@@ -180,10 +180,22 @@ function createPlace(req, res, next) {
 
 
 function deletePlace(req, res, next) {
-  req.place.remove(function onPlaceRemoved(error) {
+  var place = req.place;
+
+  Comment.remove({ place: place._id }, onRemoved);
+  Picture.remove({ place: place._id }, onRemoved);
+  Document.remove({ place: place._id }, onRemoved);
+  Vote.remove({ place: place._id }, onRemoved);
+
+  // TODO: Meilleure gestion (pour l’instant seule la première erreur
+  // déclenchée est retournée
+  function onRemoved(error) {
+    if (error) return next(error);
+  }
+
+  place.remove(function onPlaceRemoved(error) {
     if (error) return next(error);
 
-    // TODO: Supprimer les entités liées (Comments, Pictures, Documents, Votes)
     // TODO: Supprimer les fichiers liés (headerPhoto, photos, documents, …)
 
     res.status(204).end();
