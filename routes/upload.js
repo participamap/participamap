@@ -91,8 +91,12 @@ function upload(req, res, next) {
         var place = new Place(pendingUpload.content);
         place.headerPhoto = url;
 
-        var onPlaceSaved = Place.onSaved(res, next);
-        place.save(onPlaceSaved);
+        place.save(function onPlaceSaved(error, savedPlace) {
+          if (error) return next(error);
+          
+          savedPlace.__v = undefined;
+          res.status(201).json(savedPlace);
+        });
 
       case 'picture-info':
         var picture = pendingUpload.content.picture;

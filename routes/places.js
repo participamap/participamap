@@ -21,26 +21,7 @@ router.post('/:id/pictures', Checks.db, createPicture);
 
 
 function getPlace(req, res, next, id) {
-  // Get the place without heavy content like comments, …
-  var projection = {
-    location: true,
-    title: true,
-    isVerified: true,
-    proposedBy: true,
-    type: true,
-    headerPhoto: true,
-    description: true,
-    startDate: true,
-    endDate: true,
-    moderateComments: true,
-    moderatePictures: true,
-    moderateDocuments: true,
-    denyComments: true,
-    denyPictures: true,
-    denyDocuments: true
-  };
-
-  Place.findById(id, projection, function onPlaceFound(error, place) {
+  Place.findById(id, function onPlaceFound(error, place) {
     if (error) return next(error);
 
     if (!place) {
@@ -275,10 +256,13 @@ function getPlaceInfo(req, res, next) {
 function createPlace(req, res, next) {
   var place = new Place(req.body);
 
-  var onPlaceSaved = Place.onSaved(res, next);
-
   if (!req.body.setHeaderPhoto) {
-    place.save(onPlaceSaved);
+    place.save(function onPlaceSaved(error, savedPlace) {
+      if (error) return next(error);
+      
+      savedPlace.__v = undefined;
+      res.status(201).json(savedPlace);
+    });
   }
   else { 
     place.validate(function onPlaceValidated(error) {
@@ -305,6 +289,7 @@ function deletePlace(req, res, next) {
   req.place.remove(function onPlaceRemoved(error) {
     if (error) return next(error);
 
+    // TODO: Supprimer les entités liées (Comments, Pictures, Documents, Votes)
     // TODO: Supprimer les fichiers liés (headerPhoto, photos, documents, …)
 
     res.status(204).end();
