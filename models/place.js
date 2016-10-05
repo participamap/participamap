@@ -6,8 +6,6 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var locationSchema = require('./schemas/location');
-var commentSchema = require('./schemas/comment');
-var pictureSchema = require('./schemas/picture');
 
 var placeSchema = new Schema({
   location: {type: locationSchema, required: true },
@@ -19,10 +17,6 @@ var placeSchema = new Schema({
   description: String,
   startDate: { type: Date, default: Date.now },
   endDate: Date,
-  comments: [commentSchema],
-  pictures: [pictureSchema],
-  documents: [], // TODO: documentSchema
-  votes: [String],
   moderateComments: Boolean,
   moderatePictures: Boolean,
   moderateDocuments: Boolean,
@@ -38,13 +32,7 @@ placeSchema.statics.onSaved = function (res, next) {
   return function (error, savedPlace) {
     if (error) return next(error);
 
-    // Remove unwanted info
     savedPlace.__v = undefined;
-    savedPlace.comments = undefined;
-    savedPlace.pictures = undefined;
-    savedPlace.documents = undefined;
-    savedPlace.votes = undefined;
-
     res.status(201).json(savedPlace);
   };
 };
