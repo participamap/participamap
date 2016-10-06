@@ -7,13 +7,16 @@ function Utils() {
 }
 
 /**
- * Creates a callback to return an entity after a database action
+ * Creates a callback to return an entity after saving in database
  */
 Utils.returnEntity = function (res, next, status = 200) {
   return function (error, entity) {
     if (error) return next(error);
 
+    // Remove unwanted info
     entity.__v = undefined;
+    entity.place = undefined;
+
     res.status(status).json(entity);
   };
 };

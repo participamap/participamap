@@ -18,11 +18,16 @@ var router = express.Router();
 router.param('id', Checks.isValidObjectId);
 router.param('id', getPlace);
 
+router.param('comment_id', Checks.isValidObjectId);
+router.param('comment_id', getComment);
+
 router.get('/', Checks.db, getPlacesHeaders);
 router.get('/:id', Checks.db, Checks.setAdminFlag, getPlaceInfo);
 router.post('/', Checks.db, createPlace);
 router.delete('/:id', Checks.db, deletePlace);
 router.get('/:id/comments', Checks.db, getComments);
+router.post('/:id/comments', Checks.db, createComment);
+router.delete('/:id/comments/:comment_id', Checks.db, deleteComment);
 router.get('/:id/pictures', Checks.db, getPictures);
 router.post('/:id/pictures', Checks.db, createPicture);
 
@@ -38,6 +43,27 @@ function getPlace(req, res, next, id) {
     }
 
     req.place = place;
+
+    next();
+  });
+}
+
+
+function getComment(req, res, next, comment_id) {
+  Comment.findById(comment_id, function onCommentFound(error, comment) {
+    if (error) return next(error);
+
+    console.log(req.place._id);
+    console.log(comment.place);
+
+    // TODO: Pourquoi comment.place !== req.place._id est toujours vrai ? :'(
+    if (!comment/* || (comment.place !== req.place._id)*/) {
+      var err = new Error('Not Found');
+      err.status = 404;
+      return next(err);
+    }
+
+    req.comment = comment;
 
     next();
   });
@@ -244,11 +270,34 @@ function getComments(req,res,next) {
   
   var returnComments = Utils.returnEntity(res, next);
   
-  Comment.find({ place: place._id }, { __v: false })
+  Comment.find({ place: place._id }, { __v: false, place: false })
     .sort('-date')
     .skip((page - 1) * n)
     .limit(n)
     .exec(returnComments);
+}
+
+
+function createComment(req, res, next) {
+  var place = req.place;
+
+  var comment = new Comment(req.body);
+  comment.place = place._id;
+  // TODO: Véritable auteur
+  comment.author = mongoose.Types.ObjectId("57dbe334c3eaf116f88eca27");
+
+  var onCommentSaved = Utils.returnEntity(res, next, 201);
+  comment.save(onCommentSaved);
+}
+
+
+function deleteComment(req, res, next) {
+  var comment = req.comment;
+
+  comment.remove(function onCommentRemoved(error) {
+    if (error) return next(error);
+    res.status(204).end();
+  });
 }
 
 
@@ -308,6 +357,7 @@ function createPicture(req, res, next) {
   // Not a Picture object in order to get the real timestamp on picture upload
   var picture = {
     place: place._id,
+    // TODO: Véritable auteur
     author: mongoose.Types.ObjectId("57dbe334c3eaf116f88eca27")
   };
 
