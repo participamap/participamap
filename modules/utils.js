@@ -3,18 +3,21 @@
  */
 
 function Utils() {
-  this.returnEntity = Utils.returnEntity;
+  this.returnSavedEntity = Utils.returnSavedEntity;
 }
 
 /**
- * Creates a callback to return an entity after a database action
+ * Creates a callback to return an entity after saving it in the database
  */
-Utils.returnEntity = function (res, next, status = 200) {
-  return function (error, entity) {
+Utils.returnSavedEntity = function (res, next, status = 200) {
+  return function (error, savedEntity) {
     if (error) return next(error);
 
-    entity.__v = undefined;
-    res.status(status).json(entity);
+    // Remove unwanted info
+    savedEntity.__v = undefined;
+    savedEntity.place = undefined;
+
+    res.status(status).json(savedEntity);
   };
 };
 
