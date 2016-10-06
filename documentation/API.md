@@ -173,10 +173,6 @@ id | Identifiant du lieu | 57dbe334c3eaf116f88e0318
 
 Nom | Description | Exemple | Absence
 ----|-------------|---------|--------
-comms | Nombre de commentaires à transmettre | 10 | Aucun
-pics | Nombre de photos à*\* transmettre | 5 | Aucun
-docs | Nombre de documents à transmettre | 5 | Aucun
-votes | Nombre de votes à transmettre | 2 | Aucun
 admin | Récupérer des informations administrateur | true | false
 
 #### Charge
@@ -199,10 +195,6 @@ isVerified | État de vérification du lieu | true
 *description* | Description | "Maison de la Recherche et de l’Imagination"
 *startDate* | Date de création | "2015-01-01T13:00:00.000Z"
 *endDate* | Date de suppression | "2016-09-09T08:00:00.000Z"
-*comments* | Commentaires | *Liste de commentaires*
-*pictures* | Photos | *Liste de photos*
-*documents* | Documents | *Liste de documents*
-*votes* | Votes | *Liste de votes*
 *moderateComments*\* | Modération des commentaires | true
 *moderatePictures*\* | Modération des photos | true
 *moderateDocuments*\* | Modération des documents | true

@@ -1,12 +1,19 @@
 var express = require('express');
 var mongoose = require('mongoose');
-var router = express.Router();
+
+var Checks = require('../modules/checks');
+var Utils = require('../modules/utils');
+
+var Place = require('../models/place');
+var Comment = require('../models/comment');
+var Picture = require('../models/picture');
+var Document = require('../models/document');
+var Vote = require('../models/vote');
+var PendingUpload = require('../models/pending_upload');
 
 var config = require('../config.json');
 
-var Checks = require('../modules/checks');
-var Place = require('../models/place');
-var PendingUpload = require('../models/pending_upload');
+var router = express.Router();
 
 router.param('id', Checks.isValidObjectId);
 router.param('id', getPlace);
@@ -21,26 +28,7 @@ router.post('/:id/pictures', Checks.db, createPicture);
 
 
 function getPlace(req, res, next, id) {
-  // Get the place without heavy content like comments, …
-  var projection = {
-    location: true,
-    title: true,
-    isVerified: true,
-    proposedBy: true,
-    type: true,
-    headerPhoto: true,
-    description: true,
-    startDate: true,
-    endDate: true,
-    moderateComments: true,
-    moderatePictures: true,
-    moderateDocuments: true,
-    denyComments: true,
-    denyPictures: true,
-    denyDocuments: true
-  };
-
-  Place.findById(id, projection, function onPlaceFound(error, place) {
+  Place.findById(id, { __v: false }, function onPlaceFound(error, place) {
     if (error) return next(error);
 
     if (!place) {
@@ -128,11 +116,9 @@ function getPlacesHeaders(req, res, next) {
     headerPhoto: true
   };
 
-  Place.find(filter, projection,
-    function returnPlacesHeaders(error, placesHeaders) {
-      if (error) return next(error);
-      res.json(placesHeaders);
-    });
+  var returnPlacesHeaders = Utils.returnEntity(res, next);
+  
+  Place.find(filter, projection, returnPlacesHeaders);
 }
 
 
@@ -161,123 +147,15 @@ function getPlaceInfo(req, res, next) {
     return next(err);
   }
 
-  // TODO: Réécrire pour éviter la redondance de code
-
-  if (req.query.comms) {
-    var nComments = parseInt(req.query.comms);
-
-    if (isNaN(nComments)) {
-      var err = new Error('Bad Request: comms must be an integer');
-      err.status = 400;
-      return next(err);
-    }
-
-    if (nComments <= 0) {
-      var err = new Error('Bad Request: comms must be strictly positive');
-      err.status = 400;
-      return next(err);
-    }
-
-    var projection = {
-      _id: true,
-      // Note: $slice: nb ou $slice: [skip, limit]
-      comments: { $slice: nComments }
-    };
-  }
-
-  if (req.query.pics) {
-    var nPictures = parseInt(req.query.pics);
-
-    if (isNaN(nPictures)) {
-      var err = new Error('Bad Request: pics must be an integer');
-      err.status = 400;
-      return next(err);
-    }
-
-    if (nPictures <= 0) {
-      var err = new Error('Bad Request: pics must be strictly positive');
-      err.status = 400;
-      return next(err);
-    }
-    
-    if (!projection)
-      var projection = { _id: true };
-
-    projection.pictures = { $slice: nPictures };
-  }
-
-  if (req.query.docs) {
-    var nDocuments = parseInt(req.query.docs);
-
-    if (isNaN(nDocuments)) {
-      var err = new Error('Bad Request: docs must be an integer');
-      err.status = 400;
-      return next(err);
-    }
-
-    if (nDocuments <= 0) {
-      var err = new Error('Bad Request: docs must be strictly positive');
-      err.status = 400;
-      return next(err);
-    }
-    
-    if (!projection)
-      var projection = { _id: true };
-
-    projection.documents = { $slice: nDocuments };
-  }
-
-  if (req.query.votes) {
-    var nVotes = parseInt(req.query.votes);
-
-    if (isNaN(nVotes)) {
-      var err = new Error('Bad Request: votes must be an integer');
-      err.status = 400;
-      return next(err);
-    }
-
-    if (nVotes <= 0) {
-      var err = new Error('Bad Request: votes must be strictly positive');
-      err.status = 400;
-      return next(err);
-    }
-    
-    if (!projection)
-      var projection = { _id: true };
-
-    projection.votes = { $slice: nVotes };
-  }
-  
-  if (!projection)
-    return res.json(place); 
-  
-  // Get additional info in the database
-  Place.findById(place._id, projection, function onPlaceInfoGot(error, info) {
-    if (error) return next(error);
-
-    if (info.comments && info.comments.length !== 0)
-      place.comments = info.comments;
-
-    if (info.pictures && info.pictures.length !== 0)
-      place.pictures = info.pictures;
-
-    if (info.documents && info.documents.length !== 0)
-      place.documents = info.documents;
-
-    if (info.votes && info.votes.length !== 0)
-      place.votes = info.votes;
-
-    res.json(place);
-  });
+  res.json(place);
 }
 
 
 function createPlace(req, res, next) {
   var place = new Place(req.body);
 
-  var onPlaceSaved = Place.onSaved(res, next);
-
   if (!req.body.setHeaderPhoto) {
+    var onPlaceSaved = Utils.returnEntity(res, next, 201);
     place.save(onPlaceSaved);
   }
   else { 
@@ -302,7 +180,20 @@ function createPlace(req, res, next) {
 
 
 function deletePlace(req, res, next) {
-  req.place.remove(function onPlaceRemoved(error) {
+  var place = req.place;
+
+  Comment.remove({ place: place._id }, onRemoved);
+  Picture.remove({ place: place._id }, onRemoved);
+  Document.remove({ place: place._id }, onRemoved);
+  Vote.remove({ place: place._id }, onRemoved);
+
+  // TODO: Meilleure gestion (pour l’instant seule la première erreur
+  // déclenchée est retournée
+  function onRemoved(error) {
+    if (error) return next(error);
+  }
+
+  place.remove(function onPlaceRemoved(error) {
     if (error) return next(error);
 
     // TODO: Supprimer les fichiers liés (headerPhoto, photos, documents, …)
@@ -350,18 +241,14 @@ function getComments(req,res,next) {
       return next(err);
     }
   }
-
-  var projection = { _id: true };
-
-  projection.comments = (n !== 0)
-    ? { $slice: [(page - 1) * n, n] }
-    : true;
   
-  Place.findById(place._id, projection,
-    function returnComments(error, result) {
-      if (error) return next(error);
-      res.json(result.comments);
-    });
+  var returnComments = Utils.returnEntity(res, next);
+  
+  Comment.find({ place: place._id }, { __v: false })
+    .sort('-date')
+    .skip((page - 1) * n)
+    .limit(n)
+    .exec(returnComments);
 }
 
 
@@ -405,34 +292,28 @@ function getPictures(req,res,next) {
     }
   }
 
-  var projection = { _id: true };
+  var returnPictures = Utils.returnEntity(res, next);
 
-  projection.pictures = (n !== 0)
-    ? { $slice: [(page - 1) * n, n] }
-    : true;
-  
-  Place.findById(place._id, projection,
-    function returnPictures(error, result) {
-      if (error) return next(error);
-      res.json(result.pictures);
-    });
+  Picture.find({ place: place._id }, { __v: false })
+    .sort('-date')
+    .skip((page - 1) * n)
+    .limit(n)
+    .exec(returnPictures);
 }
 
 
 function createPicture(req, res, next) {
   var place = req.place;
-
-  var pictureInfo = {
+  
+  // Not a Picture object in order to get the real timestamp on picture upload
+  var picture = {
     place: place._id,
-    picture: {
-      // TODO: Mettre le véritable auteur
-      author: mongoose.Types.ObjectId("57dbe334c3eaf116f88eca27")
-    }
+    author: mongoose.Types.ObjectId("57dbe334c3eaf116f88eca27")
   };
 
   var pendingUpload = new PendingUpload({
-    contentType: 'picture-info',
-    content: pictureInfo
+    contentType: 'picture',
+    content: picture
   });
   pendingUpload.save(sendUploadURL);
 
