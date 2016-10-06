@@ -1,0 +1,43 @@
+<div class = "row">
+    <div class="col-md-9">
+        <div class="container">
+            <div class="col-md-5">
+                <h2>Endroit DEJA CREE</h2>
+                <div ng-repeat="eachL in domeLocations">
+                    <a ng-click="centerP.lat = eachL.location.latitude; centerP.lon = eachL.location.longitude "> Location de - {[{eachL.title}]}</a>
+                    <span class="glyphicon glyphicon-remove" ng-click="delPlace(eachL._id)"></span>
+                    <a ng-click="showFrame(eachL._id)" >Add Image</a>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-7">
+                        <h2>MAP</h2>
+
+                        <style type="text/css">
+                            #openlayerFrame{
+                                border: darkseagreen 5px solid;
+                            }
+                        </style>
+
+                        <openlayers id="openlayerFrame" ol-center="centerP"  height="300px">
+                            <ol-marker ng-repeat="mark in domeLocations" name="mark.title" lat="mark.location.latitude" lon="mark.location.longitude"></ol-marker>
+                        </openlayers>
+
+                        <button class="btn btn-block" ng-click="centerP.autodiscover=true;">Discover Position</button>
+                    </div>
+                </div>
+                <div ng-show="showFramePic" class="row">
+                    <h2> Picture Adding : </h2>
+                    <p> This is  {[{placeId}]}</p>
+                    <!--<ui-view></ui-view>-->
+                    <form>
+                        <input type="file" ng-model="picAdded" >
+                        <input type="submit" value="Upload Image" name="submit" ng-click="addPhoto(placeId)">
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

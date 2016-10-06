@@ -34,7 +34,11 @@ app.controller('CreatePlaceCtrl',['$scope','$location', '$timeout','Place','$htt
     });
   });
 
-
+  $scope.showFramePic = false;
+  $scope.showFrame = function(idPlace){
+    $scope.showFramePic = true;
+    $scope.placeId = idPlace;
+  };
 
   $scope.centerP = {
     title: '',
@@ -75,7 +79,11 @@ app.controller('CreatePlaceCtrl',['$scope','$location', '$timeout','Place','$htt
         //commentaire: [{author:'anonyme', body: $scope.centerP.commentaire}],
       });
     }
+  };
+  $scope.addPhoto = function(placeId){
+    Place.addPhotos(placeId);
   }
+
 
 
 

@@ -5,6 +5,7 @@
                 <h2>Veuillez remplir les informations ci-dessus: </h2>
                 <form name="information" ng-submit="saveLocation()">
                     <uib-tabset active="activeForm">
+
                         <uib-tab index="0" heading="Basic Info">
                             <ng-form name="formCreatePlace">
                                 <div class="form-group">
@@ -22,6 +23,7 @@
                                 </div>
                             </ng-form>
                         </uib-tab>
+
                         <uib-tab index="1" heading="Description">
                             <h3>Adding description of the Place</h3>
                             <label>Description</label>
@@ -29,6 +31,7 @@
                             </textarea>
                         </uib-tab>
                     </uib-tabset>
+
                     <button class="btn btn-danger" type="submit">Submit</button>
                 </form>
             </div>
@@ -45,6 +48,7 @@
 
                         <openlayers id="openlayerFrame" ol-center="centerP"  height="300px">
                             <ol-marker ng-repeat="mark in domeLocations" name="mark.title" lat="mark.location.latitude" lon="mark.location.longitude"></ol-marker>
+                            
                         </openlayers>
 
                         <button class="btn btn-block" ng-click="centerP.autodiscover=true;">Discover Position</button>

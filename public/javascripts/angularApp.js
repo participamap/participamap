@@ -82,6 +82,12 @@ app.factory('Place',['$http', function($http){
     })
   };
 
+  o.addPhotos=function (idPlace){
+    return $http.post('http://127.0.0.1:3000/places/'+idPlace.toString()+'/pictures').success(function(data){
+      console.log(data.Location);
+    })
+  };
+
   return o;
 }]);
 
@@ -138,6 +144,19 @@ app.config(
         templateUrl:'tpls/create-place.html',
         controller:'CreatePlaceCtrl'
       });
+    $stateProvider
+      .state('nav.regclient.addPic',{
+        url:'/addPic',
+        templateUrl: 'tpls/addPic.html',
+        controller:'CreatePlaceCtrl'
+    })
+      .state('nav.regclient.addPic.telecharge', {
+        url:'/telecharge',
+        templateUrl: 'tpls/telecharge.html',
+        controller:'CreatePlaceCtrl'
+      });
+
+
     $stateProvider
       .state('nav.regclient.upload',{
         utl:'/upload',
