@@ -1,9 +1,19 @@
 var express = require('express');
 var mongoose = require('mongoose');
-var router = express.Router();
 
 var Checks = require('../modules/checks');
+var Utils = require('../modules/utils');
+
 var Place = require('../models/place');
+var Comment = require('../models/comment');
+var Picture = require('../models/picture');
+var Document = require('../models/document');
+var Vote = require('../models/vote');
+var PendingUpload = require('../models/pending_upload');
+
+var config = require('../config.json');
+
+var router = express.Router();
 
 router.param('id', Checks.isValidObjectId);
 router.param('id', getPlace);
@@ -12,29 +22,13 @@ router.get('/', Checks.db, getPlacesHeaders);
 router.get('/:id', Checks.db, Checks.setAdminFlag, getPlaceInfo);
 router.post('/', Checks.db, createPlace);
 router.delete('/:id', Checks.db, deletePlace);
+router.get('/:id/comments', Checks.db, getComments);
+router.get('/:id/pictures', Checks.db, getPictures);
+router.post('/:id/pictures', Checks.db, createPicture);
 
 
 function getPlace(req, res, next, id) {
-  // Get the place without heavy content like comments, …
-  var projection = {
-    location: true,
-    title: true,
-    isVerified: true,
-    proposedBy: true,
-    type: true,
-    description: true,
-    startDate: true,
-    endDate: true,
-    manager: true,
-    moderateComments: true,
-    moderatePictures: true,
-    moderateDocuments: true,
-    denyComments: true,
-    denyPictures: true,
-    denyDocuments: true
-  };
-
-  Place.findById(id, projection, function onPlaceFound(error, place) {
+  Place.findById(id, { __v: false }, function onPlaceFound(error, place) {
     if (error) return next(error);
 
     if (!place) {
@@ -60,7 +54,7 @@ function getPlacesHeaders(req, res, next) {
       : new Date(req.query.when);
 
     if (isNaN(date.valueOf())) {
-      var err = new Error('Bad request: invalid date');
+      var err = new Error('Bad Request: Invalid date');
       err.status = 400;
       return next(err);
     }
@@ -82,7 +76,7 @@ function getPlacesHeaders(req, res, next) {
     if (!(req.query.lat && req.query.long 
       && req.query.height && req.query.width))
     {
-      var err = new Error('Bad request: lat, long, height and width must be '
+      var err = new Error('Bad Request: lat, long, height and width must be '
         + 'set together');
       err.status = 400;
       return next(err);
@@ -94,7 +88,7 @@ function getPlacesHeaders(req, res, next) {
     var width = parseFloat(req.query.width);
 
     if (isNaN(latitude) || isNaN(longitude) || isNaN(height) || isNaN(width)) {
-      var err = new Error('Bad request: lat, long, height and width must be '
+      var err = new Error('Bad Request: lat, long, height and width must be '
         + 'numbers');
       err.status = 400;
       return next(err);
@@ -118,14 +112,13 @@ function getPlacesHeaders(req, res, next) {
   // Get only the header
   var projection = {
     location: true,
-    title: true
+    title: true,
+    headerPhoto: true
   };
 
-  Place.find(filter, projection,
-    function returnPlacesHeaders(error, placesHeaders) {
-      if (error) return next(error);
-      res.json(placesHeaders);
-  });
+  var returnPlacesHeaders = Utils.returnEntity(res, next);
+  
+  Place.find(filter, projection, returnPlacesHeaders);
 }
 
 
@@ -136,7 +129,6 @@ function getPlaceInfo(req, res, next) {
   if (!req.query.admin || req.query.admin === 'false') {
     // Remove admin-olny info
     place.proposedBy = undefined;
-    place.manager = undefined;
     place.moderateComments = undefined;
     place.moderateDocuments = undefined;
     place.moderatePictures = undefined; 
@@ -150,137 +142,188 @@ function getPlaceInfo(req, res, next) {
     }
   }
   else {
-    var err = new Error('Bad request: admin must be true or false');
+    var err = new Error('Bad Request: admin must be true or false');
     err.status = 400;
     return next(err);
   }
 
-  // TODO: Réécrire pour éviter la redondance de code
-
-  if (req.query.comms) {
-    var nComments = parseInt(req.query.comms);
-
-    if (isNaN(nComments)) {
-      var err = new Error('Bad request: comms must be an integer');
-      err.status = 400;
-      return next(err);
-    }
-
-    if (nComments <= 0) {
-      var err = new Error('Bad request: comms must be strictly positive');
-      err.status = 400;
-      return next(err);
-    }
-
-    var projection = {
-      _id: true,
-      // Note: $slice: nb ou $slice: [skip, limit]
-      comments: { $slice: nComments }
-    };
-  }
-
-  if (req.query.pics) {
-    var nPictures = parseInt(req.query.pics);
-
-    if (isNaN(nPictures)) {
-      var err = new Error('Bad request: pics must be an integer');
-      err.status = 400;
-      return next(err);
-    }
-
-    if (nPictures <= 0) {
-      var err = new Error('Bad request: pics must be strictly positive');
-      err.status = 400;
-      return next(err);
-    }
-    
-    if (!projection)
-      var projection = { _id: true };
-
-    projection.pictures = { $slice: nPictures };
-  }
-
-  if (req.query.docs) {
-    var nDocuments = parseInt(req.query.docs);
-
-    if (isNaN(nDocuments)) {
-      var err = new Error('Bad request: docs must be an integer');
-      err.status = 400;
-      return next(err);
-    }
-
-    if (nDocuments <= 0) {
-      var err = new Error('Bad request: docs must be strictly positive');
-      err.status = 400;
-      return next(err);
-    }
-    
-    if (!projection)
-      var projection = { _id: true };
-
-    projection.documents = { $slice: nDocuments };
-  }
-
-  if (req.query.votes) {
-    var nVotes = parseInt(req.query.votes);
-
-    if (isNaN(nVotes)) {
-      var err = new Error('Bad request: votes must be an integer');
-      err.status = 400;
-      return next(err);
-    }
-
-    if (nVotes <= 0) {
-      var err = new Error('Bad request: votes must be strictly positive');
-      err.status = 400;
-      return next(err);
-    }
-    
-    if (!projection)
-      var projection = { _id: true };
-
-    projection.votes = { $slice: nVotes };
-  }
-  
-  if (!projection)
-    return res.json(place); 
-  
-  // Get additional info in the database
-  Place.findById(place._id, projection, function onPlaceInfoGot(error, info) {
-    if (error) return next(error);
-
-    if (info.comments && info.comments.length !== 0)
-      place.comments = info.comments;
-
-    if (info.pictures && info.pictures.length !== 0)
-      place.pictures = info.pictures;
-
-    if (info.documents && info.documents.length !== 0)
-      place.documents = info.documents;
-
-    if (info.votes && info.votes.length !== 0)
-      place.votes = info.votes;
-
-    res.json(place);
-  });
+  res.json(place);
 }
 
 
 function createPlace(req, res, next) {
   var place = new Place(req.body);
 
-  place.save(function onPlaceSaved(error, newPlace) {
-    if(error) return next(error);
-    res.status(201).json(newPlace);
-  }); 
+  if (!req.body.setHeaderPhoto) {
+    var onPlaceSaved = Utils.returnEntity(res, next, 201);
+    place.save(onPlaceSaved);
+  }
+  else { 
+    place.validate(function onPlaceValidated(error) {
+      if (error) return next(error);
+
+      var pendingUpload = new PendingUpload({
+        contentType: 'place',
+        content: place
+      });
+      pendingUpload.save(sendUploadURL);
+    });
+  }
+
+  function sendUploadURL(error, pendingUpload) {
+    if (error) return next(error);
+
+    var uploadURL = config.serverURL + '/upload/' + pendingUpload._id;
+    res.redirect(204, uploadURL);
+  }
 }
 
 
 function deletePlace(req, res, next) {
-  req.place.remove(function onPlaceRemoved(error) {
+  var place = req.place;
+
+  Comment.remove({ place: place._id }, onRemoved);
+  Picture.remove({ place: place._id }, onRemoved);
+  Document.remove({ place: place._id }, onRemoved);
+  Vote.remove({ place: place._id }, onRemoved);
+
+  // TODO: Meilleure gestion (pour l’instant seule la première erreur
+  // déclenchée est retournée
+  function onRemoved(error) {
     if (error) return next(error);
+  }
+
+  place.remove(function onPlaceRemoved(error) {
+    if (error) return next(error);
+
+    // TODO: Supprimer les fichiers liés (headerPhoto, photos, documents, …)
+
     res.status(204).end();
   });
+}
+
+
+function getComments(req,res,next) {
+  var place = req.place;
+  var page = 1;
+  var n = 0;
+
+  if (req.query.page) {
+    page = parseInt(req.query.page)
+
+    if (isNaN(page)) {
+      var err = new Error('Bad Request: page must be an integer');
+      err.status = 400;
+      return next(err);
+    }
+
+    if (page <= 0) {
+      var err = new Error('Bad Request: page must be strictly positive');
+      err.status = 400;
+      return next(err);
+    }
+
+    n = 10;
+  }
+
+  if (req.query.n) {
+    n = parseInt(req.query.n);
+
+    if (isNaN(n)) {
+      var err = new Error('Bad Request: n must be an integer');
+      err.status = 400;
+      return next(err);
+    }
+
+    if (n <= 0) {
+      var err = new Error('Bad Request: n must be strictly positive');
+      err.status = 400;
+      return next(err);
+    }
+  }
+  
+  var returnComments = Utils.returnEntity(res, next);
+  
+  Comment.find({ place: place._id }, { __v: false })
+    .sort('-date')
+    .skip((page - 1) * n)
+    .limit(n)
+    .exec(returnComments);
+}
+
+
+// TODO: Factoriser le code avec getComments
+function getPictures(req,res,next) {
+  var place = req.place;
+  var page = 1;
+  var n = 0;
+
+  if (req.query.page) {
+    page = parseInt(req.query.page)
+
+    if (isNaN(page)) {
+      var err = new Error('Bad Request: page must be an integer');
+      err.status = 400;
+      return next(err);
+    }
+
+    if (page <= 0) {
+      var err = new Error('Bad Request: page must be strictly positive');
+      err.status = 400;
+      return next(err);
+    }
+
+    n = 12;
+  }
+
+  if (req.query.n) {
+    n = parseInt(req.query.n);
+
+    if (isNaN(n)) {
+      var err = new Error('Bad Request: n must be an integer');
+      err.status = 400;
+      return next(err);
+    }
+
+    if (n <= 0) {
+      var err = new Error('Bad Request: n must be strictly positive');
+      err.status = 400;
+      return next(err);
+    }
+  }
+
+  var returnPictures = Utils.returnEntity(res, next);
+
+  Picture.find({ place: place._id }, { __v: false })
+    .sort('-date')
+    .skip((page - 1) * n)
+    .limit(n)
+    .exec(returnPictures);
+}
+
+
+function createPicture(req, res, next) {
+  var place = req.place;
+  
+  // Not a Picture object in order to get the real timestamp on picture upload
+  var picture = {
+    place: place._id,
+    author: mongoose.Types.ObjectId("57dbe334c3eaf116f88eca27")
+  };
+
+  var pendingUpload = new PendingUpload({
+    contentType: 'picture',
+    content: picture
+  });
+  pendingUpload.save(sendUploadURL);
+
+  // TODO: Factoriser avec les autres requêtes utilisant l’upload
+  function sendUploadURL(error, pendingUpload) {
+    if (error) return next(error);
+
+    var uploadURL = config.serverURL + '/upload/' + pendingUpload._id;
+    res.redirect(204, uploadURL);
+  }
 }
 
 

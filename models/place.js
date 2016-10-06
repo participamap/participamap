@@ -15,14 +15,10 @@ var placeSchema = new Schema({
   isVerified: { type: Boolean, default: false, required: true },
   proposedBy: Schema.Types.ObjectId,
   type: Number, // TODO: Autre type ?
+  headerPhoto: String,
   description: String,
   startDate: { type: Date, default: Date.now },
   endDate: Date,
-  comments: [commentSchema],
-  pictures: [pictureSchema],
-  // TODO: documents
-  // TODO: votes
-  manager: Schema.Types.ObjectId,
   moderateComments: Boolean,
   moderatePictures: Boolean,
   moderateDocuments: Boolean,

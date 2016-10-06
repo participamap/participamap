@@ -1,6 +1,17 @@
 {
+  "serverURL": "http://localhost:3000",
   "mongodb": {
     "uri": "mongodb://localhost/participamap",
     "options": {}
+  },
+  "supervisor": {
+    "pendingUploadsValidity": 60
+  },
+  "fileUpload": {
+    "method": "local",
+    "options": {
+      "uploadDir": "./uploads/",
+      "fileServerURL": "http://localhost:3000/uploads/"
+    }
   }
 }

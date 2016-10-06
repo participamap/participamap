@@ -9,8 +9,12 @@ require('./models/place');
 
 var config = require('./config.json');
 
+var Supervisor = require('./modules/supervisor');
+
 var routes = require('./routes/index');
 var places = require('./routes/places');
+var upload = require('./routes/upload');
+var uploads = express.static('./uploads');
 
 // Routes pour FONT
 var users = require('./routes/users');
@@ -34,6 +38,8 @@ db.once('open', function onDBOpen() {
 var passport = require('passport');
 require('./config/passport');
 
+// Supervisor to automate some actions
+var supervisor = new Supervisor(config.supervisor);
 
 var app = express();
 app.get('/',function(req,res){
@@ -47,7 +53,8 @@ app.set('view engine', 'hbs');
 
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.raw({ type: 'image/jpeg', limit: '5MB' }));
+app.use(bodyParser.raw({ type: 'image/png', limit: '5MB' }));
 
 // Routes declarations
 app.use('/', routes);
@@ -60,6 +67,8 @@ app.use('/images',images);
 app.use(express.static(path.join(__dirname,'public')));
 //Initialisation du passport
 app.use(passport.initialize());
+app.use('/upload', upload);
+app.use('/uploads', uploads);
 
 // catch 404 and forward to error handler
 app.use(function notFound(req, res, next) {
