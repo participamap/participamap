@@ -142,9 +142,11 @@ function getPlacesHeaders(req, res, next) {
     headerPhoto: true
   };
 
-  var returnPlacesHeaders = Utils.returnEntity(res, next);
-  
-  Place.find(filter, projection, returnPlacesHeaders);
+  Place.find(filter, projection,
+    function returnPlacesHeaders(error, placesHeaders) {
+      if (error) return next(error);
+      res.json(placesHeaders);
+    });
 }
 
 
@@ -181,7 +183,7 @@ function createPlace(req, res, next) {
   var place = new Place(req.body);
 
   if (!req.body.setHeaderPhoto) {
-    var onPlaceSaved = Utils.returnEntity(res, next, 201);
+    var onPlaceSaved = Utils.returnSavedEntity(res, next, 201);
     place.save(onPlaceSaved);
   }
   else { 
@@ -268,13 +270,14 @@ function getComments(req,res,next) {
     }
   }
   
-  var returnComments = Utils.returnEntity(res, next);
-  
   Comment.find({ place: place._id }, { __v: false, place: false })
     .sort('-date')
     .skip((page - 1) * n)
     .limit(n)
-    .exec(returnComments);
+    .exec(function returnComments(error, comments) {
+      if (error) return next(error);
+      res.json(comments);
+    });
 }
 
 
@@ -286,7 +289,7 @@ function createComment(req, res, next) {
   // TODO: Véritable auteur
   comment.author = mongoose.Types.ObjectId("57dbe334c3eaf116f88eca27");
 
-  var onCommentSaved = Utils.returnEntity(res, next, 201);
+  var onCommentSaved = Utils.returnSavedEntity(res, next, 201);
   comment.save(onCommentSaved);
 }
 
@@ -341,13 +344,14 @@ function getPictures(req,res,next) {
     }
   }
 
-  var returnPictures = Utils.returnEntity(res, next);
-
-  Picture.find({ place: place._id }, { __v: false })
+  Picture.find({ place: place._id }, { __v: false, place: false })
     .sort('-date')
     .skip((page - 1) * n)
     .limit(n)
-    .exec(returnPictures);
+    .exec(function returnPictures(error, pictures) {
+      if (error) return next(error);
+      res.json(pictures);
+    });
 }
 
 
@@ -355,11 +359,10 @@ function createPicture(req, res, next) {
   var place = req.place;
   
   // Not a Picture object in order to get the real timestamp on picture upload
-  var picture = {
-    place: place._id,
-    // TODO: Véritable auteur
-    author: mongoose.Types.ObjectId("57dbe334c3eaf116f88eca27")
-  };
+  var picture = {};
+  picture.place = place._id;
+  // TODO: Véritable auteur
+  picture.author = mongoose.Types.ObjectId("57dbe334c3eaf116f88eca27");
 
   var pendingUpload = new PendingUpload({
     contentType: 'picture',
