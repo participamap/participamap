@@ -765,7 +765,7 @@ url | URL de la photo | "https://photos.participamap.org/97a15d97-847e-450c-8bd0
 Requête :
 
 ```sh
-$ curl https://api.participamap.org/places/57dbe334c3eaf116f88e0318/pitcures?page=1
+$ curl https://api.participamap.org/places/57dbe334c3eaf116f88e0318/pictures?page=1
 ```
 
 Réponse :
@@ -844,7 +844,7 @@ url | URL de la photo | "https://photos.participamap.org/97a15d97-847e-450c-8bd0
 Requête :
 
 ```sh
-$ curl -X POST https://api.participamap.org/places/57dbe334c3eaf116f88e0318/pitcures
+$ curl -X POST https://api.participamap.org/places/57dbe334c3eaf116f88e0318/pictures
 ```
 
 Le serveur répond avec :
