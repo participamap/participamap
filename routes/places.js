@@ -21,6 +21,15 @@ router.param('id', getPlace);
 router.param('comment_id', Checks.isValidObjectId);
 router.param('comment_id', getComment);
 
+//router.param('picture_id', Checks.isValidObjectId);
+//router.param('picture_id', getPicture);
+
+//router.param('document_id', Checks.isValidObjectId);
+//router.param('document_id', getDocument);
+
+//router.param('vote_id', Checks.isValidObjectId);
+//router.param('vote_id', getVote);
+
 router.get('/', Checks.db, getPlacesHeaders);
 router.get('/:id', Checks.db, Checks.setAdminFlag, getPlaceInfo);
 router.post('/', Checks.db, createPlace);
@@ -31,6 +40,13 @@ router.post('/:id/comments', Checks.db, createComment);
 router.delete('/:id/comments/:comment_id', Checks.db, deleteComment);
 router.get('/:id/pictures', Checks.db, getPictures);
 router.post('/:id/pictures', Checks.db, createPicture);
+//router.delete('/:id/pictures/:picture_id', Checks.db, deletePicture);
+//router.get('/:id/documents', Checks.db, getDocuments);
+//router.post('/:id/documents', Checks.db, createDocument);
+//router.delete('/:id/documents/:document_id', Checks.db, deleteDocument);
+//router.get('/:id/votes', Checks.db, getVotes);
+//router.post('/:id/votes', Checks.db, createVote);
+//router.delete('/:id/votes/:vote_id', Checks.db, deleteVote);
 
 
 function getPlace(req, res, next, id) {
