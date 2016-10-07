@@ -8,6 +8,7 @@ var Place = require('../models/place');
 var Comment = require('../models/comment');
 var Picture = require('../models/picture');
 var Document = require('../models/document');
+var AbuseReported = require('../models/abuseReported');
 var Vote = require('../models/vote');
 var PendingUpload = require('../models/pending_upload');
 
@@ -30,6 +31,7 @@ router.post('/:id/comments', Checks.db, createComment);
 router.delete('/:id/comments/:comment_id', Checks.db, deleteComment);
 router.get('/:id/pictures', Checks.db, getPictures);
 router.post('/:id/pictures', Checks.db, createPicture);
+router.post('/:id/abuse/:comment_id', Checks.db, createAbuseReport);
 
 
 function getPlace(req, res, next, id) {
@@ -291,6 +293,17 @@ function createComment(req, res, next) {
 
   var onCommentSaved = Utils.returnSavedEntity(res, next, 201);
   comment.save(onCommentSaved);
+}
+
+function createAbuse(req, res, next) {
+  var place = req.place;
+
+  var abuse = new AbuseReported(req.body);
+  // TODO: Véritable auteur
+  abuse.user = mongoose.Types.ObjectId("57e4d06ff0653747e4559bfe");
+
+  var onAbuseSaved = Utils.returnSavedEntity(res, next, 201);
+  abuse.save(onAbuseSaved);
 }
 
 
