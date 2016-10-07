@@ -275,7 +275,7 @@ title | Titre du lieu | "Le Dôme"
 *moderateComments*\* | Modération des commentaires | true
 *moderatePictures*\* | Modération des photos | true
 *moderateDocuments*\* | Modération des documents | true
-*denyComments*\*\*| Interdiction des commentaires | true
+*denyComments*\*| Interdiction des commentaires | true
 *denyPictures*\* | Interdiction des photos | true
 *denyDocuments*\* | Interdiction des documents | true
 
@@ -390,6 +390,7 @@ Attribut | Description | Exemple
 *isVerified* | État de vérification du lieu | true
 *type* | Type du lieu | 0
 *setHeaderPhoto*\* | Chargement d’une photo d’en-tête | true
+*deleteHeaderPhoto* | Suppression de la photo d’en-tête | true
 *description* | Description | "Maison de la Recherche et de l’Imagination"
 *startDate* | Date de création | "2015-01-01T13:00:00.000Z"
 *endDate* | Date de suppression | "2016-09-09T08:00:00.000Z"

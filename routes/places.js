@@ -24,6 +24,7 @@ router.param('comment_id', getComment);
 router.get('/', Checks.db, getPlacesHeaders);
 router.get('/:id', Checks.db, Checks.setAdminFlag, getPlaceInfo);
 router.post('/', Checks.db, createPlace);
+router.put('/:id', Checks.db, updatePlace);
 router.delete('/:id', Checks.db, deletePlace);
 router.get('/:id/comments', Checks.db, getComments);
 router.post('/:id/comments', Checks.db, createComment);
@@ -182,6 +183,8 @@ function getPlaceInfo(req, res, next) {
 function createPlace(req, res, next) {
   var place = new Place(req.body);
 
+  // TODO: Vérifier si admin pour les champs admin-only
+
   if (!req.body.setHeaderPhoto) {
     var onPlaceSaved = Utils.returnSavedEntity(res, next, 201);
     place.save(onPlaceSaved);
@@ -193,6 +196,46 @@ function createPlace(req, res, next) {
       var pendingUpload = new PendingUpload({
         contentType: 'place',
         content: place
+      });
+      pendingUpload.save(sendUploadURL);
+    });
+  }
+
+  function sendUploadURL(error, pendingUpload) {
+    if (error) return next(error);
+
+    var uploadURL = config.serverURL + '/upload/' + pendingUpload._id;
+    res.redirect(204, uploadURL);
+  }
+}
+
+
+function updatePlace(req, res, next) {
+  var place = req.place;
+  var modifications = req.body;
+
+  for (attribute in modifications)
+    place[attribute] = modifications[attribute]
+
+  if (modifications.deleteHeaderPhoto) {
+    // TODO: Supprimer le fichier
+    
+    place.headerPhoto = undefined;
+  }
+
+  // TODO: Factoriser du code
+  if (!modifications.setHeaderPhoto) {
+    var onPlaceSaved = Utils.returnSavedEntity(res, next);
+    place.save(onPlaceSaved);
+  }
+  else { 
+    place.validate(function onPlaceValidated(error) {
+      if (error) return next(error);
+
+      var pendingUpload = new PendingUpload({
+        contentType: 'place',
+        content: place,
+        toUpdate: true
       });
       pendingUpload.save(sendUploadURL);
     });
