@@ -8,7 +8,8 @@ var Schema = mongoose.Schema;
 var pendingUploadSchema = new Schema({
   date: { type: Date, default: Date.now, required: true },
   contentType: { type: String, required: true },
-  content: { type: Schema.Types.Mixed, required: true }
+  content: { type: Schema.Types.Mixed, required: true },
+  toUpdate: { type: Boolean, default: false }
 });
 
 var PendingUpload = mongoose.model('PendingUpload', pendingUploadSchema);
