@@ -1,5 +1,5 @@
 {
-  "serverURL": "http://localhost:3000",
+  "serverURL": "http://localhost:3000/",
   "mongodb": {
     "uri": "mongodb://localhost/participamap",
     "options": {}

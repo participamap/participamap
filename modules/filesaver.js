@@ -3,6 +3,8 @@
  */
 
 var fs = require('fs');
+var path = require('path');
+var url = require('url');
 
 function FileSaver(config) {
   switch (config.method) {
@@ -15,12 +17,12 @@ function FileSaver(config) {
        *   - fileServerURL: URL to access the files remotely
        */
       this.save = function (fileName, content, callback) {
-        var filePath = config.options.uploadDir + fileName;
+        var filePath = path.join(config.options.uploadDir, fileName);
         
         fs.writeFile(filePath, content, function onFileSaved(error) {
           if (error) return callback(error);
 
-          var fileURL = config.options.fileServerURL + fileName;
+          var fileURL = url.resolve(config.options.fileServerURL, fileName);
           callback(null, fileURL);
         });
       };

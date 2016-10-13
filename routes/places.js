@@ -1,5 +1,6 @@
 var express = require('express');
 var mongoose = require('mongoose');
+var url = require('url');
 
 var Checks = require('../modules/checks');
 var Utils = require('../modules/utils');
@@ -220,7 +221,8 @@ function createPlace(req, res, next) {
   function sendUploadURL(error, pendingUpload) {
     if (error) return next(error);
 
-    var uploadURL = config.serverURL + '/upload/' + pendingUpload._id;
+    var uploadPath = 'upload/' + pendingUpload._id;
+    var uploadURL = url.resolve(config.serverURL, uploadPath);
     res.redirect(204, uploadURL);
   }
 }
@@ -260,7 +262,8 @@ function updatePlace(req, res, next) {
   function sendUploadURL(error, pendingUpload) {
     if (error) return next(error);
 
-    var uploadURL = config.serverURL + '/upload/' + pendingUpload._id;
+    var uploadPath = 'upload/' + pendingUpload._id;
+    var uploadURL = url.resolve(config.serverURL, uploadPath);
     res.redirect(204, uploadURL);
   }
 }
@@ -433,7 +436,8 @@ function createPicture(req, res, next) {
   function sendUploadURL(error, pendingUpload) {
     if (error) return next(error);
 
-    var uploadURL = config.serverURL + '/upload/' + pendingUpload._id;
+    var uploadPath = 'upload/' + pendingUpload._id;
+    var uploadURL = url.resolve(config.serverURL, uploadPath);
     res.redirect(204, uploadURL);
   }
 }

@@ -10,6 +10,7 @@ var Supervisor = require('./modules/supervisor');
 var routes = require('./routes/index');
 var places = require('./routes/places');
 var upload = require('./routes/upload');
+// TODO: Définir les statics via la config
 var uploads = express.static('./uploads');
 
 mongoose.connect(config.mongodb.uri, config.mongodb.options);
