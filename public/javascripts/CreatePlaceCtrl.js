@@ -3,7 +3,7 @@
  */
 
 
-app.controller('CreatePlaceCtrl',['$scope','$location', '$timeout','Place','$http', function ($scope,$location,$rootScope,Place, $timeout ,$state, $http) {
+app.controller('CreatePlaceCtrl',['$scope','$location', '$timeout','Place','$http','$rootScope', function ($scope,$location,$rootScope,Place, $timeout ,$state, $http) {
   angular.extend($scope, {
 
     defatults: {
@@ -61,27 +61,50 @@ app.controller('CreatePlaceCtrl',['$scope','$location', '$timeout','Place','$htt
     console.log("running controller deletePlace");
     Place.delete(identity);
   };
+  $scope.imageOrNot = true;
+
 
 
   $scope.saveLocation=function (){
+    console.log("running save location");
+
     if(!$scope.centerP.title || $scope.centerP.title===''){
       return;
     } else {
-      Place.create({
-        title: $scope.centerP.title,
-        author:$scope.currentUser,
-        location:{
-          latitude: $scope.centerP.lat,
-          longitude: $scope.centerP.lon
-        },
-        description: $scope.centerP.description,
-        isVerified : false
-        //commentaire: [{author:'anonyme', body: $scope.centerP.commentaire}],
-      });
+      if($scope.imageOrNot===true){
+        console.log("creating place with picture");
+        Place.createAndAddPhoto(
+          {
+          title: $scope.centerP.title,
+          author:$scope.currentUser,
+          location:{
+            latitude: $scope.centerP.lat,
+            longitude: $scope.centerP.lon
+          },
+          description: $scope.centerP.description,
+          isVerified : false,
+          setHeaderPhoto : true
+        }, $scope.picAdded);
+      }else{
+        console.log("creating place with picture");
+        Place.create(
+          {
+            title: $scope.centerP.title,
+            author:$scope.currentUser,
+            location:{
+              latitude: $scope.centerP.lat,
+              longitude: $scope.centerP.lon
+            },
+            description: $scope.centerP.description,
+            isVerified : false
+          });
+      }
+
     }
   };
-  $scope.addPhoto = function(placeId){
-    Place.addPhotos(placeId);
+
+  $scope.addPhoto = function(){
+    Place.addPhotos($scope.placeId, $scope.picAdded);
   }
 
 

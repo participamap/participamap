@@ -30,22 +30,10 @@ app.controller('ClientViewCtrl',['$scope','$location', '$timeout','Place',functi
   };
 
 
-  $scope.saveLocation=function (){
-    if(!$scope.centerP.title || $scope.centerP.title===''){
-      return;
-    } else {
-      Place.create({
-        title: $scope.centerP.title,
-        author:$scope.currentUser,
-        latitude: $scope.centerP.lat,
-        longitude: $scope.centerP.lon,
-        zoom : $scope.centerP.zoom,
-        description: $scope.centerP.description,
-        isVerified : false
-        //commentaire: [{author:'anonyme', body: $scope.centerP.commentaire}],
-      });
-    }
-
+  $scope.focus = function (lat, lon){
+    $scope.centerP.lat = lat;
+    $scope.centerP.lon = lon;
+    $scope.centerP.zoom = 18;
   };
 
 

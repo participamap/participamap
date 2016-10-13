@@ -2,7 +2,7 @@
  * Created by xicunhan on 17/09/2016.
  */
 
-var app = angular.module('demoapp',["openlayers-directive","ui.router","ui.bootstrap","ngAnimate","ngSanitize"]);
+var app = angular.module('demoapp',["openlayers-directive","ui.router","ui.bootstrap","ngAnimate","ngSanitize","base64"]);
 
 app.factory('auth',['$http','$window', function($http,$window){
   var auth = {};
@@ -52,10 +52,31 @@ app.factory('auth',['$http','$window', function($http,$window){
   return auth;
 }]);
 
+app.directive('fileModel', ['$parse', function ($parse) {
+  return {
+    restrict: 'A',
+    link: function(scope, element, attrs) {
+      var model = $parse(attrs.fileModel);
+      var modelSetter = model.assign;
 
-app.factory('Place',['$http', function($http){
+      element.bind('change', function(){
+        scope.$apply(function(){
+          modelSetter(scope, element[0].files[0]);
+        });
+      });
+    }
+  };
+}]);
+
+
+app.factory('Place',['$http','$base64', function($http,$base64){
   var o = { //difinir un objet
     places :[]
+  };
+
+  o.getOnePlace = function(identity) {
+    return $http.get('places/'+identity.toString()).success(function(){
+    });
   };
 
   o.getAll = function(){
@@ -66,6 +87,25 @@ app.factory('Place',['$http', function($http){
   o.create = function(place){
     return $http.post('places',place).success(function(data){
       o.places.push(data);
+
+    });
+  };
+
+  o.createAndAddPhoto = function(place, picBin){
+
+    return $http.post('places',place).success(function(data,status,header,config){
+
+      var sendUrl = 'http://127.0.0.1:3000/upload/'+header().location.toString().split('/').pop();
+      var fd = new FormData();
+      fd.append('file',picBin);
+      //console.log (picBin);
+      picBin.name = '@'+picBin.name;
+      $http.put(sendUrl,picBin,{headers:{'Content-Type':'image/png'}}).then(function(){
+        console.log('reussir');
+      });
+
+      o.places.push(data);
+
     });
   };
 
@@ -82,9 +122,19 @@ app.factory('Place',['$http', function($http){
     })
   };
 
-  o.addPhotos=function (idPlace){
-    return $http.post('http://127.0.0.1:3000/places/'+idPlace.toString()+'/pictures').success(function(data){
-      console.log(data.Location);
+  o.addPhotos=function (idPlace,imgBin){
+    var fd = new FormData();
+    fd.append('file',imgBin);
+    imgBin.name = '@'+imgBin.name;
+    return $http.post('http://127.0.0.1:3000/places/'+idPlace.toString()+'/pictures').success(function(data,status,header,config){
+      var sendUrl = 'http://127.0.0.1:3000/upload/'+header().location.toString().split('/').pop();
+      //var imgData = $base64.encode(imgBin);
+      $http.put(sendUrl,imgBin,{headers:{'Content-Type':'image/png'}}).then(function(){
+        console.log('reussir');
+      });
+
+    }).error(function(response){
+      console.log('post failed');
     })
   };
 
@@ -138,6 +188,16 @@ app.config(
         templateUrl:'tpls/regclient-view.html',
         controller: 'ClientViewCtrl'
       });
+    $stateProvider
+      .state('nav.regclient.views.place',{
+        url:'/{place_id}',
+        templateUrl:'tpls/view-details-place.html',
+        resolve:{
+            aPlace : function(Place, $stateParams){return Place.getOnePlace($stateParams.place_id);}
+        },
+        controller:'ViewPlaceController'
+      });
+
     $stateProvider
       .state('nav.regclient.create',{
         url:'/create',

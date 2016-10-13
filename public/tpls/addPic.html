@@ -32,8 +32,8 @@
                     <p> This is  {[{placeId}]}</p>
                     <!--<ui-view></ui-view>-->
                     <form>
-                        <input type="file" ng-model="picAdded" >
-                        <input type="submit" value="Upload Image" name="submit" ng-click="addPhoto(placeId)">
+                        <input type="file" file-model="picAdded" accept="image/*" >
+                        <input type="submit" value="Upload Image" name="submit" ng-click="addPhoto()">
                     </form>
                 </div>
             </div>
