@@ -1,24 +1,26 @@
 var express = require('express');
-var multer = require('multer');
-var path = require('path');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
+var passport = require('passport');
+
+// TODO: Rendre ça plus propre, pas d’import en global
+require('./config/passport');
 require('./models/users');
 require('./models/place');
 
 var config = require('./config.json');
 
+var Supervisor = require('./modules/supervisor');
+
 var routes = require('./routes/index');
 var places = require('./routes/places');
+var upload = require('./routes/upload');
+// TODO: Définir les statics via la config
+var uploads = express.static('./uploads');
 
-// Routes pour FONT
-var users = require('./routes/users');
-var images = require('./routes/images');
-
-
+// Connection to the database
 mongoose.connect(config.mongodb.uri, config.mongodb.options);
-
 var db = mongoose.connection;
 
 db.on('error', function onDBConnectionError() {
@@ -30,36 +32,24 @@ db.once('open', function onDBOpen() {
   console.log('Successfully connected to MongoDB!\n');
 });
 
-//utiliser passport pout auth
-var passport = require('passport');
-require('./config/passport');
-
+// Supervisor to automate some actions
+var supervisor = new Supervisor(config.supervisor);
 
 var app = express();
-app.get('/',function(req,res){
-  res.sendfile('./public/index.html');
-});
 
-
-//view engine setup
-app.set('views', path.join(__dirname,'views'));
-app.set('view engine', 'hbs');
-
+// Modules declarations
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.raw({ type: 'image/jpeg', limit: '5MB' }));
+app.use(bodyParser.raw({ type: 'image/png', limit: '5MB' }));
+app.use(passport.initialize());
 
 // Routes declarations
 app.use('/', routes);
 app.use('/places', places);
 app.use('/users', users);
-app.use('/images',images);
-
-
-//Route static express
-app.use(express.static(path.join(__dirname,'public')));
-//Initialisation du passport
-app.use(passport.initialize());
+app.use('/upload', upload);
+app.use('/uploads', uploads);
 
 // catch 404 and forward to error handler
 app.use(function notFound(req, res, next) {
