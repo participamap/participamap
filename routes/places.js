@@ -699,7 +699,7 @@ function createAbuseReported(req, res, next) {
 
   
   var abuse = new AbuseReported(req.body);
-  abuse.contentReported= mongoose.Types.ObjectId("57ff35e1e446c90c26e9980f");
+  //
   // TODO: Véritable auteur
   //abuse.user = mongoose.Types.ObjectIddd("57e4d06ff0653747e4559bfe");
 
