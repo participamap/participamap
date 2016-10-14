@@ -6,6 +6,11 @@
     * [Protocole et format](#protocole-et-format)
     * [Appels réussis](#appels-réussis)
     * [Gestion des erreurs](#gestion-des-erreurs)
+* [**Utilisateurs**](#utilisateurs)
+    * [Liste des utilisateurs](#liste-des-utilisateurs)
+    * [Informations d’un utilisateur](#informations-dun-utilisateur)
+    * [Modification d’un utilisateur](#informations-dun-utilisateur)
+    * [Suppression d’un utilisateur](#suppression-dun-utilisateur)
 * [**Lieux**](#lieux)
     * [En-têtes de lieux](#en-têtes-de-lieux)
     * [Informations d’un lieu](#informations-dun-lieu)
@@ -23,6 +28,14 @@
 ### Protocole et format
 
 L’API utilise le protocole HTTP. Les charges des requêtes doivent être passés en JSON avec l’en-tête `Content-Type: application/json`. Les réponses sont toujours en JSON.
+
+### Paramètres
+
+* Les paramètres de chemin sont toujours obligatoires.
+* Les paramètres de requête sont toujours facultatifs. Le comportement de l’API en leur absence est spécifié dans la documentation.
+* Les attributs de la charge d’une requête sont :
+    * obligatoires par défaut ;
+    * facultatifs s’ils sont écrits en italique.
 
 ### Appels réussis
 
@@ -59,6 +72,270 @@ Chaque requête est détaillée avec un exemple montrant :
 * la requête exécutée avec `curl`,
 * les en-têtes HTTP importants de la réponse,
 * le contenu de la réponse en JSON le cas échéant.
+
+## Utilisateurs
+
+### Liste des utilisateurs
+
+#### Nom de la requête
+
+`getUsers`
+
+#### Description
+
+Récupère la liste des utilisateurs.
+
+#### Point d’accès
+
+Méthode | Chemin | autorisation
+:------:|:------:|:-----------:
+GET | /users | administrateur
+
+#### Paramètres de chemin
+
+*Néant*
+
+#### Paramètres de requête
+
+Nom | Description | Exemple | Absence
+----|-------------|---------|--------
+order | Ordre de tri | date, date-desc, username, username-desc | username
+page | Numéro de page | 3 | 1
+n | Nombre de commentaires par page | 100 | 25 si `page` est fixé, infini sinon
+
+#### Charge
+
+*Néant*
+
+#### Réponse
+
+Liste d’utilisateurs :
+
+Attribut | Description | Exemple
+---------|-------------|--------
+_id | Identifiant de l’utilisateur | "57dbe334c3eaf116f88e0318"
+username | Nom d’utilisateur | "user007"
+email | Adresse électronique | "user@domain.com"
+registrationDate | Date d’inscription | "2016-10-14T15:27:43.123Z"
+
+#### Exemple
+
+Requête :
+
+```sh
+$ curl https://api.participamap.org/users?order=date-desc&page=1&n=2
+```
+
+Réponse :
+
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+```
+
+```json
+[
+  {
+    "_id": "57dbe334c3eaf116f88e0319",
+    "username": "thierry23",
+    "email": "thierry@example.com",
+    "registrationDate": "2016-10-14T15:56:52.690Z"
+  },
+  {
+    "_id": "57dbe334c3eaf116f88e0318",
+    "username": "user007",
+    "email": "user@domain.com",
+    "registrationDate": "2016-10-14T15:27:43.123Z"
+  }
+]
+```
+
+### Informations d’un utilisateur
+
+#### Nom de la requête
+
+`getUserInfo`
+
+#### Description
+
+Récupère les informations sur un utilisateur.
+
+#### Point d’accès
+
+Méthode | Chemin | autorisation
+:------:|:------:|:-----------:
+GET | /users/{id} | utilisateur (lui-même) / administrateur (tous)
+
+#### Paramètres de chemin
+
+Nom | Description | Exemple
+----|-------------|--------
+id | Identifiant de l’utilisateur | 57dbe334c3eaf116f88e0318
+
+#### Paramètres de requête
+
+*Néant*
+
+#### Charge
+
+*Néant*
+
+#### Réponse
+
+Un utilisateur :
+
+Attribut | Description | Exemple
+---------|-------------|--------
+_id | Identifiant de l’utilisateur | "57dbe334c3eaf116f88e0318"
+username | Nom d’utilisateur | "user007"
+email | Adresse électronique | "user@domain.com"
+registrationDate | Date d’inscription | "2016-10-14T15:27:43.123Z"
+
+#### Exemple
+
+Requête :
+
+```sh
+$ curl https://api.participamap.org/users/57dbe334c3eaf116f88e0318
+```
+
+Réponse :
+
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+```
+
+```json
+{
+  "_id": "57dbe334c3eaf116f88e0318",
+  "username": "user007",
+  "email": "user@domain.com",
+  "registrationDate": "2016-10-14T15:27:43.123Z"
+}
+```
+
+### Modification d’un utilisateur
+
+#### Nom de la requête
+
+`updateUser`
+
+#### Description
+
+Modifie un utilisateur.
+
+#### Point d’accès
+
+Méthode | Chemin | autorisation
+:------:|:------:|:-----------:
+PUT | /users/{id} | utilisateur (lui-même)
+
+#### Paramètres de chemin
+
+Nom | Description | Exemple
+----|-------------|--------
+id | Identifiant de l’utilisateur | 57dbe334c3eaf116f88e0318
+
+#### Paramètres de requête
+
+*Néant*
+
+#### Charge
+
+Un utilisateur :
+
+Attribut | Description | Exemple
+---------|-------------|--------
+*email* | Adresse électronique | "user@domain.com"
+*password* | Mot de passe | "*odFh7Gt}/W&i0zD"
+
+#### Réponse
+
+Un utilisateur :
+
+Attribut | Description | Exemple
+---------|-------------|--------
+_id | Identifiant de l’utilisateur | "57dbe334c3eaf116f88e0318"
+username | Nom d’utilisateur | "user007"
+email | Adresse électronique | "user@domain.com"
+registrationDate | Date d’inscription | "2016-10-14T15:27:43.123Z"
+
+#### Exemple
+
+Requête :
+
+```sh
+$ curl -X PUT -H "Content-Type: application/json" \
+    -d '{"password": "*odFh7Gt}/W&i0zD"}' \
+    https://api.participamap.org/users/57dbe334c3eaf116f88e0318
+```
+
+Réponse :
+
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+```
+
+```json
+{
+  "_id": "57dbe334c3eaf116f88e0318",
+  "username": "user007",
+  "email": "user@domain.com",
+  "registrationDate": "2016-10-14T15:27:43.123Z"
+}
+```
+
+### Suppression d’un utilisateur
+
+#### Nom de la requête
+
+`deleteUser`
+
+#### Description
+
+Supprime un utilisateur.
+
+#### Point d’accès
+
+Méthode | Chemin | autorisation
+:------:|:------:|:-----------:
+DELETE | /users/{id} | utilisateur (lui-même) / administrateur (tous)
+
+#### Paramètres de chemin
+
+Nom | Description | Exemple
+----|-------------|--------
+id | Identifiant de l’utilisateur | 57dbe334c3eaf116f88e0318
+
+#### Paramètres de requête
+
+*Néant*
+
+#### Charge
+
+*Néant*
+
+#### Réponse
+
+```http
+HTTP/1.1 204 No Content
+```
+
+#### Exemple
+
+Requête :
+
+```sh
+$ curl -X DELETE https://api.participamap.org/users/57dbe334c3eaf116f88e0318
+```
+
+Réponse :
+
+```http
+HTTP/1.1 204 No Content
+```
 
 ## Lieux
 

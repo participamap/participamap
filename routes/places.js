@@ -233,7 +233,7 @@ function updatePlace(req, res, next) {
   var modifications = req.body;
 
   for (attribute in modifications)
-    place[attribute] = modifications[attribute]
+    place[attribute] = modifications[attribute];
 
   if (modifications.deleteHeaderPhoto) {
     // TODO: Supprimer le fichier

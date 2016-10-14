@@ -6,14 +6,13 @@ var mongoose = require('mongoose');
 
 // TODO: Rendre ça plus propre, pas d’import en global
 //require('./config/passport');
-//require('./models/users');
-//require('./models/place');
 
 var config = require('./config.json');
 
 var Supervisor = require('./modules/supervisor');
 
 var routes = require('./routes/index');
+var users = require('./routes/users');
 var places = require('./routes/places');
 var upload = require('./routes/upload');
 // TODO: Définir les statics via la config
@@ -46,8 +45,8 @@ app.use(bodyParser.raw({ type: 'image/png', limit: '5MB' }));
 
 // Routes declarations
 app.use('/', routes);
+app.use('/users', users);
 app.use('/places', places);
-//app.use('/users', users);
 app.use('/upload', upload);
 app.use('/uploads', uploads);
 

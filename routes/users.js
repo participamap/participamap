@@ -1,58 +1,147 @@
 var express = require('express');
-var router = express.Router();
-var passport = require('passport');
-var jwt = require('express-jwt');
-
-
 var mongoose = require('mongoose');
-var User = mongoose.model('User');
-var Place = mongoose.model('Place');
 
-var auth = jwt({secret:'SECRET', userProperty:'payload'});
+var Checks = require('../modules/checks');
+var Utils = require('../modules/utils');
+
+var User = require('../models/user');
+
+var router = express.Router();
+
+router.param('id', Checks.isValidObjectId);
+router.param('id', getUser);
+
+router.get('/', Checks.db, getUsers);
+router.get('/:id', Checks.db, getUserInfo);
+router.put('/:id', Checks.db, updateUser);
+router.delete('/:id', Checks.db, deleteUser);
 
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'DEMO' });
-});
+function getUser(req, res, next, id) {
+  var options = {
+    __v: false,
+    passwordSalt: false,
+    passwordHash: false
+  };
 
-router.post('/register', function(req,res,next){
-  if(!req.body.username || !req.body.password){
-    return res.status(400).json({message:"Veuillez remplir tous champs obligatoire SVP"});
-  }
+  User.findById(id, options, function onUserFound(error, user) {
+    if (error) return next(error);
 
-  var user= new User();
-
-  user.username = req.body.username;
-  user.setPassword(req.body.password);
-  user.setEmail(req.body.email);
-
-  user.save(function(err){
-    if(err){return next(err);}
-
-    return res.json({token: user.generateJWT()})
-  });
-});
-
-router.post('/login', function(req,res,next){
-  if (!req.body.username || !req.body.password){
-    return res.status(400).json({message: 'Veuillez remplir tous champs obligatoire SVP'});
-  }
-
-  passport.authenticate('local', function(err,user,info){
-    if(err) {return next(err);}
-    if(user){
-      return res.json({token:user.generateJWT()});
-    } else {
-      return res.status(401).json(info);
+    if (!user) {
+      var err = new Error('Not Found');
+      err.status = 404;
+      return next(err);
     }
-  })(req,res,next);
-});
+
+    req.user = user;
+
+    next();
+  });
+}
 
 
+function getUsers(req, res, next) {
+  var order = 'username';
+  var page = 1;
+  var n = 0;
 
+  if (req.query.order) {
+    switch (req.query.order) {
+      case 'username':
+        break;
+
+      case 'username-desc':
+        order = '-username';
+        break;
+
+      case 'date':
+        order = 'date';
+        break;
+
+      case 'date-desc':
+        order = '-date';
+        break;
+
+      default:
+        var err = new Error('Bad Request: order must be in [username, '
+          + 'username-desc, date, date-desc]');
+        err.status = 400
+        return next(err);
+    }
+  }
+
+  if (req.query.page) {
+    page = parseInt(req.query.page)
+
+    if (isNaN(page)) {
+      var err = new Error('Bad Request: page must be an integer');
+      err.status = 400;
+      return next(err);
+    }
+
+    if (page <= 0) {
+      var err = new Error('Bad Request: page must be strictly positive');
+      err.status = 400;
+      return next(err);
+    }
+
+    n = 25;
+  }
+
+  if (req.query.n) {
+    n = parseInt(req.query.n);
+
+    if (isNaN(n)) {
+      var err = new Error('Bad Request: n must be an integer');
+      err.status = 400;
+      return next(err);
+    }
+
+    if (n <= 0) {
+      var err = new Error('Bad Request: n must be strictly positive');
+      err.status = 400;
+      return next(err);
+    }
+  }
+
+  User.find({}, { __v: false, passwordSalt: false, passwordHash: false })
+    .sort(order)
+    .skip((page - 1) * n)
+    .limit(n)
+    .exec(function returnUsers(error, users) {
+      if (error) return next(error);
+      res.json(users);
+    });
+}
+
+
+function getUserInfo(req, res, next) {
+  res.json(req.user);
+}
+
+
+function updateUser(req, res, next) {
+  var user = req.user;
+  var modifications = req.body;
+
+  for (attribute in modifications)
+    user[attribute] = modifications[attribute];
+
+  var onUserSaved = Utils.returnSavedEntity(res, next);
+  user.save(onUserSaved);
+}
+
+
+function deleteUser(req, res, next) {
+  var user = req.user;
+
+  user.remove(function onUserRemoved(error) {
+    if (error) return next(error);
+    res.status(204).end();
+  });
+}
 
 
 module.exports = router;
 
-
+/* vim: set ts=2 sw=2 et si colorcolumn=80 : */
