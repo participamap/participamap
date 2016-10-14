@@ -182,7 +182,8 @@ app.config(
             return Place.getAll();
           }]
         }
-      })
+      });
+    $stateProvider
       .state('nav.regclient.views',{
         url:'/views',
         templateUrl:'tpls/regclient-view.html',
@@ -203,6 +204,12 @@ app.config(
         url:'/create',
         templateUrl:'tpls/create-place.html',
         controller:'CreatePlaceCtrl'
+      });
+    $stateProvider
+      .state('nav.regclient.iteration',{
+        url:'/iteration',
+        templateUrl: 'tpls/iteration.html',
+        controller:'IterationCtrl'
       });
     $stateProvider
       .state('nav.regclient.addPic',{

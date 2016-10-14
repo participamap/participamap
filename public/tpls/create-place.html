@@ -18,41 +18,10 @@
                     <br/>
                     <label>Description</label>
                     <textarea class="form-control" required ng-model="centerP.description"></textarea>
+                    <label>Informations Pratiques</label>
+                    <textarea class="form-control" ></textarea>
                     <input type="submit" value="OK Upload" name="submit" ng-click="saveLocation()">
                 </form>
-
-                <!--<form name="information" ng-submit="saveLocation();">
-                    <uib-tabset active="activeForm">
-                        <uib-tab index="0" heading="Basic Info">
-                            <ng-form name="formCreatePlace">
-                                <div class="form-group">
-                                    <h3>Chose the name and the position</h3>
-                                    <br/>
-                                    <label>Name</label>
-                                    <input type="text" class="form-control" placeholder="Nom de Location" required ng-model="centerP.title">
-                                    <br/>
-                                    <label>Latitude</label>
-                                    <input type="text" class="form-control" required ng-model="centerP.lat">
-                                    <br/>
-                                    <label>Longitude</label>
-                                    <input type="text" class="form-control" required ng-model="centerP.lon">
-                                    <br/>
-                                </div>
-                            </ng-form>
-                        </uib-tab>
-                        <uib-tab index="1" heading="Description">
-                            <h3>Adding description of the Place</h3>
-                            <label>Description</label>
-                            <textarea class="form-control" required ng-model="centerP.description">
-                            </textarea>
-                        </uib-tab>
-                        <uib-tab index="2" heading="Image">
-                            <h3>Adding a Photo of the Place</h3>
-                                <input type="file" file-model="$parent.picBin" accept="image/*" onchange="change()"> &lt;!&ndash;file-model="$parent.picBin"&ndash;&gt;
-                        </uib-tab>
-                    </uib-tabset>
-                    <button class="btn btn-danger" type="submit">Submit</button>
-                </form>-->
             </div>
             <div class="container">
                 <div class="row">
