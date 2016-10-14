@@ -98,15 +98,24 @@ function upload(req, res, next) {
         var place = new Place(pendingUpload.content);
         place.headerPhoto = url;
 
-        var onPlaceSaved = Utils.returnEntity(res, next, 201);
+        if (pendingUpload.toUpdate) {
+          place.isNew = false;
+          var onPlaceSaved = Utils.returnSavedEntity(res, next);
+        }
+        else {
+          var onPlaceSaved = Utils.returnSavedEntity(res, next, 201);
+        }
+
         place.save(onPlaceSaved);
+        break;
 
       case 'picture':
         var picture = new Picture(pendingUpload.content);
         picture.url = url;
 
-        var onPictureSaved = Utils.returnEntity(res, next, 201);
+        var onPictureSaved = Utils.returnSavedEntity(res, next, 201);
         picture.save(onPictureSaved);
+        break;
     }
   }
 }

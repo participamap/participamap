@@ -18,13 +18,35 @@ var router = express.Router();
 router.param('id', Checks.isValidObjectId);
 router.param('id', getPlace);
 
+router.param('comment_id', Checks.isValidObjectId);
+router.param('comment_id', getComment);
+
+//router.param('picture_id', Checks.isValidObjectId);
+//router.param('picture_id', getPicture);
+
+//router.param('document_id', Checks.isValidObjectId);
+//router.param('document_id', getDocument);
+
+//router.param('vote_id', Checks.isValidObjectId);
+//router.param('vote_id', getVote);
+
 router.get('/', Checks.db, getPlacesHeaders);
 router.get('/:id', Checks.db, Checks.setAdminFlag, getPlaceInfo);
 router.post('/', Checks.db, createPlace);
+router.put('/:id', Checks.db, updatePlace);
 router.delete('/:id', Checks.db, deletePlace);
 router.get('/:id/comments', Checks.db, getComments);
+router.post('/:id/comments', Checks.db, createComment);
+router.delete('/:id/comments/:comment_id', Checks.db, deleteComment);
 router.get('/:id/pictures', Checks.db, getPictures);
 router.post('/:id/pictures', Checks.db, createPicture);
+//router.delete('/:id/pictures/:picture_id', Checks.db, deletePicture);
+//router.get('/:id/documents', Checks.db, getDocuments);
+//router.post('/:id/documents', Checks.db, createDocument);
+//router.delete('/:id/documents/:document_id', Checks.db, deleteDocument);
+//router.get('/:id/votes', Checks.db, getVotes);
+//router.post('/:id/votes', Checks.db, createVote);
+//router.delete('/:id/votes/:vote_id', Checks.db, deleteVote);
 
 
 function getPlace(req, res, next, id) {
@@ -38,6 +60,27 @@ function getPlace(req, res, next, id) {
     }
 
     req.place = place;
+
+    next();
+  });
+}
+
+
+function getComment(req, res, next, comment_id) {
+  Comment.findById(comment_id, function onCommentFound(error, comment) {
+    if (error) return next(error);
+
+    console.log(req.place._id);
+    console.log(comment.place);
+
+    // TODO: Pourquoi comment.place !== req.place._id est toujours vrai ? :'(
+    if (!comment/* || (comment.place !== req.place._id)*/) {
+      var err = new Error('Not Found');
+      err.status = 404;
+      return next(err);
+    }
+
+    req.comment = comment;
 
     next();
   });
@@ -116,9 +159,11 @@ function getPlacesHeaders(req, res, next) {
     headerPhoto: true
   };
 
-  var returnPlacesHeaders = Utils.returnEntity(res, next);
-  
-  Place.find(filter, projection, returnPlacesHeaders);
+  Place.find(filter, projection,
+    function returnPlacesHeaders(error, placesHeaders) {
+      if (error) return next(error);
+      res.json(placesHeaders);
+    });
 }
 
 
@@ -154,8 +199,10 @@ function getPlaceInfo(req, res, next) {
 function createPlace(req, res, next) {
   var place = new Place(req.body);
 
+  // TODO: Vérifier si admin pour les champs admin-only
+
   if (!req.body.setHeaderPhoto) {
-    var onPlaceSaved = Utils.returnEntity(res, next, 201);
+    var onPlaceSaved = Utils.returnSavedEntity(res, next, 201);
     place.save(onPlaceSaved);
   }
   else { 
@@ -165,6 +212,46 @@ function createPlace(req, res, next) {
       var pendingUpload = new PendingUpload({
         contentType: 'place',
         content: place
+      });
+      pendingUpload.save(sendUploadURL);
+    });
+  }
+
+  function sendUploadURL(error, pendingUpload) {
+    if (error) return next(error);
+
+    var uploadURL = config.serverURL + '/upload/' + pendingUpload._id;
+    res.redirect(204, uploadURL);
+  }
+}
+
+
+function updatePlace(req, res, next) {
+  var place = req.place;
+  var modifications = req.body;
+
+  for (attribute in modifications)
+    place[attribute] = modifications[attribute]
+
+  if (modifications.deleteHeaderPhoto) {
+    // TODO: Supprimer le fichier
+    
+    place.headerPhoto = undefined;
+  }
+
+  // TODO: Factoriser du code
+  if (!modifications.setHeaderPhoto) {
+    var onPlaceSaved = Utils.returnSavedEntity(res, next);
+    place.save(onPlaceSaved);
+  }
+  else { 
+    place.validate(function onPlaceValidated(error) {
+      if (error) return next(error);
+
+      var pendingUpload = new PendingUpload({
+        contentType: 'place',
+        content: place,
+        toUpdate: true
       });
       pendingUpload.save(sendUploadURL);
     });
@@ -242,13 +329,37 @@ function getComments(req,res,next) {
     }
   }
   
-  var returnComments = Utils.returnEntity(res, next);
-  
-  Comment.find({ place: place._id }, { __v: false })
+  Comment.find({ place: place._id }, { __v: false, place: false })
     .sort('-date')
     .skip((page - 1) * n)
     .limit(n)
-    .exec(returnComments);
+    .exec(function returnComments(error, comments) {
+      if (error) return next(error);
+      res.json(comments);
+    });
+}
+
+
+function createComment(req, res, next) {
+  var place = req.place;
+
+  var comment = new Comment(req.body);
+  comment.place = place._id;
+  // TODO: Véritable auteur
+  comment.author = mongoose.Types.ObjectId("57dbe334c3eaf116f88eca27");
+
+  var onCommentSaved = Utils.returnSavedEntity(res, next, 201);
+  comment.save(onCommentSaved);
+}
+
+
+function deleteComment(req, res, next) {
+  var comment = req.comment;
+
+  comment.remove(function onCommentRemoved(error) {
+    if (error) return next(error);
+    res.status(204).end();
+  });
 }
 
 
@@ -292,13 +403,14 @@ function getPictures(req,res,next) {
     }
   }
 
-  var returnPictures = Utils.returnEntity(res, next);
-
-  Picture.find({ place: place._id }, { __v: false })
+  Picture.find({ place: place._id }, { __v: false, place: false })
     .sort('-date')
     .skip((page - 1) * n)
     .limit(n)
-    .exec(returnPictures);
+    .exec(function returnPictures(error, pictures) {
+      if (error) return next(error);
+      res.json(pictures);
+    });
 }
 
 
@@ -306,10 +418,10 @@ function createPicture(req, res, next) {
   var place = req.place;
   
   // Not a Picture object in order to get the real timestamp on picture upload
-  var picture = {
-    place: place._id,
-    author: mongoose.Types.ObjectId("57dbe334c3eaf116f88eca27")
-  };
+  var picture = {};
+  picture.place = place._id;
+  // TODO: Véritable auteur
+  picture.author = mongoose.Types.ObjectId("57dbe334c3eaf116f88eca27");
 
   var pendingUpload = new PendingUpload({
     contentType: 'picture',

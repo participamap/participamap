@@ -68,7 +68,18 @@ app.directive('fileModel', ['$parse', function ($parse) {
   };
 }]);
 
+app.factory('Parcours',['$http','$base64',function($http){
+  var oo = {
+    parcours:[]
+  };
+  oo.createParcours = function (parcour){
+    return $http.post('parcours',parcour).success(function(data){
+      oo.parcours.push(data);
+    })
+  };
 
+  return oo;
+}]);
 app.factory('Place',['$http','$base64', function($http,$base64){
   var o = { //difinir un objet
     places :[]

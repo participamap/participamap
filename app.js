@@ -13,6 +13,7 @@ var Supervisor = require('./modules/supervisor');
 
 var routes = require('./routes/index');
 var places = require('./routes/places');
+var parcours = require('./routes/parcours');
 var upload = require('./routes/upload');
 var uploads = express.static('./uploads');
 
@@ -67,6 +68,7 @@ app.use('/images',images);
 app.use(express.static(path.join(__dirname,'public')));
 //Initialisation du passport
 app.use(passport.initialize());
+app.use('/parcours', parcours);
 app.use('/upload', upload);
 app.use('/uploads', uploads);
 

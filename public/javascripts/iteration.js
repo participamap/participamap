@@ -1,5 +1,5 @@
 
-app.controller('IterationCtrl',['$scope','Place',function ($scope, Place) {
+app.controller('IterationCtrl',['$scope','Place','Parcours',function ($scope, Place, Parcours) {
 
   $scope.saveParcours = function(){
     var listPar = document.getElementById('parcous');
@@ -11,6 +11,11 @@ app.controller('IterationCtrl',['$scope','Place',function ($scope, Place) {
       res.push(listPar.childNodes[i].attributes.name.value);
     }
     console.log(res);
+    Parcours.createParcours({
+      title: $scope.titleParcours,
+      places: res
+
+    })
 
   };
 
