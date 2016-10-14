@@ -32,41 +32,7 @@ router.delete('/:id/comments/:comment_id', Checks.db, deleteComment);
 router.get('/:id/pictures', Checks.db, getPictures);
 router.post('/:id/pictures', Checks.db, createPicture);
 router.post('/:id/abuse/:comment_id', Checks.db, createAbuseReported);
-
-var express = require('express');
-var mongoose = require('mongoose');
-
-var Checks = require('../modules/checks');
-var Utils = require('../modules/utils');
-
-var Place = require('../models/place');
-var Comment = require('../models/comment');
-var Picture = require('../models/picture');
-var Document = require('../models/document');
-var AbuseReported = require('../models/abuseReported');
-var Vote = require('../models/vote');
-var PendingUpload = require('../models/pending_upload');
-
-var config = require('../config.json');
-
-var router = express.Router();
-
-router.param('id', Checks.isValidObjectId);
-router.param('id', getPlace);
-
-router.param('comment_id', Checks.isValidObjectId);
-router.param('comment_id', getComment);
-
-router.get('/', Checks.db, getPlacesHeaders);
-router.get('/:id', Checks.db, Checks.setAdminFlag, getPlaceInfo);
-router.post('/', Checks.db, createPlace);
-router.delete('/:id', Checks.db, deletePlace);
-router.get('/:id/comments', Checks.db, getComments);
-router.post('/:id/comments', Checks.db, createComment);
-router.delete('/:id/comments/:comment_id', Checks.db, deleteComment);
-router.get('/:id/pictures', Checks.db, getPictures);
-router.post('/:id/pictures', Checks.db, createPicture);
-router.post('/:id/abuse/:comment_id', Checks.db, createAbuseReported);
+router.delete('/abuse/:abuse_id', Checks.db, deleteAbuseReported);
 
 
 function getPlace(req, res, next, id) {
@@ -695,18 +661,20 @@ function createComment(req, res, next) {
 }
 
 function createAbuseReported(req, res, next) {
-  //var place = req.place;
-
-  
   var abuse = new AbuseReported(req.body);
-  //
-  // TODO: Véritable auteur
-  //abuse.user = mongoose.Types.ObjectIddd("57e4d06ff0653747e4559bfe");
 
   var onAbuseSaved = Utils.returnSavedEntity(res, next, 201);
   abuse.save(onAbuseSaved);
 }
 
+function deleteAbuseReported(req, res, next) {
+  var abuse = req.abuse;
+
+  abuse.remove(function onAbuseReportedRemoved(error) {
+    if (error) return next(error);
+    res.status(204).end();
+  });
+}
 
 function deleteComment(req, res, next) {
   var comment = req.comment;

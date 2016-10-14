@@ -9,6 +9,7 @@ var Supervisor = require('./modules/supervisor');
 
 var routes = require('./routes/index');
 var places = require('./routes/places');
+var abuses = require('./routes/abuses');
 var upload = require('./routes/upload');
 var uploads = express.static('./uploads');
 
@@ -37,6 +38,7 @@ app.use(bodyParser.raw({ type: 'image/png', limit: '5MB' }));
 // Routes declarations
 app.use('/', routes);
 app.use('/places', places);
+app.use('/abuses',abuses);
 app.use('/upload', upload);
 app.use('/uploads', uploads);
 
