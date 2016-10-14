@@ -1,43 +1,42 @@
+/**
+ * Model for users
+ */
+
 var mongoose = require('mongoose');
-var crypto = require('crypto');
 var jwt = require('jsonwebtoken');
+
+var Schema = mongoose.Schema;
+
+var passwordSchema = require('./schemas/password');
 var locationSchema = require('./schemas/location');
 
-var UserSchema = new mongoose.Schema({
-  username:{type: String, lowercase:true, unique: true},
-  email:{type: String, lowercase:true, unique: true},
-  hash: String,
-  salt: String,
-  location : {type: locationSchema }
+var config = require('config');
+
+var userSchema = new Schema({
+  username: { type: String, lowercase: true, unique: true, required: true },
+  password: { type: passwordSchema, required: true },
+  // TODO: regex email
+  email: { type: String, unique: true, required: true },
+  location: locationSchema
 });
 
-UserSchema.methods.setPassword = function(password){
-  this.salt=crypto.randomBytes(16).toString('hex');
-  var pass = crypto.pbkdf2Sync(password, this.salt, 1000, 64);
-  this.hash = new Buffer(pass).toString('base64');
-};
-
-UserSchema.methods.validPassword = function (password) {
-  var pass = crypto.pbkdf2Sync(password, this.salt, 1000, 64);
-  var hash = new Buffer(pass).toString('base64');
-  return this.hash === hash;
-};
-
-UserSchema.methods.setEmail = function(email){
-  this.email = email;
-};
-
-UserSchema.methods.generateJWT = function () {
-  // definir l'intervale de vivre
-  var today = new Date();
-  var exp = new Date(today);
-  exp.setDate(today.getDate() + 7);//7 jours valide
-
-  return jwt.sign({
+userSchema.methods.generateJWT = function () {
+  var payload = {
     _id: this._id,
-    username : this.username,
-    exp: parseInt(exp.getTime()/1000)
-  }, 'SECRET');
+    username: this.username,
+  };
+
+  var options = {
+    expiresIn: config.auth.tokenValidity * 1000;
+  }
+
+  var token = jwt.sign(payload, config.auth.tokenSecret, options);
+
+  return token;
 };
 
-mongoose.model('User',UserSchema);
+var User = mongoose.model('User', userSchema);
+
+module.exports = User;
+
+/* vim: set ts=2 sw=2 et si colorcolumn=80 : */

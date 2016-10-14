@@ -2,12 +2,12 @@ var express = require('express');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
-var passport = require('passport');
+//var passport = require('passport');
 
 // TODO: Rendre ça plus propre, pas d’import en global
-require('./config/passport');
-require('./models/users');
-require('./models/place');
+//require('./config/passport');
+//require('./models/users');
+//require('./models/place');
 
 var config = require('./config.json');
 
@@ -42,12 +42,12 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.raw({ type: 'image/jpeg', limit: '5MB' }));
 app.use(bodyParser.raw({ type: 'image/png', limit: '5MB' }));
-app.use(passport.initialize());
+//app.use(passport.initialize());
 
 // Routes declarations
 app.use('/', routes);
 app.use('/places', places);
-app.use('/users', users);
+//app.use('/users', users);
 app.use('/upload', upload);
 app.use('/uploads', uploads);
 
