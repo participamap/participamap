@@ -8,7 +8,7 @@ app.controller('IterationCtrl',['$scope','Place',function ($scope, Place) {
     var res =[];
     for (var i=1; i< listPar.childNodes.length; i++){
       console.log(listPar.childNodes[i].attributes.name );
-      res.push(listPar.childNodes[i].attributes.name.nodeValue);
+      res.push(listPar.childNodes[i].attributes.name.value);
     }
     console.log(res);
 
