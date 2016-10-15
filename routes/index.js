@@ -1,47 +1,43 @@
 var express = require('express');
+var passport = require('passport');
+
+var Checks = require('../modules/checks');
+var Auth = require('../modules/auth');
+
+var User = require('../models/user');
+
 var router = express.Router();
-//var passport = require('passport');
-//var jwt = require('express-jwt');
 
-//var auth = jwt({secret:'SECRET', userProperty:'payload'});
+router.get('/', getRoot);
+router.post('/register', Checks.db, register, sendToken);
+router.post('/login', Checks.db, login, sendToken);
 
-// Get the service descriptor
-router.get('/', function getRoot(req, res, next) {
-  res.send({});
-});
 
-/*router.post('/register', function(req,res,next){
-  if(!req.body.username || !req.body.password){
-    return res.status(400).json({message:"Veuillez remplir tous champs obligatoire SVP"});
-  }
+function getRoot(req, res, next) {
+  res.json({});
+}
 
-  var user= new User();
 
-  user.username = req.body.username;
-  user.setPassword(req.body.password);
-  user.setEmail(req.body.email);
+function register(req, res, next) {
+  var user = new User(req.body);
 
-  user.save(function(err){
-    if(err){return next(err);}
-
-    return res.json({token: user.generateJWT()})
+  user.save(function onUserRegistered(error) {
+    if (error) return next(error);
+    next();
   });
-});
+}
 
-router.post('/login', function(req,res,next){
-  if (!req.body.username || !req.body.password){
-    return res.status(400).json({message: 'Veuillez remplir tous champs obligatoire SVP'});
-  }
 
-  passport.authenticate('local', function(err,user,info){
-    if(err) {return next(err);}
-    if(user){
-      return res.json({token:user.generateJWT()});
-    } else {
-      return res.status(401).json(info);
-    }
-  })(req,res,next);
-});*/
+function login(req, res, next) {
+  var onAuthDone = Auth.onDone(req, res, next);
+  var auth = passport.authenticate('local', { session: false }, onAuthDone);
+  auth(req, res, next);
+}
+
+
+function sendToken(req, res, next) {
+  res.json({ token: req.user.generateJWT() });
+}
 
 module.exports = router;
 

@@ -11,6 +11,7 @@ var router = express.Router();
 router.param('id', Checks.isValidObjectId);
 router.param('id', getUser);
 
+// TODO: createUser pour admin sans retourner de token
 router.get('/', Checks.db, getUsers);
 router.get('/:id', Checks.db, getUserInfo);
 router.put('/:id', Checks.db, updateUser);

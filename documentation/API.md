@@ -7,9 +7,11 @@
     * [Appels réussis](#appels-réussis)
     * [Gestion des erreurs](#gestion-des-erreurs)
 * [**Utilisateurs**](#utilisateurs)
+    * [Enregistrement](#enregistrement)
+    * [Connexion](#connexion)
     * [Liste des utilisateurs](#liste-des-utilisateurs)
     * [Informations d’un utilisateur](#informations-dun-utilisateur)
-    * [Modification d’un utilisateur](#informations-dun-utilisateur)
+    * [Modification d’un utilisateur](#modification-dun-utilisateur)
     * [Suppression d’un utilisateur](#suppression-dun-utilisateur)
 * [**Lieux**](#lieux)
     * [En-têtes de lieux](#en-têtes-de-lieux)
@@ -74,6 +76,135 @@ Chaque requête est détaillée avec un exemple montrant :
 * le contenu de la réponse en JSON le cas échéant.
 
 ## Utilisateurs
+
+### Enregistrement
+
+#### Nom de la requête
+
+`register`
+
+#### Description
+
+Enregistre un nouvel utilisateur.
+
+#### Point d’accès
+
+Méthode | Chemin | autorisation
+:------:|:------:|:-----------:
+POST | /register | non requis
+
+#### Paramètres de chemin
+
+*Néant*
+
+#### Paramètres de requête
+
+*Néant*
+
+#### Charge
+
+Un utilisateur :
+
+Attribut | Description | Exemple
+---------|-------------|--------
+username | Nom d’utilisateur | "user007"
+password | Mot de passe | "+odFh7Gt}/W&i0zD"
+email | Adresse électronique | "user@domain.com"
+
+#### Réponse
+
+Un JSON Web Token :
+
+Attribut | Description | Exemple
+---------|-------------|--------
+token | JSON Web Token | "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ODAxNDEzZGE3NDA2NzE5M2Q1YzBiODUiLCJ1c2VybmFtZSI6InVzZXIwMDciLCJpYXQiOjE0NzY0NzcyNDUsImV4cCI6MjA4MTI3NzI0NX0.Fs\_W0p5ds1YN3TMUvk6dnHDk2jy\_rhU2pFPbdYMR9zc"
+
+#### Exemple
+
+Requête :
+
+```sh
+$ curl -X POST -H "Content-Type: application/json" \
+    -d '{"username":"user007","password":"+odFh7Gt}/W&i0zD","email":"user@domain.com"}' \
+    "https://api.participamap.org/register"
+```
+
+Réponse :
+
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+```
+
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ODAxNDEzZGE3NDA2NzE5M2Q1YzBiODUiLCJ1c2VybmFtZSI6InVzZXIwMDciLCJpYXQiOjE0NzY0NzcyNDUsImV4cCI6MjA4MTI3NzI0NX0.Fs\_W0p5ds1YN3TMUvk6dnHDk2jy\_rhU2pFPbdYMR9zc"
+}
+```
+
+### Connexion
+
+#### Nom de la requête
+
+`login`
+
+#### Description
+
+Se connecte en tant qu’utilisateur.
+
+#### Point d’accès
+
+Méthode | Chemin | autorisation
+:------:|:------:|:-----------:
+POST | /login | non requis
+
+#### Paramètres de chemin
+
+*Néant*
+
+#### Paramètres de requête
+
+*Néant*
+
+#### Charge
+
+Identifiants :
+
+Attribut | Description | Exemple
+---------|-------------|--------
+username | Nom d’utilisateur | "user007"
+password | Mot de passe | "+odFh7Gt}/W&i0zD"
+
+#### Réponse
+
+Un JSON Web Token :
+
+Attribut | Description | Exemple
+---------|-------------|--------
+token | JSON Web Token | "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ODAxNDEzZGE3NDA2NzE5M2Q1YzBiODUiLCJ1c2VybmFtZSI6InVzZXIwMDciLCJpYXQiOjE0NzY0NzcyNDUsImV4cCI6MjA4MTI3NzI0NX0.Fs\_W0p5ds1YN3TMUvk6dnHDk2jy\_rhU2pFPbdYMR9zc"
+
+#### Exemple
+
+Requête :
+
+```sh
+$ curl -X POST -H "Content-Type: application/json" \
+    -d '{"username":"user007","password":"+odFh7Gt}/W&i0zD"}' \
+    "https://api.participamap.org/login"
+```
+
+Réponse :
+
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+```
+
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ODAxNDEzZGE3NDA2NzE5M2Q1YzBiODUiLCJ1c2VybmFtZSI6InVzZXIwMDciLCJpYXQiOjE0NzY0NzcyNDUsImV4cCI6MjA4MTI3NzI0NX0.Fs\_W0p5ds1YN3TMUvk6dnHDk2jy\_rhU2pFPbdYMR9zc"
+}
+```
 
 ### Liste des utilisateurs
 
@@ -247,8 +378,8 @@ Un utilisateur :
 
 Attribut | Description | Exemple
 ---------|-------------|--------
+*password* | Mot de passe | "+odFh7Gt}/W&i0zD"
 *email* | Adresse électronique | "user@domain.com"
-*password* | Mot de passe | "*odFh7Gt}/W&i0zD"
 
 #### Réponse
 
@@ -267,7 +398,7 @@ Requête :
 
 ```sh
 $ curl -X PUT -H "Content-Type: application/json" \
-    -d '{"password": "*odFh7Gt}/W&i0zD"}' \
+    -d '{"password":"+odFh7Gt}/W&i0zD"}' \
     https://api.participamap.org/users/57dbe334c3eaf116f88e0318
 ```
 

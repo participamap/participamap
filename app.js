@@ -2,14 +2,13 @@ var express = require('express');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
-//var passport = require('passport');
-
-// TODO: Rendre ça plus propre, pas d’import en global
-//require('./config/passport');
+var passport = require('passport');
+var LocalStrategy = require('passport-local').Strategy;
 
 var config = require('./config.json');
 
 var Supervisor = require('./modules/supervisor');
+var Auth = require('./modules/auth');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -34,16 +33,19 @@ db.once('open', function onDBOpen() {
 // Supervisor to automate some actions
 var supervisor = new Supervisor(config.supervisor);
 
+// Passport for authentication
+passport.use(new LocalStrategy(Auth.verify));
+
 var app = express();
 
-// Modules declarations
+// Module declarations
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.raw({ type: 'image/jpeg', limit: '5MB' }));
 app.use(bodyParser.raw({ type: 'image/png', limit: '5MB' }));
-//app.use(passport.initialize());
+app.use(passport.initialize());
 
-// Routes declarations
+// Route declarations
 app.use('/', routes);
 app.use('/users', users);
 app.use('/places', places);
