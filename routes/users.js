@@ -14,6 +14,7 @@ router.param('id', getUser);
 // TODO: createUser pour admin sans retourner de token
 router.get('/', Checks.db, getUsers);
 router.get('/:id', Checks.db, getUserInfo);
+router.post('/', Checks.db, createUser);
 router.put('/:id', Checks.db, updateUser);
 router.delete('/:id', Checks.db, deleteUser);
 
@@ -118,6 +119,14 @@ function getUsers(req, res, next) {
 
 function getUserInfo(req, res, next) {
   res.json(req.user);
+}
+
+
+function createUser(req, res, next) {
+  var user = new User(req.body);
+
+  var onUserSaved = Utils.returnSavedEntity(res, next, 201);
+  user.save(onUserSaved);
 }
 
 
