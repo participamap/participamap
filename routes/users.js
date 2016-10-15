@@ -6,17 +6,17 @@ var Utils = require('../modules/utils');
 
 var User = require('../models/user');
 
-var router = express.Router();
+var router = express.Router({ strict: true });
 
 router.param('id', Checks.isValidObjectId);
+router.param('id', Checks.db);
 router.param('id', getUser);
 
-// TODO: createUser pour admin sans retourner de token
-router.get('/', Checks.db, getUsers);
-router.get('/:id', Checks.db, getUserInfo);
-router.post('/', Checks.db, createUser);
-router.put('/:id', Checks.db, updateUser);
-router.delete('/:id', Checks.db, deleteUser);
+router.get('/', Checks.auth('admin'), Checks.db, getUsers);
+router.get('/:id', Checks.auth('admin'), getUserInfo);
+router.post('/', Checks.auth('admin'), Checks.db, createUser);
+router.put('/:id', Checks.auth('admin'), updateUser);
+router.delete('/:id', Checks.auth('admin'), deleteUser);
 
 
 function getUser(req, res, next, id) {
@@ -36,6 +36,7 @@ function getUser(req, res, next, id) {
     }
 
     req.user = user;
+    req.owner = user._id;
 
     next();
   });

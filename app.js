@@ -4,8 +4,7 @@ var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
-
-var config = require('./config.json');
+var slash = require('express-slash');
 
 var Supervisor = require('./modules/supervisor');
 var Auth = require('./modules/auth');
@@ -16,6 +15,8 @@ var places = require('./routes/places');
 var upload = require('./routes/upload');
 // TODO: Définir les statics via la config
 var uploads = express.static('./uploads');
+
+var config = require('./config.json');
 
 // Connection to the database
 mongoose.connect(config.mongodb.uri, config.mongodb.options);
@@ -37,6 +38,7 @@ var supervisor = new Supervisor(config.supervisor);
 passport.use(new LocalStrategy(Auth.verify));
 
 var app = express();
+app.enable('strict routing');
 
 // Module declarations
 app.use(logger('dev'));
@@ -44,13 +46,15 @@ app.use(bodyParser.json());
 app.use(bodyParser.raw({ type: 'image/jpeg', limit: '5MB' }));
 app.use(bodyParser.raw({ type: 'image/png', limit: '5MB' }));
 app.use(passport.initialize());
+app.use(Auth.jwt);
 
 // Route declarations
 app.use('/', routes);
-app.use('/users', users);
-app.use('/places', places);
-app.use('/upload', upload);
-app.use('/uploads', uploads);
+app.use('/users/', users);
+app.use('/places/', places);
+app.use('/upload/', upload);
+app.use('/uploads/', uploads);
+app.use(slash());
 
 // catch 404 and forward to error handler
 app.use(function notFound(req, res, next) {

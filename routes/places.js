@@ -14,9 +14,10 @@ var PendingUpload = require('../models/pending_upload');
 
 var config = require('../config.json');
 
-var router = express.Router();
+var router = express.Router({ strict: true });
 
 router.param('id', Checks.isValidObjectId);
+router.param('id', Checks.db);
 router.param('id', getPlace);
 
 router.param('comment_id', Checks.isValidObjectId);
@@ -32,22 +33,23 @@ router.param('comment_id', getComment);
 //router.param('vote_id', getVote);
 
 router.get('/', Checks.db, getPlacesHeaders);
-router.get('/:id', Checks.db, Checks.setAdminFlag, getPlaceInfo);
-router.post('/', Checks.db, createPlace);
-router.put('/:id', Checks.db, updatePlace);
-router.delete('/:id', Checks.db, deletePlace);
-router.get('/:id/comments', Checks.db, getComments);
-router.post('/:id/comments', Checks.db, createComment);
-router.delete('/:id/comments/:comment_id', Checks.db, deleteComment);
-router.get('/:id/pictures', Checks.db, getPictures);
-router.post('/:id/pictures', Checks.db, createPicture);
-//router.delete('/:id/pictures/:picture_id', Checks.db, deletePicture);
-//router.get('/:id/documents', Checks.db, getDocuments);
-//router.post('/:id/documents', Checks.db, createDocument);
-//router.delete('/:id/documents/:document_id', Checks.db, deleteDocument);
-//router.get('/:id/votes', Checks.db, getVotes);
-//router.post('/:id/votes', Checks.db, createVote);
-//router.delete('/:id/votes/:vote_id', Checks.db, deleteVote);
+router.get('/:id', getPlaceInfo);
+router.post('/', Checks.auth('content-owner'), Checks.db, createPlace);
+router.put('/:id', Checks.auth('content-owner'), updatePlace);
+router.delete('/:id', Checks.auth('content-owner'), deletePlace);
+router.get('/:id/comments/', getComments);
+router.post('/:id/comments/', Checks.auth('user'), createComment);
+router.delete('/:id/comments/:comment_id', Checks.auth('moderator'),
+  deleteComment);
+router.get('/:id/pictures/', getPictures);
+router.post('/:id/pictures/', Checks.auth('user'), createPicture);
+//router.delete('/:id/pictures/:picture_id', deletePicture);
+//router.get('/:id/documents', getDocuments);
+//router.post('/:id/documents', createDocument);
+//router.delete('/:id/documents/:document_id', deleteDocument);
+//router.get('/:id/votes', getVotes);
+//router.post('/:id/votes', createVote);
+//router.delete('/:id/votes/:vote_id', deleteVote);
 
 
 function getPlace(req, res, next, id) {
@@ -82,6 +84,7 @@ function getComment(req, res, next, comment_id) {
     }
 
     req.comment = comment;
+    req.owner = comment.author;
 
     next();
   });
@@ -171,26 +174,16 @@ function getPlacesHeaders(req, res, next) {
 function getPlaceInfo(req, res, next) {
   var place = req.place;
   
-  // TODO: À réécrire de façon plus jolie (gestion des erreurs avant action)
-  if (!req.query.admin || req.query.admin === 'false') {
-    // Remove admin-olny info
-    place.proposedBy = undefined;
-    place.moderateComments = undefined;
-    place.moderateDocuments = undefined;
-    place.moderatePictures = undefined; 
-  }
-  else if (req.query.admin === 'true') {
-    // Check if admin flag is set by Checks.setAdminFlag
-    if (!req.admin) {
-      var err = new Error('Unauthorized');
-      err.status = 401;
-      return next(err);
+  if (req.jwt) {
+    var role = req.jwt.role;
+
+    if (role !== 'content-owner' && role !== 'moderator' && role !== 'admin') {
+      // Remove content-owner only info
+      place.proposedBy = undefined;
+      place.moderateComments = undefined;
+      place.moderateDocuments = undefined;
+      place.moderatePictures = undefined; 
     }
-  }
-  else {
-    var err = new Error('Bad Request: admin must be true or false');
-    err.status = 400;
-    return next(err);
   }
 
   res.json(place);
@@ -200,7 +193,7 @@ function getPlaceInfo(req, res, next) {
 function createPlace(req, res, next) {
   var place = new Place(req.body);
 
-  // TODO: Vérifier si admin pour les champs admin-only
+  // TODO: Vérifier si content-owner pour les champs content-owner
 
   if (!req.body.setHeaderPhoto) {
     var onPlaceSaved = Utils.returnSavedEntity(res, next, 201);
@@ -348,8 +341,7 @@ function createComment(req, res, next) {
 
   var comment = new Comment(req.body);
   comment.place = place._id;
-  // TODO: Véritable auteur
-  comment.author = mongoose.Types.ObjectId("57dbe334c3eaf116f88eca27");
+  comment.author = mongoose.Types.ObjectId(req.jwt._id);
 
   var onCommentSaved = Utils.returnSavedEntity(res, next, 201);
   comment.save(onCommentSaved);
@@ -424,7 +416,7 @@ function createPicture(req, res, next) {
   var picture = {};
   picture.place = place._id;
   // TODO: Véritable auteur
-  picture.author = mongoose.Types.ObjectId("57dbe334c3eaf116f88eca27");
+  picture.author = mongoose.Types.ObjectId(req.jwt._id);
 
   var pendingUpload = new PendingUpload({
     contentType: 'picture',

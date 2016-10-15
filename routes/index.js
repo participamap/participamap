@@ -6,7 +6,7 @@ var Auth = require('../modules/auth');
 
 var User = require('../models/user');
 
-var router = express.Router();
+var router = express.Router({ strict: true });
 
 router.get('/', getRoot);
 router.post('/register', Checks.db, register, sendToken);
@@ -23,6 +23,8 @@ function register(req, res, next) {
 
   user.save(function onUserRegistered(error) {
     if (error) return next(error);
+    
+    req.user = user;
     next();
   });
 }

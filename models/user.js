@@ -24,6 +24,13 @@ var userSchema = new Schema({
   passwordHash: { type: String, required: true },
   // TODO: regex email
   email: { type: String, unique: true, required: true },
+  // TODO: Centraliser la définition des rôles
+  role: {
+    type: String,
+    enum: ['user', 'content-owner', 'moderator', 'admin'],
+    default: 'user',
+    required: true
+  },
   registrationDate: { type: Date, default: Date.now, required: true }
 });
 
@@ -47,6 +54,7 @@ userSchema.methods.generateJWT = function () {
   var payload = {
     _id: this._id,
     username: this.username,
+    role: this.role
   };
 
   var options = {

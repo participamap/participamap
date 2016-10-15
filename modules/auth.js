@@ -2,11 +2,15 @@
  * Authentication module
  */
 
+var jwt = require('express-jwt');
 var User = require('../models/user');
+
+var config = require('../config.json');
 
 function Auth() {
   this.verify = Auth.verify;
   this.onDone = Auth.onDone;
+  this.jwt = Auth.jwt;
 }
 
 /**
@@ -46,6 +50,15 @@ Auth.onDone = function (req, res, next) {
     next();
   };
 };
+
+/**
+ * Authenticates a user using express-jwt
+ */
+Auth.jwt = jwt({
+  secret: config.auth.secret,
+  requestProperty: 'jwt',
+  credentialsRequired: false
+});
 
 module.exports = Auth;
 
