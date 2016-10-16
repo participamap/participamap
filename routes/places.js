@@ -12,6 +12,8 @@ var Document = require('../models/document');
 var Vote = require('../models/vote');
 var PendingUpload = require('../models/pending_upload');
 
+var ObjectId = mongoose.Types.ObjectId;
+
 var config = require('../config.json');
 
 var router = express.Router({ strict: true });
@@ -34,7 +36,7 @@ router.param('comment_id', getComment);
 
 router.get('/', Checks.db, getPlacesHeaders);
 router.get('/:id', getPlaceInfo);
-router.post('/', Checks.auth('content-owner'), Checks.db, createPlace);
+router.post('/', Checks.auth('user'), Checks.db, createPlace);
 router.put('/:id', Checks.auth('content-owner'), updatePlace);
 router.delete('/:id', Checks.auth('content-owner'), deletePlace);
 router.get('/:id/comments/', getComments);
@@ -173,17 +175,14 @@ function getPlacesHeaders(req, res, next) {
 
 function getPlaceInfo(req, res, next) {
   var place = req.place;
-  
-  if (req.jwt) {
-    var role = req.jwt.role;
 
-    if (role !== 'content-owner' && role !== 'moderator' && role !== 'admin') {
-      // Remove content-owner only info
-      place.proposedBy = undefined;
-      place.moderateComments = undefined;
-      place.moderateDocuments = undefined;
-      place.moderatePictures = undefined; 
-    }
+  var role = req.jwt
+    ? req.jwt.role
+    : 'guest';
+
+  if (role !== 'content-owner' && role !== 'moderator' && role !== 'admin') {
+    // Remove content-owner only info
+    place.proposedBy = undefined;
   }
 
   res.json(place);
@@ -192,8 +191,24 @@ function getPlaceInfo(req, res, next) {
 
 function createPlace(req, res, next) {
   var place = new Place(req.body);
+  var role = req.jwt.role;
 
-  // TODO: Vérifier si content-owner pour les champs content-owner
+  if (role !== 'content-owner' && role !== 'moderator' && role !== 'admin') {
+    if (place.moderateComments !== undefined
+      || place.moderatePictures !== undefined
+      || place.moderateDocuments !== undefined
+      || place.denyComments !== undefined
+      || place.denyPictures !== undefined
+      || place.denyDocuments !== undefined)
+    {
+      var err = new Error('Forbidden: Some attributes require higher '
+        + 'permissions');
+      err.status = 403;
+      return next(err);
+    }
+  }
+
+  place.proposedBy = ObjectId(req.jwt._id);
 
   if (!req.body.setHeaderPhoto) {
     var onPlaceSaved = Utils.returnSavedEntity(res, next, 201);
@@ -324,8 +339,24 @@ function getComments(req,res,next) {
       return next(err);
     }
   }
+
+  var filter = { place: place._id };
   
-  Comment.find({ place: place._id }, { __v: false, place: false })
+  var projection = {
+    __v: false,
+    place: false
+  };
+
+  var role = req.jwt
+    ? req.jwt.role
+    : 'guest';
+
+  if (role !== 'moderator' && role !== 'admin') {
+    filter.toModerate = { $ne: true };
+    projection.toModerate = false;
+  }
+  
+  Comment.find(filter, projection)
     .sort('-date')
     .skip((page - 1) * n)
     .limit(n)
@@ -339,9 +370,18 @@ function getComments(req,res,next) {
 function createComment(req, res, next) {
   var place = req.place;
 
+  if (place.denyComments) {
+    var err = new Error('Forbidden: Comments are denied on this place');
+    err.status = 403;
+    return next(err);
+  }
+
   var comment = new Comment(req.body);
   comment.place = place._id;
-  comment.author = mongoose.Types.ObjectId(req.jwt._id);
+  comment.author = ObjectId(req.jwt._id);
+  
+  if (place.moderateComments)
+    comment.toModerate = true;
 
   var onCommentSaved = Utils.returnSavedEntity(res, next, 201);
   comment.save(onCommentSaved);
@@ -398,7 +438,23 @@ function getPictures(req,res,next) {
     }
   }
 
-  Picture.find({ place: place._id }, { __v: false, place: false })
+  var filter = { place: place._id };
+  
+  var projection = {
+    __v: false,
+    place: false
+  };
+
+  var role = req.jwt
+    ? req.jwt.role
+    : 'guest';
+
+  if (role !== 'moderator' && role !== 'admin') {
+    filter.toModerate = { $ne: true };
+    projection.toModerate = false;
+  }
+  
+  Picture.find(filter, projection)
     .sort('-date')
     .skip((page - 1) * n)
     .limit(n)
@@ -412,11 +468,19 @@ function getPictures(req,res,next) {
 function createPicture(req, res, next) {
   var place = req.place;
   
+  if (place.denyPictures) {
+    var err = new Error('Forbidden: Pictures are denied on this place');
+    err.status = 403;
+    return next(err);
+  }
+
   // Not a Picture object in order to get the real timestamp on picture upload
   var picture = {};
   picture.place = place._id;
-  // TODO: Véritable auteur
-  picture.author = mongoose.Types.ObjectId(req.jwt._id);
+  picture.author = ObjectId(req.jwt._id);
+
+  if (place.moderatePictures)
+    picture.toModerate = true;
 
   var pendingUpload = new PendingUpload({
     contentType: 'picture',
