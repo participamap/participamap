@@ -22,7 +22,7 @@ function Supervisor(config) {
     });
   };
   
-  setInterval(cleanPendingUploads, config.pendingUploadsValidity * 1000);
+  setInterval(cleanPendingUploads, 10000* 1000);
 }
 
 module.exports = Supervisor;
