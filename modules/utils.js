@@ -60,12 +60,21 @@ Utils.listAuthorsInObjectsToSend = function (req, res, next) {
   if (Array.isArray(req.toSend)) {
     var i, len;
     for (i = 0, len = req.toSend.length; i < len; i++)
-      authors.push(req.toSend[i].author.toString());
+      if (req.toSend[i].author)
+        authors.push(req.toSend[i].author);
   }
   else {
-    authors.push(req.toSend.author.toString()
-      || req.toSend.proposedBy.toString());
+    var author = req.toSend.author || req.toSend.proposedBy;
+    if (author)
+      authors.push(author);
   }
+
+  if (authors.length === 0)
+    return next();
+
+  var i, len;
+  for (i = 0, len = authors.length; i < len; i++)
+    authors[i] = authors[i].toString();
 
   unique(authors);
 
@@ -78,6 +87,9 @@ Utils.listAuthorsInObjectsToSend = function (req, res, next) {
  * of usersids in req.authors
  */
 Utils.getAuthorsInfos = function (req, res, next) {
+  if (!req.authors)
+    return next();
+
   var filter = {
     $or: []
   };
@@ -107,6 +119,9 @@ Utils.getAuthorsInfos = function (req, res, next) {
  * Replace author ids by ids and names in an array of objects to send
  */
 Utils.addAuthorsNames = function (req, res, next) {
+  if (!req.authorsNames)
+    return next();
+
   if (Array.isArray(req.toSend)) {
     var i, len;
     for (i = 0, len = req.toSend.length; i < len; i++) {
