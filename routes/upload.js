@@ -22,7 +22,7 @@ router.param('id', Checks.isValidObjectId);
 router.param('id', Checks.db);
 router.param('id', getPendingUpload);
 
-router.put('/:id', upload);
+router.put('/:id', Checks.auth('user'), upload);
 
 
 function getPendingUpload(req, res, next, id) {

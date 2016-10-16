@@ -16,6 +16,7 @@ Utils.returnSavedEntity = function (res, next, status = 200) {
     // Remove unwanted info
     savedEntity.__v = undefined;
     savedEntity.place = undefined;
+    savedEntity.toModerate = undefined;
     savedEntity.passwordSalt = undefined;
     savedEntity.passwordHash = undefined;
 

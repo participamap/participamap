@@ -58,7 +58,7 @@ userSchema.methods.generateJWT = function () {
   };
 
   var options = {
-    expiresIn: config.auth.tokenValidity * 1000
+    expiresIn: config.auth.tokenValidity
   };
 
   var token = jwt.sign(payload, config.auth.secret, options);
