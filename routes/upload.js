@@ -22,7 +22,14 @@ router.param('id', Checks.isValidObjectId);
 router.param('id', Checks.db);
 router.param('id', getPendingUpload);
 
-router.put('/:id', Checks.auth('user'), upload);
+router.put('/:id',
+  Checks.auth('user'),
+  upload,
+  Utils.cleanEntityToSend(['place', 'toModerate']),
+  Utils.listAuthorsInObjectsToSend,
+  Utils.getAuthorsInfos,
+  Utils.addAuthorsNames,
+  Utils.send);
 
 
 function getPendingUpload(req, res, next, id) {
@@ -102,10 +109,10 @@ function upload(req, res, next) {
 
         if (pendingUpload.toUpdate) {
           place.isNew = false;
-          var onPlaceSaved = Utils.returnSavedEntity(res, next);
+          var onPlaceSaved = Utils.returnSavedEntity(req, res, next);
         }
         else {
-          var onPlaceSaved = Utils.returnSavedEntity(res, next, 201);
+          var onPlaceSaved = Utils.returnSavedEntity(req, res, next, 201);
         }
 
         place.save(onPlaceSaved);
@@ -115,7 +122,7 @@ function upload(req, res, next) {
         var picture = new Picture(pendingUpload.content);
         picture.url = url;
 
-        var onPictureSaved = Utils.returnSavedEntity(res, next, 201);
+        var onPictureSaved = Utils.returnSavedEntity(req, res, next, 201);
         picture.save(onPictureSaved);
         break;
     }

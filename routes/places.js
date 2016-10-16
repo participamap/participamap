@@ -34,21 +34,105 @@ router.param('comment_id', getComment);
 //router.param('vote_id', Checks.isValidObjectId);
 //router.param('vote_id', getVote);
 
-router.get('/', Checks.db, getPlacesHeaders);
-router.get('/:id', getPlaceInfo);
-router.post('/', Checks.auth('user'), Checks.db, createPlace);
-router.put('/:id', Checks.auth('content-owner'), updatePlace);
-router.delete('/:id', Checks.auth('content-owner'), deletePlace);
-router.get('/:id/comments/', getComments);
-router.post('/:id/comments/', Checks.auth('user'), createComment);
-router.delete('/:id/comments/:comment_id', Checks.auth('moderator'),
+// getPlacesHeaders
+router.get('/',
+  Checks.db,
+  getPlacesHeaders);
+
+// getPlaceInfo
+router.get('/:id',
+  getPlaceInfo,
+  Utils.listAuthorsInObjectsToSend,
+  Utils.getAuthorsInfos,
+  Utils.addAuthorsNames,
+  Utils.send);
+
+// createPlace
+router.post('/',
+  Checks.auth('user'),
+  Checks.db, 
+  createPlace,
+  Utils.cleanEntityToSend(),
+  Utils.listAuthorsInObjectsToSend,
+  Utils.getAuthorsInfos,
+  Utils.addAuthorsNames,
+  Utils.send);
+
+// updatePlace
+router.put('/:id',
+  Checks.auth('content-owner'),
+  updatePlace,
+  Utils.cleanEntityToSend(),
+  Utils.listAuthorsInObjectsToSend,
+  Utils.getAuthorsInfos,
+  Utils.addAuthorsNames,
+  Utils.send);
+
+// deletePlace
+router.delete('/:id',
+  Checks.auth('content-owner'),
+  deletePlace);
+
+// getComments
+router.get('/:id/comments/',
+  getComments,
+  Utils.listAuthorsInObjectsToSend,
+  Utils.getAuthorsInfos,
+  Utils.addAuthorsNames,
+  Utils.send);
+
+// createComment
+router.post('/:id/comments/',
+  Checks.auth('user'),
+  createComment,
+  Utils.cleanEntityToSend(['place', 'toModerate']),
+  Utils.listAuthorsInObjectsToSend,
+  Utils.getAuthorsInfos,
+  Utils.addAuthorsNames,
+  Utils.send);
+
+// deleteComment
+router.delete('/:id/comments/:comment_id',
+  Checks.auth('moderator'),
   deleteComment);
-router.get('/:id/pictures/', getPictures);
-router.post('/:id/pictures/', Checks.auth('user'), createPicture);
-//router.delete('/:id/pictures/:picture_id', deletePicture);
-//router.get('/:id/documents', getDocuments);
-//router.post('/:id/documents', createDocument);
-//router.delete('/:id/documents/:document_id', deleteDocument);
+
+// getPictures
+router.get('/:id/pictures/',
+  getPictures,
+  Utils.listAuthorsInObjectsToSend,
+  Utils.getAuthorsInfos,
+  Utils.addAuthorsNames,
+  Utils.send);
+
+// createPicture
+router.post('/:id/pictures/',
+  Checks.auth('user'),
+  createPicture);
+
+// TODO: deletePicture
+//router.delete('/:id/pictures/:picture_id',
+//  Checks.auth('moderator'),
+//  deletePicture);
+
+// TODO: getDocuments
+//router.get('/:id/documents',
+//  getDocuments,
+//  Utils.listAuthorsInObjectsToSend,
+//  Utils.getAuthorsInfos,
+//  Utils.addAuthorsNames,
+//  Utils.send);
+
+// TODO: createDocument
+//router.post('/:id/documents',
+//  Checks.auth('user'),
+//  createDocument);
+
+// TODO: deleteDocument
+//router.delete('/:id/documents/:document_id',
+//  Checks.auth('moderator');
+//  deleteDocument);
+
+// TODO: Votes ou non ?
 //router.get('/:id/votes', getVotes);
 //router.post('/:id/votes', createVote);
 //router.delete('/:id/votes/:vote_id', deleteVote);
@@ -185,7 +269,8 @@ function getPlaceInfo(req, res, next) {
     place.proposedBy = undefined;
   }
 
-  res.json(place);
+  req.toSend = place.toObject();
+  next();
 }
 
 
@@ -211,7 +296,7 @@ function createPlace(req, res, next) {
   place.proposedBy = ObjectId(req.jwt._id);
 
   if (!req.body.setHeaderPhoto) {
-    var onPlaceSaved = Utils.returnSavedEntity(res, next, 201);
+    var onPlaceSaved = Utils.returnSavedEntity(req, res, next, 201);
     place.save(onPlaceSaved);
   }
   else { 
@@ -251,7 +336,7 @@ function updatePlace(req, res, next) {
 
   // TODO: Factoriser du code
   if (!modifications.setHeaderPhoto) {
-    var onPlaceSaved = Utils.returnSavedEntity(res, next);
+    var onPlaceSaved = Utils.returnSavedEntity(req, res, next, 201);
     place.save(onPlaceSaved);
   }
   else { 
@@ -360,9 +445,12 @@ function getComments(req,res,next) {
     .sort('-date')
     .skip((page - 1) * n)
     .limit(n)
+    .lean()
     .exec(function returnComments(error, comments) {
       if (error) return next(error);
-      res.json(comments);
+
+      req.toSend = comments;
+      next();
     });
 }
 
@@ -383,7 +471,7 @@ function createComment(req, res, next) {
   if (place.moderateComments)
     comment.toModerate = true;
 
-  var onCommentSaved = Utils.returnSavedEntity(res, next, 201);
+  var onCommentSaved = Utils.returnSavedEntity(req, res, next, 201);
   comment.save(onCommentSaved);
 }
 
@@ -458,9 +546,12 @@ function getPictures(req,res,next) {
     .sort('-date')
     .skip((page - 1) * n)
     .limit(n)
+    .lean()
     .exec(function returnPictures(error, pictures) {
       if (error) return next(error);
-      res.json(pictures);
+      
+      req.toSend = pictures;
+      next();
     });
 }
 

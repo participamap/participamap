@@ -12,11 +12,36 @@ router.param('id', Checks.isValidObjectId);
 router.param('id', Checks.db);
 router.param('id', getUser);
 
-router.get('/', Checks.auth('admin'), Checks.db, getUsers);
-router.get('/:id', Checks.auth('admin'), getUserInfo);
-router.post('/', Checks.auth('admin'), Checks.db, createUser);
-router.put('/:id', Checks.auth('admin'), updateUser);
-router.delete('/:id', Checks.auth('admin'), deleteUser);
+// getUsers
+router.get('/',
+  Checks.auth('admin'),
+  Checks.db,
+  getUsers);
+
+// getUserInfo
+router.get('/:id',
+  Checks.auth('admin'),
+  getUserInfo);
+
+// createUser
+router.post('/',
+  Checks.auth('admin'),
+  Checks.db,
+  createUser,
+  Utils.cleanEntityToSend(['passwordSalt', 'passwordHash']),
+  Utils.send);
+
+// updateUser
+router.put('/:id',
+  Checks.auth('admin'),
+  updateUser,
+  Utils.cleanEntityToSend(['passwordSalt', 'passwordHash']),
+  Utils.send);
+
+// deleteUser
+router.delete('/:id',
+  Checks.auth('admin'),
+  deleteUser);
 
 
 function getUser(req, res, next, id) {
@@ -126,7 +151,7 @@ function getUserInfo(req, res, next) {
 function createUser(req, res, next) {
   var user = new User(req.body);
 
-  var onUserSaved = Utils.returnSavedEntity(res, next, 201);
+  var onUserSaved = Utils.returnSavedEntity(req, res, next, 201);
   user.save(onUserSaved);
 }
 
@@ -138,7 +163,7 @@ function updateUser(req, res, next) {
   for (attribute in modifications)
     user[attribute] = modifications[attribute];
 
-  var onUserSaved = Utils.returnSavedEntity(res, next);
+  var onUserSaved = Utils.returnSavedEntity(req, res, next);
   user.save(onUserSaved);
 }
 
