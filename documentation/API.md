@@ -178,7 +178,7 @@ Un utilisateur :
 Attribut | Description | Exemple
 ---------|-------------|--------
 username | Nom d’utilisateur | "user007"
-password | Mot de passe | "+odFh7Gt}/W&i0zD"
+password | Mot de passe | "3u|lW_T%qZr!|;U%"
 email | Adresse électronique | "user@domain.com"
 
 #### Réponse
@@ -196,7 +196,7 @@ Requête :
 ```sh
 $ curl -X POST "https://api.participamap.org/register" \
     -H "Content-Type: application/json" \
-    -d '{"username":"user007","password":"+odFh7Gt}/W&i0zD","email":"user@domain.com"}'
+    -d '{"username":"user007","password":"3u|lW_T%qZr!|;U%","email":"user@domain.com"}'
 ```
 
 Réponse :
@@ -243,7 +243,7 @@ Identifiants :
 Attribut | Description | Exemple
 ---------|-------------|--------
 username | Nom d’utilisateur | "user007"
-password | Mot de passe | "+odFh7Gt}/W&i0zD"
+password | Mot de passe | "3u|lW_T%qZr!|;U%"
 
 #### Réponse
 
@@ -260,7 +260,7 @@ Requête :
 ```sh
 $ curl -X POST "https://api.participamap.org/login" \
     -H "Content-Type: application/json" \
-    -d '{"username":"user007","password":"+odFh7Gt}/W&i0zD"}'
+    -d '{"username":"user007","password":"3u|lW_T%qZr!|;U%"}'
 ```
 
 Réponse :
@@ -450,7 +450,7 @@ Un utilisateur :
 
 Attribut | Description | Exemple
 ---------|-------------|--------
-*password* | Mot de passe | "+odFh7Gt}/W&i0zD"
+*password* | Mot de passe | "3u|lW_T%qZr!|;U%"
 *email* | Adresse électronique | "user@domain.com"
 
 #### Réponse
@@ -472,7 +472,7 @@ Requête :
 $ curl -X PUT "https://api.participamap.org/users/57dbe334c3eaf116f88e0318" \
     -H "Authorization: Bearer JSON_WEB_TOKEN" \
     -H "Content-Type: application/json" \
-    -d '{"password":"+odFh7Gt}/W&i0zD"}'
+    -d '{"password":"3u|lW_T%qZr!|;U%"}'
 ```
 
 Réponse :
