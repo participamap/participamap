@@ -3,9 +3,13 @@
 ## Sommaire
 
 * [**Informations générales**](#informations-générales)
-    * [Protocole et format](#protocole-et-format)
+    * [Protocole, format et encodage](#protocole-format-et-encodage)
+    * [Chemins](#chemins)
     * [Appels réussis](#appels-réussis)
     * [Gestion des erreurs](#gestion-des-erreurs)
+* [**Autorisations et Authentification**](#autorisations-et-authentification)
+    * [Rôles](#rôles)
+    * [Jetons](#jetons)
 * [**Utilisateurs**](#utilisateurs)
     * [Enregistrement](#enregistrement)
     * [Connexion](#connexion)
@@ -27,15 +31,22 @@
 
 ## Informations générales
 
-### Protocole et format
+### Protocole, format et encodage
 
-L’API utilise le protocole HTTP. Les charges des requêtes doivent être passés en JSON avec l’en-tête `Content-Type: application/json`. Les réponses sont toujours en JSON.
+L’API utilise le protocole HTTP. Le contenu des requêtes doit être passé en JSON avec l’en-tête `Content-Type: application/json` le cas échéant, sauf mention contraire. Le contenu des réponses est toujours en JSON. L’encodage utilisé est UTF-8.
+
+### Chemins
+
+Le chemin d’accès à une requête est toujours précisé. Le routage étant strict, la présence ou l’absence de `/` final est importante. En règle générale :
+
+* les ressources uniques n’ont pas de `/` final ;
+* les ensembles de ressources ont un `/` final.
 
 ### Paramètres
 
 * Les paramètres de chemin sont toujours obligatoires.
 * Les paramètres de requête sont toujours facultatifs. Le comportement de l’API en leur absence est spécifié dans la documentation.
-* Les attributs de la charge d’une requête sont :
+* Les attributs du contenu d’une requête sont :
     * obligatoires par défaut ;
     * facultatifs s’ils sont écrits en italique.
 
@@ -75,6 +86,65 @@ Chaque requête est détaillée avec un exemple montrant :
 * les en-têtes HTTP importants de la réponse,
 * le contenu de la réponse en JSON le cas échéant.
 
+## Autorisations et Authentification
+
+Certaines requêtes nécessitent une autorisation. Il est alors nécessaire de s’authentifier.
+
+### Rôles
+
+L’API distingue quatre rôles, hiérarchiquement supérieurs les uns aux autres :
+
+* `admin`,
+* `moderator`,
+* `content-owner`,
+* `user`.
+
+La documentation de chaque requête précise le rôle minimum requis le cas échéant.
+
+### Jetons
+
+L’authentification d’une requête repose sur la présence d’un jeton utilisant la norme JSON Web Token dans un en-tête HTTP :
+
+```http
+Authorization: Bearer JSON_WEB_TOKEN
+```
+
+Il est possible de récupérer un tel jeton via les requêtes [register](#enregistrement) et [login](#connexion).
+
+Un jeton est de la forme :
+
+```
+en-tête.contenu.signature
+```
+
+Décodé, il contient les attributs suivants :
+
+Attribut | Description | Exemple
+---------|-------------|--------
+_id | Identifiant de l’utilisateur | "58036c63e383eb1c6326538e"
+usr | Nom d’utilisateur | "user007"
+role | Rôle de l’utilisateur | "user"
+iat | Date de création | 1476627225
+exp | Date d’expiration | 1477232025
+
+Exemple :
+
+```
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ODAzNmM2M2UzODNlYjFjNjMyNjUzOGUiLCJ1c3IiOiJ1c2VyMDA3Iiwicm9sZSI6InVzZXIiLCJpYXQiOjE0NzY2MjcyMjUsImV4cCI6MTQ3NzIzMjAyNX0.qG8Ki9Zrg0ANkKhRtVyBEKlXQjxY1VqngzCL9-i4NCg
+```
+
+Décodé, il contient :
+
+```json
+{
+  "_id": "58036c63e383eb1c6326538e",
+  "usr": "user007",
+  "role": "user",
+  "iat": 1476627225,
+  "exp": 1477232025
+}
+```
+
 ## Utilisateurs
 
 ### Enregistrement
@@ -89,7 +159,7 @@ Enregistre un nouvel utilisateur.
 
 #### Point d’accès
 
-Méthode | Chemin | autorisation
+Méthode | Chemin | Autorisation
 :------:|:------:|:-----------:
 POST | /register | non requis
 
@@ -101,7 +171,7 @@ POST | /register | non requis
 
 *Néant*
 
-#### Charge
+#### Contenu
 
 Un utilisateur :
 
@@ -117,16 +187,16 @@ Un JSON Web Token :
 
 Attribut | Description | Exemple
 ---------|-------------|--------
-token | JSON Web Token | "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ODAxNDEzZGE3NDA2NzE5M2Q1YzBiODUiLCJ1c2VybmFtZSI6InVzZXIwMDciLCJpYXQiOjE0NzY0NzcyNDUsImV4cCI6MjA4MTI3NzI0NX0.Fs\_W0p5ds1YN3TMUvk6dnHDk2jy\_rhU2pFPbdYMR9zc"
+token | JSON Web Token | "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ODAzNmM2M2UzODNlYjFjNjMyNjUzOGUiLCJ1c3IiOiJ1c2VyMDA3Iiwicm9sZSI6InVzZXIiLCJpYXQiOjE0NzY2MjcyMjUsImV4cCI6MTQ3NzIzMjAyNX0.qG8Ki9Zrg0ANkKhRtVyBEKlXQjxY1VqngzCL9-i4NCg"
 
 #### Exemple
 
 Requête :
 
 ```sh
-$ curl -X POST -H "Content-Type: application/json" \
-    -d '{"username":"user007","password":"+odFh7Gt}/W&i0zD","email":"user@domain.com"}' \
-    "https://api.participamap.org/register"
+$ curl -X POST "https://api.participamap.org/register" \
+    -H "Content-Type: application/json" \
+    -d '{"username":"user007","password":"+odFh7Gt}/W&i0zD","email":"user@domain.com"}'
 ```
 
 Réponse :
@@ -138,7 +208,7 @@ Content-Type: application/json; charset=utf-8
 
 ```json
 {
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ODAxNDEzZGE3NDA2NzE5M2Q1YzBiODUiLCJ1c2VybmFtZSI6InVzZXIwMDciLCJpYXQiOjE0NzY0NzcyNDUsImV4cCI6MjA4MTI3NzI0NX0.Fs\_W0p5ds1YN3TMUvk6dnHDk2jy\_rhU2pFPbdYMR9zc"
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ODAzNmM2M2UzODNlYjFjNjMyNjUzOGUiLCJ1c3IiOiJ1c2VyMDA3Iiwicm9sZSI6InVzZXIiLCJpYXQiOjE0NzY2MjcyMjUsImV4cCI6MTQ3NzIzMjAyNX0.qG8Ki9Zrg0ANkKhRtVyBEKlXQjxY1VqngzCL9-i4NCg"
 }
 ```
 
@@ -154,7 +224,7 @@ Se connecte en tant qu’utilisateur.
 
 #### Point d’accès
 
-Méthode | Chemin | autorisation
+Méthode | Chemin | Autorisation
 :------:|:------:|:-----------:
 POST | /login | non requis
 
@@ -166,7 +236,7 @@ POST | /login | non requis
 
 *Néant*
 
-#### Charge
+#### Contenu
 
 Identifiants :
 
@@ -181,16 +251,16 @@ Un JSON Web Token :
 
 Attribut | Description | Exemple
 ---------|-------------|--------
-token | JSON Web Token | "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ODAxNDEzZGE3NDA2NzE5M2Q1YzBiODUiLCJ1c2VybmFtZSI6InVzZXIwMDciLCJpYXQiOjE0NzY0NzcyNDUsImV4cCI6MjA4MTI3NzI0NX0.Fs\_W0p5ds1YN3TMUvk6dnHDk2jy\_rhU2pFPbdYMR9zc"
+token | JSON Web Token | "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ODAzNmM2M2UzODNlYjFjNjMyNjUzOGUiLCJ1c3IiOiJ1c2VyMDA3Iiwicm9sZSI6InVzZXIiLCJpYXQiOjE0NzY2MjcyMjUsImV4cCI6MTQ3NzIzMjAyNX0.qG8Ki9Zrg0ANkKhRtVyBEKlXQjxY1VqngzCL9-i4NCg"
 
 #### Exemple
 
 Requête :
 
 ```sh
-$ curl -X POST -H "Content-Type: application/json" \
-    -d '{"username":"user007","password":"+odFh7Gt}/W&i0zD"}' \
-    "https://api.participamap.org/login"
+$ curl -X POST "https://api.participamap.org/login" \
+    -H "Content-Type: application/json" \
+    -d '{"username":"user007","password":"+odFh7Gt}/W&i0zD"}'
 ```
 
 Réponse :
@@ -202,7 +272,7 @@ Content-Type: application/json; charset=utf-8
 
 ```json
 {
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ODAxNDEzZGE3NDA2NzE5M2Q1YzBiODUiLCJ1c2VybmFtZSI6InVzZXIwMDciLCJpYXQiOjE0NzY0NzcyNDUsImV4cCI6MjA4MTI3NzI0NX0.Fs\_W0p5ds1YN3TMUvk6dnHDk2jy\_rhU2pFPbdYMR9zc"
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ODAzNmM2M2UzODNlYjFjNjMyNjUzOGUiLCJ1c3IiOiJ1c2VyMDA3Iiwicm9sZSI6InVzZXIiLCJpYXQiOjE0NzY2MjcyMjUsImV4cCI6MTQ3NzIzMjAyNX0.qG8Ki9Zrg0ANkKhRtVyBEKlXQjxY1VqngzCL9-i4NCg"
 }
 ```
 
@@ -218,9 +288,9 @@ Récupère la liste des utilisateurs.
 
 #### Point d’accès
 
-Méthode | Chemin | autorisation
+Méthode | Chemin | Autorisation
 :------:|:------:|:-----------:
-GET | /users | administrateur
+GET | /users/ | `admin`
 
 #### Paramètres de chemin
 
@@ -234,7 +304,7 @@ order | Ordre de tri | date, date-desc, username, username-desc | username
 page | Numéro de page | 3 | 1
 n | Nombre de commentaires par page | 100 | 25 si `page` est fixé, infini sinon
 
-#### Charge
+#### Contenu
 
 *Néant*
 
@@ -254,7 +324,8 @@ registrationDate | Date d’inscription | "2016-10-14T15:27:43.123Z"
 Requête :
 
 ```sh
-$ curl https://api.participamap.org/users?order=date-desc&page=1&n=2
+$ curl "https://api.participamap.org/users/?order=date-desc&page=1&n=2" \
+    -H "Authorization: Bearer JSON_WEB_TOKEN"
 ```
 
 Réponse :
@@ -293,9 +364,9 @@ Récupère les informations sur un utilisateur.
 
 #### Point d’accès
 
-Méthode | Chemin | autorisation
+Méthode | Chemin | Autorisation
 :------:|:------:|:-----------:
-GET | /users/{id} | utilisateur (lui-même) / administrateur (tous)
+GET | /users/{id} | `admin` (tous) / `user` (lui-même)
 
 #### Paramètres de chemin
 
@@ -307,7 +378,7 @@ id | Identifiant de l’utilisateur | 57dbe334c3eaf116f88e0318
 
 *Néant*
 
-#### Charge
+#### Contenu
 
 *Néant*
 
@@ -327,7 +398,8 @@ registrationDate | Date d’inscription | "2016-10-14T15:27:43.123Z"
 Requête :
 
 ```sh
-$ curl https://api.participamap.org/users/57dbe334c3eaf116f88e0318
+$ curl "https://api.participamap.org/users/57dbe334c3eaf116f88e0318" \
+    -H "Authorization: Bearer JSON_WEB_TOKEN"
 ```
 
 Réponse :
@@ -358,9 +430,9 @@ Modifie un utilisateur.
 
 #### Point d’accès
 
-Méthode | Chemin | autorisation
+Méthode | Chemin | Autorisation
 :------:|:------:|:-----------:
-PUT | /users/{id} | utilisateur (lui-même)
+PUT | /users/{id} | `admin` (tous) / `user` (lui-même)
 
 #### Paramètres de chemin
 
@@ -372,7 +444,7 @@ id | Identifiant de l’utilisateur | 57dbe334c3eaf116f88e0318
 
 *Néant*
 
-#### Charge
+#### Contenu
 
 Un utilisateur :
 
@@ -397,9 +469,10 @@ registrationDate | Date d’inscription | "2016-10-14T15:27:43.123Z"
 Requête :
 
 ```sh
-$ curl -X PUT -H "Content-Type: application/json" \
-    -d '{"password":"+odFh7Gt}/W&i0zD"}' \
-    https://api.participamap.org/users/57dbe334c3eaf116f88e0318
+$ curl -X PUT "https://api.participamap.org/users/57dbe334c3eaf116f88e0318" \
+    -H "Authorization: Bearer JSON_WEB_TOKEN" \
+    -H "Content-Type: application/json" \
+    -d '{"password":"+odFh7Gt}/W&i0zD"}'
 ```
 
 Réponse :
@@ -430,9 +503,9 @@ Supprime un utilisateur.
 
 #### Point d’accès
 
-Méthode | Chemin | autorisation
+Méthode | Chemin | Autorisation
 :------:|:------:|:-----------:
-DELETE | /users/{id} | utilisateur (lui-même) / administrateur (tous)
+DELETE | /users/{id} | `admin` (tous) / `user` (lui-même)
 
 #### Paramètres de chemin
 
@@ -444,7 +517,7 @@ id | Identifiant de l’utilisateur | 57dbe334c3eaf116f88e0318
 
 *Néant*
 
-#### Charge
+#### Contenu
 
 *Néant*
 
@@ -459,7 +532,8 @@ HTTP/1.1 204 No Content
 Requête :
 
 ```sh
-$ curl -X DELETE https://api.participamap.org/users/57dbe334c3eaf116f88e0318
+$ curl -X DELETE "https://api.participamap.org/users/57dbe334c3eaf116f88e0318"
+    -H "Authorization: Bearer JSON_WEB_TOKEN"
 ```
 
 Réponse :
@@ -484,7 +558,7 @@ Récupère les en-têtes de lieux.
 
 Méthode | Chemin | Autorisation
 :------:|:------:|:-----------:
-GET | /places | non requis
+GET | /places/ | non requis
 
 #### Paramètres de chemin
 
@@ -502,7 +576,7 @@ width | Largeur du cadre de recherche en degrés | 0.06 | Tout
 
 **Note : *lat*, *long*, *height* et *width* doivent être renseignés ensemble.**
 
-#### Charge
+#### Contenu
 
 *Néant*
 
@@ -522,7 +596,7 @@ title | Titre du lieu | "Le Dôme"
 Requête :
 
 ```sh
-$ curl https://api.participamap.org/places?when=now
+$ curl "https://api.participamap.org/places/?when=now"
 ```
 
 Réponse :
@@ -567,9 +641,9 @@ Récupère les informations sur un lieu.
 
 #### Point d’accès
 
-Méthode | Chemin | autorisation
+Méthode | Chemin | Autorisation
 :------:|:------:|:-----------:
-GET | /places/{id} | non requis / modérateur si `admin=true`
+GET | /places/{id} | non requis
 
 #### Paramètres de chemin
 
@@ -583,7 +657,7 @@ Nom | Description | Exemple | Absence
 ----|-------------|---------|--------
 admin | Récupérer des informations administrateur | true | false
 
-#### Charge
+#### Contenu
 
 *Néant*
 
@@ -603,21 +677,21 @@ isVerified | État de vérification du lieu | true
 *description* | Description | "Maison de la Recherche et de l’Imagination"
 *startDate* | Date de création | "2015-01-01T13:00:00.000Z"
 *endDate* | Date de suppression | "2016-09-09T08:00:00.000Z"
-*moderateComments*\* | Modération des commentaires | true
-*moderatePictures*\* | Modération des photos | true
-*moderateDocuments*\* | Modération des documents | true
+*moderateComments* | Modération des commentaires | true
+*moderatePictures* | Modération des photos | true
+*moderateDocuments* | Modération des documents | true
 *denyComments* | Interdiction des commentaires | true
 *denyPictures* | Interdiction des photos | true
 *denyDocuments* | Interdiction des documents | true
 
-\* N’apparaît que si `admin=true`.
+\* N’apparaît que si authentifié avec un role `content-owner` au minimum.
 
 #### Exemple
 
 Requête :
 
 ```sh
-$ curl https://api.participamap.org/places/57dbe334c3eaf116f88e0318
+$ curl "https://api.participamap.org/places/57dbe334c3eaf116f88e0318"
 ```
 
 Réponse :
@@ -654,9 +728,9 @@ Crée un nouveau lieu.
 
 #### Point d’accès
 
-Méthode | Chemin | autorisation
+Méthode | Chemin | Autorisation
 :------:|:------:|:-----------:
-POST | /places | utilisateur / modérateur si champs modérateurs soumis
+POST | /places/ | `user`
 
 #### Paramètres de chemin
 
@@ -666,7 +740,7 @@ POST | /places | utilisateur / modérateur si champs modérateurs soumis
 
 *Néant*
 
-#### Charge
+#### Contenu
 
 Un lieu :
 
@@ -687,7 +761,7 @@ title | Titre du lieu | "Le Dôme"
 *denyPictures*\* | Interdiction des photos | true
 *denyDocuments*\* | Interdiction des documents | true
 
-\* N’est paramétrable qu’avec un niveau modérateur.
+\* N’est paramétrable qu’en étant authentifié avec un role `content-owner` au minimum.
 
 \*\* Pour ajouter une photo d’en-tête, la procédure est la suivante :
 
@@ -724,9 +798,10 @@ isVerified | État de vérification du lieu | true
 Requête :
 
 ```sh
-$ curl -X POST -H "Content-Type: application/json" \
-    -d '{"location":{"latitude":49.18165,"longitude":-0.34709},"title":"Le Dôme","setHeaderPhoto":true}' \
-    https://api.participamap.org/places
+$ curl -X POST "https://api.participamap.org/places/" \
+    -H "Authorization: Bearer JSON_WEB_TOKEN" \
+    -H "Content-Type: application/json" \
+    -d '{"location":{"latitude":49.18165,"longitude":-0.34709},"title":"Le Dôme","setHeaderPhoto":true}'
 ```
 
 Comme `setHeaderPhoto = true`, le serveur répond avec :
@@ -740,8 +815,10 @@ Content-Length: 0
 On poursuit alors avec la requête suivante :
 
 ```sh
-$ curl -X PUT -H "Content-Type:image/jpeg" --data-binary "@le-dome.jpg" \
-    https://api.participamap.org/upload/57f3d7cf0a7cc112cb8ae23c
+$ curl -X PUT "https://api.participamap.org/upload/57f3d7cf0a7cc112cb8ae23c" \
+    -H "Authorization: Bearer JSON_WEB_TOKEN" \
+    -H "Content-Type: image/jpeg" \
+    --data-binary "@le-dome.jpg"
 ```
 
 Réponse :
@@ -775,9 +852,9 @@ Modifie un lieu existant.
 
 #### Point d’accès
 
-Méthode | Chemin | autorisation
+Méthode | Chemin | Autorisation
 :------:|:------:|:-----------:
-PUT | /places/{id} | modérateur
+PUT | /places/{id} | `content-owner`
 
 #### Paramètres de chemin
 
@@ -787,7 +864,7 @@ PUT | /places/{id} | modérateur
 
 *Néant*
 
-#### Charge
+#### Contenu
 
 Un lieu :
 
@@ -844,9 +921,10 @@ isVerified | État de vérification du lieu | true
 Requête :
 
 ```sh
-$ curl -X PUT -H "Content-Type: application/json" \
-    -d '{"title":"Le Dôme modifié"}' \
-    https://api.participamap.org/places/57dbe334c3eaf116f88e0318
+$ curl -X PUT "https://api.participamap.org/places/57dbe334c3eaf116f88e0318" \
+    -H "Authorization: Bearer JSON_WEB_TOKEN" \
+    -H "Content-Type: application/json" \
+    -d '{"title":"Le Dôme modifié"}'
 ```
 
 Comme il n’y a pas de changement de photo d’en-tête, le serveur répond directement :
@@ -880,9 +958,9 @@ Supprime un lieu.
 
 #### Point d’accès
 
-Méthode | Chemin | autorisation
+Méthode | Chemin | Autorisation
 :------:|:------:|:-----------:
-DELETE | /places/{id} | modérateur
+DELETE | /places/{id} | `content-owner`
 
 #### Paramètres de chemin
 
@@ -894,7 +972,7 @@ id | Identifiant du lieu | 57dbe334c3eaf116f88e0318
 
 *Néant*
 
-#### Charge
+#### Contenu
 
 *Néant*
 
@@ -909,7 +987,8 @@ HTTP/1.1 204 No Content
 Requête :
 
 ```sh
-$ curl -X DELETE https://api.participamap.org/places/57dbe334c3eaf116f88e0318
+$ curl -X DELETE "https://api.participamap.org/places/57dbe334c3eaf116f88e0318" \
+    -H "Authorization: Bearer JSON_WEB_TOKEN"
 ```
 
 Réponse :
@@ -930,9 +1009,9 @@ Récupère les commentaires d’un lieu.
 
 #### Point d’accès
 
-Méthode | Chemin | autorisation
+Méthode | Chemin | Autorisation
 :------:|:------:|:-----------:
-GET | /places/{id}/comments | non requis
+GET | /places/{id}/comments/ | non requis
 
 #### Paramètres de chemin
 
@@ -947,7 +1026,7 @@ Nom | Description | Exemple | Absence
 page | Numéro de page | 3 | 1
 n | Nombre de commentaires par page | 10 | 10 si `page` est fixé, infini sinon
 
-#### Charge
+#### Contenu
 
 *Néant*
 
@@ -961,13 +1040,16 @@ _id | Identifiant du commentaire | "57ed7489c6358c1278552be5"
 author | Auteur du commentaire | { "id": "57dbe334c3eaf116f88eca27", "name": "Jean Dupont" }
 date | Date du commentaire | "2016-09-19T19:30:26.037Z"
 content | Contenu du commentaire | "Très bel endroit"
+*toModerate*\* | Drapeaux indiquant que le commentaire doit être modéré | true
+
+\* N’apparait qu’en étant authentifié avec un rôle `moderator` au minimum. Les commentaires avec un champ `toModerate` à `true` ne sont affichés qu’en étant authentifié avec un rôle `moderator` au minimum.
 
 #### Exemple
 
 Requête :
 
 ```sh
-$ curl https://api.participamap.org/places/57dbe334c3eaf116f88e0318/comments?page=1&n=2
+$ curl "https://api.participamap.org/places/57dbe334c3eaf116f88e0318/comments/?page=1&n=2"
 ```
 
 Réponse :
@@ -1012,9 +1094,9 @@ Crée un commentaire.
 
 #### Point d’accès
 
-Méthode | Chemin | autorisation
+Méthode | Chemin | Autorisation
 :------:|:------:|:-----------:
-POST | /places/{id}/comments | utilisateur
+POST | /places/{id}/comments/ | `user`
 
 #### Paramètres de chemin
 
@@ -1026,7 +1108,7 @@ id | Identifiant du lieu | 57dbe334c3eaf116f88e0318
 
 *Néant*
 
-#### Charge
+#### Contenu
 
 Un commentaire :
 
@@ -1050,9 +1132,10 @@ content | Contenu du commentaire | "Très bel endroit"
 Requête :
 
 ```sh
-$ curl -X POST -H "Content-Type: application/json" \
-    -d '{"content": "Très bel endroit"}' \
-    https://api.participamap.org/places/57dbe334c3eaf116f88e0318/comments
+$ curl -X POST "https://api.participamap.org/places/57dbe334c3eaf116f88e0318/comments/" \
+    -H "Authorization: Bearer JSON_WEB_TOKEN" \
+    -H "Content-Type: application/json" \
+    -d '{"content": "Très bel endroit"}'
 ```
 
 Réponse :
@@ -1086,9 +1169,9 @@ Supprime un commentaire.
 
 #### Point d’accès
 
-Méthode | Chemin | autorisation
+Méthode | Chemin | Autorisation
 :------:|:------:|:-----------:
-DELETE | /places/{id}/comments/{comment_id} | modérateur
+DELETE | /places/{id}/comments/{comment_id} | `moderator` (tous) / `user` (ses commentaires)
 
 #### Paramètres de chemin
 
@@ -1101,7 +1184,7 @@ comment_id | Identifiant du commentaire | 57ed7489c6358c1278552be5
 
 *Néant*
 
-#### Charge
+#### Contenu
 
 *Néant*
 
@@ -1116,7 +1199,8 @@ HTTP/1.1 204 No Content
 Requête :
 
 ```sh
-$ curl -X DELETE https://api.participamap.org/places/57dbe334c3eaf116f88e0318/comments/57ed7489c6358c1278552be5
+$ curl -X DELETE "https://api.participamap.org/places/57dbe334c3eaf116f88e0318/comments/57ed7489c6358c1278552be5"
+    -H "Authorization: Bearer JSON_WEB_TOKEN"
 ```
 
 Réponse :
@@ -1137,9 +1221,9 @@ Récupère les images d’un lieu.
 
 #### Point d’accès
 
-Méthode | Chemin | autorisation
+Méthode | Chemin | Autorisation
 :------:|:------:|:-----------:
-GET | /places/{id}/pictures | non requis
+GET | /places/{id}/pictures/ | non requis
 
 #### Paramètres de chemin
 
@@ -1154,7 +1238,7 @@ Nom | Description | Exemple | Absence
 page | Numéro de page | 3 | 1
 n | Nombre d’images par page | 12 | 12 si `page` est fixé, infini sinon
 
-#### Charge
+#### Contenu
 
 *Néant*
 
@@ -1168,13 +1252,16 @@ _id | Identifiant de l’image | 57ed7489c6358c1278552be5
 author | Auteur de la photo | { "id": "57dbe334c3eaf116f88eca27", "name": "Jean Dupont" }
 date | Date de mise en ligne | "2016-09-19T19:30:26.037Z"
 url | URL de la photo | "https://photos.participamap.org/97a15d97-847e-450c-8bd0-1f922883f523.jpg"
+*toModerate*\* | Drapeaux indiquant que l’image doit être modérée | true
+
+\* N’apparait qu’en étant authentifié avec un rôle `moderator` au minimum. Les images avec un champ `toModerate` à `true` ne sont affichées qu’en étant authentifié avec un rôle `moderator` au minimum.
 
 #### Exemple
 
 Requête :
 
 ```sh
-$ curl https://api.participamap.org/places/57dbe334c3eaf116f88e0318/pictures?page=1
+$ curl "https://api.participamap.org/places/57dbe334c3eaf116f88e0318/pictures/?page=1"
 ```
 
 Réponse :
@@ -1210,9 +1297,9 @@ Ajoute une image à un lieu.
 
 #### Point d’accès
 
-Méthode | Chemin | autorisation
+Méthode | Chemin | Autorisation
 :------:|:------:|:-----------:
-POST | /places/{id}/pictures | utilisateur
+POST | /places/{id}/pictures | `user`
 
 #### Paramètres de chemin
 
@@ -1224,13 +1311,13 @@ id | Identifiant du lieu | 57dbe334c3eaf116f88e0318
 
 *Néant*
 
-#### Charge
+#### Contenu
 
 *Néant*\*
 
 \* Pour poster une image, la procédure est la suivante :
 
-1. créer une image avec une charge vide\*\*
+1. créer une image avec un contenu vide\*\*
 2. le serveur répond avec un statut HTTP `204 No Content` et un en-tête `Location` précisant une adresse de mise en ligne ;
 3. envoyer la photo au serveur avec une requête `PUT` vers l’adresse précisée par la réponse précédente, en précisant bien le bon `Content-Type` ;
 4. le serveur répond avec l’image créée si tout s’est bien passé
@@ -1253,7 +1340,8 @@ url | URL de la photo | "https://photos.participamap.org/97a15d97-847e-450c-8bd0
 Requête :
 
 ```sh
-$ curl -X POST https://api.participamap.org/places/57dbe334c3eaf116f88e0318/pictures
+$ curl -X POST "https://api.participamap.org/places/57dbe334c3eaf116f88e0318/pictures/"
+    -H "Authorization: Bearer JSON_WEB_TOKEN"
 ```
 
 Le serveur répond avec :
@@ -1267,8 +1355,10 @@ Content-Length: 0
 On poursuit alors avec la requête suivante :
 
 ```sh
-$ curl -X PUT -H "Content-Type:image/jpeg" --data-binary "@test.jpg" \
-    https://api.participamap.org/upload/57f3d7cf0a7cc112cb8ae23c
+$ curl -X PUT "https://api.participamap.org/upload/57f3d7cf0a7cc112cb8ae23c" \
+    -H "Authorization: Bearer JSON_WEB_TOKEN" \
+    -H "Content-Type:image/jpeg" \
+    --data-binary "@test.jpg"
 ```
 
 
