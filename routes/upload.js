@@ -19,25 +19,27 @@ var config = require('../config.json');
 var router = express.Router();
 
 router.param('id', Checks.isValidObjectId);
+router.param('id', Checks.db);
 router.param('id', getPendingUpload);
 
-router.put('/:id', Checks.db, upload);
+router.put('/:id', upload);
 
 
 function getPendingUpload(req, res, next, id) {
-  PendingUpload.findById(id, {}, function onPendingFound(error, pendingUpload) {
-    if (error) return next(error);
+  PendingUpload.findById(id, {},
+    function onPendingFound(error, pendingUpload) {
+      if (error) return next(error);
 
-    if (!pendingUpload) {
-      var err = new Error('Not Found');
-      err.status = 404;
-      return next(err);
-    }
+      if (!pendingUpload) {
+        var err = new Error('Not Found');
+        err.status = 404;
+        return next(err);
+      }
 
-    req.pendingUpload = pendingUpload;
+      req.pendingUpload = pendingUpload;
 
-    next();
-  });
+      next();
+    });
 }
 
 

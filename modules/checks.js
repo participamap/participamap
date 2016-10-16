@@ -60,8 +60,8 @@ Checks.auth = function (requiredRole) {
     };
 
     if (roles[jwt.role] < roles[requiredRole] && jwt._id != req.owner) {
-      var err = new Error('Unauthorized: Unsufficient permissions');
-      err.status = 401;
+      var err = new Error('Forbidden: Unsufficient permissions');
+      err.status = 403;
       return next(err);
     }
 

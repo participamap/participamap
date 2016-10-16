@@ -53,7 +53,7 @@ userSchema.methods.isValidPassword = function (password) {
 userSchema.methods.generateJWT = function () {
   var payload = {
     _id: this._id,
-    username: this.username,
+    usr: this.username,
     role: this.role
   };
 
@@ -62,7 +62,7 @@ userSchema.methods.generateJWT = function () {
   };
 
   var token = jwt.sign(payload, config.auth.secret, options);
-  
+
   return token;
 };
 
