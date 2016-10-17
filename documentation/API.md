@@ -25,6 +25,7 @@
     * [Suppression d’un lieu](#suppression-dun-lieu)
     * [Commentaires d’un lieu](#commentaires-dun-lieu)
     * [Création d’un commentaire](#création-dun-commentaire)
+    * [Acceptation d’un commentaire](#acceptation-dun-commentaire)
     * [Suppression d’un commentaire](#suppression-dun-commentaire)
     * [Images d’un lieu](#images-dun-lieu)
     * [Création d’une image](#création-dune-image)
@@ -1005,7 +1006,9 @@ HTTP/1.1 204 No Content
 
 #### Description
 
-Récupère les commentaires d’un lieu.
+Récupère les commentaires d’un lieu dans l’ordre rétro-chronologique.
+
+Les éventuels commentaires en attente de modération ne sont affichés qu’en étant authentifié avec un rôle `moderator` au minimum.
 
 #### Point d’accès
 
@@ -1025,6 +1028,9 @@ Nom | Description | Exemple | Absence
 ----|-------------|---------|--------
 page | Numéro de page | 3 | 1
 n | Nombre de commentaires par page | 10 | 10 si `page` est fixé, infini sinon
+tomoderate\* | Affiche les commentaires à modérer | true | false
+
+\* Authentification requise avec un rôle `moderator` au minimum. Seuls les commentaires à modérer sont alors affichés, dans l’ordre chronologique.
 
 #### Contenu
 
@@ -1042,7 +1048,7 @@ date | Date du commentaire | "2016-09-19T19:30:26.037Z"
 content | Contenu du commentaire | "Très bel endroit"
 *toModerate*\* | Drapeaux indiquant que le commentaire doit être modéré | true
 
-\* N’apparait qu’en étant authentifié avec un rôle `moderator` au minimum. Les commentaires avec un champ `toModerate` à `true` ne sont affichés qu’en étant authentifié avec un rôle `moderator` au minimum.
+\* N’apparait qu’en étant authentifié avec un rôle `moderator` au minimum.
 
 #### Exemple
 
@@ -1157,6 +1163,76 @@ Content-Type: application/json; charset=utf-8
 }
 ```
 
+### Acceptation d’un commentaire
+
+#### Nom de la requête
+
+`acceptComment`
+
+#### Description
+
+Accepte un commentaire.
+
+#### Point d’accès
+
+Méthode | Chemin | Autorisation
+:------:|:------:|:-----------:
+POST | /places/{id}/comments/{comment_id}/accept | `moderator`
+
+#### Paramètres de chemin
+
+Nom | Description | Exemple
+----|-------------|--------
+id | Identifiant du lieu | 57dbe334c3eaf116f88e0318
+comment_id | Identifiant du commentaire | 57ed7489c6358c1278552be5
+
+#### Paramètres de requête
+
+*Néant*
+
+#### Contenu
+
+*Néant*
+
+#### Réponse
+
+Un commentaire :
+
+Attribut | Description | Exemple
+---------|-------------|--------
+_id | Identifiant du commentaire | "57ed7489c6358c1278552be5"
+author | Auteur du commentaire | { "id": "57dbe334c3eaf116f88eca27", "name": "Jean Dupont" }
+date | Date du commentaire | "2016-09-19T19:30:26.037Z"
+content | Contenu du commentaire | "Très bel endroit"
+
+#### Exemple
+
+Requête :
+
+```sh
+$ curl -X POST "https://api.participamap.org/places/57dbe334c3eaf116f88e0318/comments/57ed7489c6358c1278552be5/accept" \
+    -H "Authorization: Bearer JSON_WEB_TOKEN"
+```
+
+Réponse :
+
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+```
+
+```json
+{
+  "_id": "57ed7489c6358c1278552be5",
+  "author": {
+    "id": "57dbe334c3eaf116f88eca27",
+    "name": "Jean Dupont"
+  },
+  "date": "2016-09-19T19:30:26.037Z",
+  "content": "Très bel endroit"
+}
+```
+
 ### Suppression d’un commentaire
 
 #### Nom de la requête
@@ -1217,7 +1293,9 @@ HTTP/1.1 204 No Content
 
 #### Description
 
-Récupère les images d’un lieu.
+Récupère les images d’un lieu dans l’ordre rétro-chronologique.
+
+Les éventuelles images en attente de modération ne sont affichées qu’en étant authentifié avec un rôle `moderator` au minimum.
 
 #### Point d’accès
 
@@ -1237,6 +1315,9 @@ Nom | Description | Exemple | Absence
 ----|-------------|---------|--------
 page | Numéro de page | 3 | 1
 n | Nombre d’images par page | 12 | 12 si `page` est fixé, infini sinon
+tomoderate\* | Affiche les images à modérer | true | false
+
+\* Authentification requise avec un rôle `moderator` au minimum. Seules les images à modérer sont alors affichées, dans l’ordre chronologique.
 
 #### Contenu
 
@@ -1254,7 +1335,7 @@ date | Date de mise en ligne | "2016-09-19T19:30:26.037Z"
 url | URL de la photo | "https://photos.participamap.org/97a15d97-847e-450c-8bd0-1f922883f523.jpg"
 *toModerate*\* | Drapeaux indiquant que l’image doit être modérée | true
 
-\* N’apparait qu’en étant authentifié avec un rôle `moderator` au minimum. Les images avec un champ `toModerate` à `true` ne sont affichées qu’en étant authentifié avec un rôle `moderator` au minimum.
+\* N’apparait qu’en étant authentifié avec un rôle `moderator` au minimum.
 
 #### Exemple
 

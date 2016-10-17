@@ -91,6 +91,16 @@ router.post('/:id/comments/',
   Utils.addAuthorsNames,
   Utils.send);
 
+// acceptComment
+router.post('/:id/comments/:comment_id/accept',
+  Checks.auth('moderator'),
+  acceptComment,
+  Utils.cleanEntityToSend(['place']),
+  Utils.listAuthorsInObjectsToSend,
+  Utils.getAuthorsInfos,
+  Utils.addAuthorsNames,
+  Utils.send);
+
 // deleteComment
 router.delete('/:id/comments/:comment_id',
   Checks.auth('moderator'),
@@ -335,7 +345,7 @@ function updatePlace(req, res, next) {
 
   // TODO: Factoriser du code
   if (!modifications.setHeaderPhoto) {
-    var onPlaceSaved = Utils.returnSavedEntity(req, res, next, 201);
+    var onPlaceSaved = Utils.returnSavedEntity(req, res, next);
     place.save(onPlaceSaved);
   }
   else { 
@@ -387,6 +397,11 @@ function deletePlace(req, res, next) {
 
 function getComments(req,res,next) {
   var place = req.place;
+  
+  var role = req.jwt
+    ? req.jwt.role
+    : 'guest';
+
   var page = 1;
   var n = 0;
 
@@ -426,14 +441,25 @@ function getComments(req,res,next) {
 
   var filter = { place: place._id };
   
+  if (req.query.tomoderate === 'true') {
+    if (role !== 'moderator' && role !== 'admin') {
+      var err = new Error('Forbidden: Insufficient permissions to view '
+        + 'unmoderated comments');
+      err.status = 403;
+      return next(err);
+    }
+
+    filter.toModerate = true;
+    var sort = 'date';
+  }
+  else {
+    var sort = '-date';
+  }
+
   var projection = {
     __v: false,
     place: false
   };
-
-  var role = req.jwt
-    ? req.jwt.role
-    : 'guest';
 
   if (role !== 'moderator' && role !== 'admin') {
     filter.toModerate = { $ne: true };
@@ -441,7 +467,7 @@ function getComments(req,res,next) {
   }
   
   Comment.find(filter, projection)
-    .sort('-date')
+    .sort(sort)
     .skip((page - 1) * n)
     .limit(n)
     .lean()
@@ -475,6 +501,16 @@ function createComment(req, res, next) {
 }
 
 
+function acceptComment(req, res, next) {
+  var comment = req.comment;
+
+  comment.toModerate = undefined;
+  
+  var onCommentSaved = Utils.returnSavedEntity(req, res, next);
+  comment.save(onCommentSaved);
+}
+
+
 function deleteComment(req, res, next) {
   var comment = req.comment;
 
@@ -488,6 +524,11 @@ function deleteComment(req, res, next) {
 // TODO: Factoriser le code avec getComments
 function getPictures(req,res,next) {
   var place = req.place;
+  
+  var role = req.jwt
+    ? req.jwt.role
+    : 'guest';
+
   var page = 1;
   var n = 0;
 
@@ -527,14 +568,25 @@ function getPictures(req,res,next) {
 
   var filter = { place: place._id };
   
+  if (req.query.tomoderate === 'true') {
+    if (role !== 'moderator' && role !== 'admin') {
+      var err = new Error('Forbidden: Insufficient permissions to view '
+        + 'unmoderated pictures');
+      err.status = 403;
+      return next(err);
+    }
+
+    filter.toModerate = true;
+    var sort = 'date';
+  }
+  else {
+    var sort = '-date';
+  }
+
   var projection = {
     __v: false,
     place: false
   };
-
-  var role = req.jwt
-    ? req.jwt.role
-    : 'guest';
 
   if (role !== 'moderator' && role !== 'admin') {
     filter.toModerate = { $ne: true };
@@ -542,7 +594,7 @@ function getPictures(req,res,next) {
   }
   
   Picture.find(filter, projection)
-    .sort('-date')
+    .sort(sort)
     .skip((page - 1) * n)
     .limit(n)
     .lean()
