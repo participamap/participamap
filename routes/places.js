@@ -50,7 +50,7 @@ router.get('/:id',
 // createPlace
 router.post('/',
   Checks.auth('user'),
-  Checks.db, 
+  Checks.db,
   createPlace,
   Utils.cleanEntityToSend(),
   Utils.listAuthorsInObjectsToSend,
@@ -215,7 +215,7 @@ function getPlacesHeaders(req, res, next) {
 
   // Location filter
   if (req.query.lat || req.query.long || req.query.height || req.query.width) {
-    if (!(req.query.lat && req.query.long 
+    if (!(req.query.lat && req.query.long
       && req.query.height && req.query.width))
     {
       var err = new Error('Bad Request: lat, long, height and width must be '
@@ -308,7 +308,7 @@ function createPlace(req, res, next) {
     var onPlaceSaved = Utils.returnSavedEntity(req, res, next, 201);
     place.save(onPlaceSaved);
   }
-  else { 
+  else {
     place.validate(function onPlaceValidated(error) {
       if (error) return next(error);
 
@@ -339,7 +339,7 @@ function updatePlace(req, res, next) {
 
   if (modifications.deleteHeaderPhoto) {
     // TODO: Supprimer le fichier
-    
+
     place.headerPhoto = undefined;
   }
 
@@ -348,7 +348,7 @@ function updatePlace(req, res, next) {
     var onPlaceSaved = Utils.returnSavedEntity(req, res, next);
     place.save(onPlaceSaved);
   }
-  else { 
+  else {
     place.validate(function onPlaceValidated(error) {
       if (error) return next(error);
 
@@ -397,7 +397,7 @@ function deletePlace(req, res, next) {
 
 function getComments(req,res,next) {
   var place = req.place;
-  
+
   var role = req.jwt
     ? req.jwt.role
     : 'guest';
@@ -440,7 +440,7 @@ function getComments(req,res,next) {
   }
 
   var filter = { place: place._id };
-  
+
   if (req.query.tomoderate === 'true') {
     if (role !== 'moderator' && role !== 'admin') {
       var err = new Error('Forbidden: Insufficient permissions to view '
@@ -465,7 +465,7 @@ function getComments(req,res,next) {
     filter.toModerate = { $ne: true };
     projection.toModerate = false;
   }
-  
+
   Comment.find(filter, projection)
     .sort(sort)
     .skip((page - 1) * n)
@@ -492,7 +492,7 @@ function createComment(req, res, next) {
   var comment = new Comment(req.body);
   comment.place = place._id;
   comment.author = ObjectId(req.jwt._id);
-  
+
   if (place.moderateComments)
     comment.toModerate = true;
 
@@ -505,7 +505,7 @@ function acceptComment(req, res, next) {
   var comment = req.comment;
 
   comment.toModerate = undefined;
-  
+
   var onCommentSaved = Utils.returnSavedEntity(req, res, next);
   comment.save(onCommentSaved);
 }
@@ -524,7 +524,7 @@ function deleteComment(req, res, next) {
 // TODO: Factoriser le code avec getComments
 function getPictures(req,res,next) {
   var place = req.place;
-  
+
   var role = req.jwt
     ? req.jwt.role
     : 'guest';
@@ -567,7 +567,7 @@ function getPictures(req,res,next) {
   }
 
   var filter = { place: place._id };
-  
+
   if (req.query.tomoderate === 'true') {
     if (role !== 'moderator' && role !== 'admin') {
       var err = new Error('Forbidden: Insufficient permissions to view '
@@ -592,7 +592,7 @@ function getPictures(req,res,next) {
     filter.toModerate = { $ne: true };
     projection.toModerate = false;
   }
-  
+
   Picture.find(filter, projection)
     .sort(sort)
     .skip((page - 1) * n)
@@ -600,7 +600,7 @@ function getPictures(req,res,next) {
     .lean()
     .exec(function returnPictures(error, pictures) {
       if (error) return next(error);
-      
+
       req.toSend = pictures;
       next();
     });
@@ -609,7 +609,7 @@ function getPictures(req,res,next) {
 
 function createPicture(req, res, next) {
   var place = req.place;
-  
+
   if (place.denyPictures) {
     var err = new Error('Forbidden: Pictures are denied on this place');
     err.status = 403;

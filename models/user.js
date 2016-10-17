@@ -38,7 +38,7 @@ userSchema.virtual('password').set(function (password) {
   var salt = crypto.randomBytes(16).toString('base64');
   var hash = crypto.pbkdf2Sync(password, salt, pbkd.iterations, pbkd.keylen,
     pbkd.digest).toString('base64');
-  
+
   this.passwordSalt = salt;
   this.passwordHash = hash;
 });

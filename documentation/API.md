@@ -74,7 +74,7 @@ Si une erreur a lieu, le service web répond avec :
       }
     }
     ```
-    
+
     où `<err>` est :
     * un objet vide en mode production
     * l’erreur en mode débug
@@ -626,7 +626,7 @@ Content-Type: application/json; charset=utf-8
     },
     "title": "Salle 417",
     "headerPhoto": "https://photos.participamap.org/83ca8f9d.jpg"
-  }     
+  }
 ]
 ```
 

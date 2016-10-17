@@ -64,10 +64,10 @@ function upload(req, res, next) {
     case 'image/jpeg':
       if (fileType(req.body).mime !== 'image/jpeg')
         return badContentType();
-      
+
       if (!(contentType === 'place' || contentType === 'picture'))
         return unsupportedMediaType();
-      
+
       var fileName = uuid.v4() + '.jpg';
       fileSaver.save(fileName, req.body, onFileSaved);
       break;
@@ -75,10 +75,10 @@ function upload(req, res, next) {
     case 'image/png':
       if (fileType(req.body).mime !== 'image/png')
         return badContentType();
-      
+
       if (!(contentType === 'place' || contentType === 'picture'))
         return unsupportedMediaType();
-      
+
       var fileName = uuid.v4() + '.png';
       fileSaver.save(fileName, req.body, onFileSaved);
       break;

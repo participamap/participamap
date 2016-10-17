@@ -23,7 +23,7 @@ function register(req, res, next) {
 
   user.save(function onUserRegistered(error) {
     if (error) return next(error);
-    
+
     req.user = user;
     next();
   });
@@ -33,7 +33,7 @@ function register(req, res, next) {
 function login(req, res, next) {
   var onAuthDone = Auth.onDone(req, res, next);
   var auth = passport.authenticate('local', { session: false }, onAuthDone);
-  
+
   auth(req, res, next);
 }
 

@@ -11,14 +11,14 @@ function FileSaver(config) {
     case 'local':
       /**
        * Save the file locally
-       * 
+       *
        * options:
        *   - uploadDir: directory where the files are uploaded
        *   - fileServerURL: URL to access the files remotely
        */
       this.save = function (fileName, content, callback) {
         var filePath = path.join(config.options.uploadDir, fileName);
-        
+
         fs.writeFile(filePath, content, function onFileSaved(error) {
           if (error) return callback(error);
 
