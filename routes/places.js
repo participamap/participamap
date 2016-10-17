@@ -162,8 +162,7 @@ function getComment(req, res, next, comment_id) {
     console.log(req.place._id);
     console.log(comment.place);
 
-    // TODO: Pourquoi comment.place !== req.place._id est toujours vrai ? :'(
-    if (!comment/* || (comment.place !== req.place._id)*/) {
+    if (!comment || (comment.place.toString() !== req.place._id.toString())) {
       var err = new Error('Not Found');
       err.status = 404;
       return next(err);
