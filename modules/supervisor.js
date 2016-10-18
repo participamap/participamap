@@ -21,7 +21,7 @@ function Supervisor(config) {
       if (error) console.log(error);
     });
   };
-  
+
   setInterval(cleanPendingUploads, config.pendingUploadsValidity * 1000);
 }
 

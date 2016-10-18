@@ -19,25 +19,34 @@ var config = require('../config.json');
 var router = express.Router();
 
 router.param('id', Checks.isValidObjectId);
+router.param('id', Checks.db);
 router.param('id', getPendingUpload);
 
-router.put('/:id', Checks.db, upload);
+router.put('/:id',
+  Checks.auth('user'),
+  upload,
+  Utils.cleanEntityToSend(['place', 'toModerate']),
+  Utils.listAuthorsInObjectsToSend,
+  Utils.getAuthorsInfos,
+  Utils.addAuthorsNames,
+  Utils.send);
 
 
 function getPendingUpload(req, res, next, id) {
-  PendingUpload.findById(id, {}, function onPendingFound(error, pendingUpload) {
-    if (error) return next(error);
+  PendingUpload.findById(id, {},
+    function onPendingFound(error, pendingUpload) {
+      if (error) return next(error);
 
-    if (!pendingUpload) {
-      var err = new Error('Not Found');
-      err.status = 404;
-      return next(err);
-    }
+      if (!pendingUpload) {
+        var err = new Error('Not Found');
+        err.status = 404;
+        return next(err);
+      }
 
-    req.pendingUpload = pendingUpload;
+      req.pendingUpload = pendingUpload;
 
-    next();
-  });
+      next();
+    });
 }
 
 
@@ -55,10 +64,10 @@ function upload(req, res, next) {
     case 'image/jpeg':
       if (fileType(req.body).mime !== 'image/jpeg')
         return badContentType();
-      
+
       if (!(contentType === 'place' || contentType === 'picture'))
         return unsupportedMediaType();
-      
+
       var fileName = uuid.v4() + '.jpg';
       fileSaver.save(fileName, req.body, onFileSaved);
       break;
@@ -66,10 +75,10 @@ function upload(req, res, next) {
     case 'image/png':
       if (fileType(req.body).mime !== 'image/png')
         return badContentType();
-      
+
       if (!(contentType === 'place' || contentType === 'picture'))
         return unsupportedMediaType();
-      
+
       var fileName = uuid.v4() + '.png';
       fileSaver.save(fileName, req.body, onFileSaved);
       break;
@@ -100,10 +109,10 @@ function upload(req, res, next) {
 
         if (pendingUpload.toUpdate) {
           place.isNew = false;
-          var onPlaceSaved = Utils.returnSavedEntity(res, next);
+          var onPlaceSaved = Utils.returnSavedEntity(req, res, next);
         }
         else {
-          var onPlaceSaved = Utils.returnSavedEntity(res, next, 201);
+          var onPlaceSaved = Utils.returnSavedEntity(req, res, next, 201);
         }
 
         place.save(onPlaceSaved);
@@ -113,7 +122,7 @@ function upload(req, res, next) {
         var picture = new Picture(pendingUpload.content);
         picture.url = url;
 
-        var onPictureSaved = Utils.returnSavedEntity(res, next, 201);
+        var onPictureSaved = Utils.returnSavedEntity(req, res, next, 201);
         picture.save(onPictureSaved);
         break;
     }

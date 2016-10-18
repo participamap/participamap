@@ -8,6 +8,7 @@ var ObjectId = require('mongodb').ObjectId;
 function Checks() {
   this.db = Checks.db;
   this.isValidObjectId = Checks.isValidObjectId;
+  this.auth = Checks.auth;
   this.setAdminFlag = Checks.setAdminFlag;
 }
 
@@ -38,13 +39,34 @@ Checks.isValidObjectId = function (req, res, next, id) {
 };
 
 /**
- * Checks if a user is admin and sets a flag
+ * Checks if a user is authorized to access the ressource
  */
-Checks.setAdminFlag = function (req, res, next) {
-  // TODO: Faire une vraie vérification
+Checks.auth = function (requiredRole) {
+  return function (req, res, next) {
+    if (!req.jwt) {
+      var err = new Error('Unauthorized: No token was found');
+      err.status = 401;
+      return next(err);
+    }
 
-  req.admin = true;
-  next();
+    var jwt = req.jwt;
+
+    // TODO: Centraliser la définition des rôles
+    var roles = {
+      "user": 1,
+      "content-owner": 2,
+      "moderator": 3,
+      "admin": 4
+    };
+
+    if (roles[jwt.role] < roles[requiredRole] && jwt._id != req.owner) {
+      var err = new Error('Forbidden: Unsufficient permissions');
+      err.status = 403;
+      return next(err);
+    }
+
+    next();
+  };
 };
 
 module.exports = Checks;
