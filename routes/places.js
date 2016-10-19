@@ -284,11 +284,16 @@ function getPlaceInfo(req, res, next) {
 
 
 function createPlace(req, res, next) {
+  // Delete unchangeable attributes
+  delete req.body._id;
+  delete req.body.headerPhoto;
+
   var place = new Place(req.body);
   var role = req.jwt.role;
 
   if (role !== 'content-owner' && role !== 'moderator' && role !== 'admin') {
-    if (place.moderateComments !== undefined
+    if (place.isVerified !== false
+      || place.moderateComments !== undefined
       || place.moderatePictures !== undefined
       || place.moderateDocuments !== undefined
       || place.denyComments !== undefined
@@ -333,6 +338,11 @@ function createPlace(req, res, next) {
 function updatePlace(req, res, next) {
   var place = req.place;
   var modifications = req.body;
+
+  // Delete unchangeable attributes
+  delete modifications._id;
+  delete modifications.proposedBy;
+  delete modifications.headerPhoto;
 
   for (attribute in modifications)
     place[attribute] = modifications[attribute];
@@ -489,9 +499,11 @@ function createComment(req, res, next) {
     return next(err);
   }
 
-  var comment = new Comment(req.body);
-  comment.place = place._id;
-  comment.author = ObjectId(req.jwt._id);
+  var comment = new Comment({
+    place: place._id,
+    author: ObjectId(req.jwt._id),
+    content: req.body.content
+  });
 
   if (place.moderateComments)
     comment.toModerate = true;
@@ -617,9 +629,10 @@ function createPicture(req, res, next) {
   }
 
   // Not a Picture object in order to get the real timestamp on picture upload
-  var picture = {};
-  picture.place = place._id;
-  picture.author = ObjectId(req.jwt._id);
+  var picture = {
+    place: place._id,
+    author: ObjectId(req.jwt._id)
+  };
 
   if (place.moderatePictures)
     picture.toModerate = true;

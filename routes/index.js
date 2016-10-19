@@ -19,7 +19,29 @@ function getRoot(req, res, next) {
 
 
 function register(req, res, next) {
-  var user = new User(req.body);
+  if (!req.body.username) {
+    var err = new Error('Bad Request: username is missing');
+    err.status = 400;
+    return next(err);
+  }
+
+  if (!req.body.password) {
+    var err = new Error('Bad Request: password is missing');
+    err.status = 400;
+    return next(err);
+  }
+
+  if (!req.body.email) {
+    var err = new Error('Bad Request: email is missing');
+    err.status = 400;
+    return next(err);
+  }
+
+  var user = new User({
+    username: req.body.username,
+    password: req.body.password,
+    email: req.body.email
+  });
 
   user.save(function onUserRegistered(error) {
     if (error) return next(error);
