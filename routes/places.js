@@ -288,7 +288,8 @@ function createPlace(req, res, next) {
   var role = req.jwt.role;
 
   if (role !== 'content-owner' && role !== 'moderator' && role !== 'admin') {
-    if (place.moderateComments !== undefined
+    if (place.isVerified !== false
+      || place.moderateComments !== undefined
       || place.moderatePictures !== undefined
       || place.moderateDocuments !== undefined
       || place.denyComments !== undefined
