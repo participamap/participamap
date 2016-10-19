@@ -89,4 +89,4 @@ function onListening() {
   debug('Listening on ' + bind);
 }
 
-/* vim: set ft=javascript ts=2 sw=2 et si colorcolumn=80 : */
+/* vim: set ft=javascript ts=2 sw=2 et si cc=80 : */

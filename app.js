@@ -1,10 +1,10 @@
 var express = require('express');
+var slash = require('express-slash');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
-var slash = require('express-slash');
 
 var Supervisor = require('./modules/supervisor');
 var Auth = require('./modules/auth');
@@ -95,4 +95,4 @@ app.use(function errorHandler(err, req, res, next) {
 
 module.exports = app;
 
-/* vim: set ts=2 sw=2 et si colorcolumn=80 : */
+/* vim: set ts=2 sw=2 et si cc=80 : */

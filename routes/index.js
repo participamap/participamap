@@ -44,4 +44,4 @@ function sendToken(req, res, next) {
 
 module.exports = router;
 
-/* vim: set ts=2 sw=2 et si colorcolumn=80 : */
+/* vim: set ts=2 sw=2 et si cc=80 : */

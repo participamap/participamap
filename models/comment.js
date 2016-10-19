@@ -17,4 +17,4 @@ var Comment = mongoose.model('Comment', commentSchema);
 
 module.exports = Comment;
 
-/* vim: set ts=2 sw=2 et si colorcolumn=80 : */
+/* vim: set ts=2 sw=2 et si cc=80 : */
