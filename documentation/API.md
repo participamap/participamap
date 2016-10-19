@@ -15,6 +15,7 @@
     * [Connexion](#connexion)
     * [Liste des utilisateurs](#liste-des-utilisateurs)
     * [Informations d’un utilisateur](#informations-dun-utilisateur)
+    * [Création d’un utilisateur](#création-dun-utilisateur)
     * [Modification d’un utilisateur](#modification-dun-utilisateur)
     * [Suppression d’un utilisateur](#suppression-dun-utilisateur)
 * [**Lieux**](#lieux)
@@ -179,7 +180,7 @@ Un utilisateur :
 Attribut | Description | Exemple
 ---------|-------------|--------
 username | Nom d’utilisateur | "user007"
-password | Mot de passe | "3u|lW_T%qZr!|;U%"
+password | Mot de passe | "3u-lW_T%qZr!/;U%"
 email | Adresse électronique | "user@domain.com"
 
 #### Réponse
@@ -197,7 +198,7 @@ Requête :
 ```sh
 $ curl -X POST "https://api.participamap.org/register" \
     -H "Content-Type: application/json" \
-    -d '{"username":"user007","password":"3u|lW_T%qZr!|;U%","email":"user@domain.com"}'
+    -d '{"username":"user007","password":"3u-lW_T%qZr!/;U%","email":"user@domain.com"}'
 ```
 
 Réponse :
@@ -244,7 +245,7 @@ Identifiants :
 Attribut | Description | Exemple
 ---------|-------------|--------
 username | Nom d’utilisateur | "user007"
-password | Mot de passe | "3u|lW_T%qZr!|;U%"
+password | Mot de passe | "3u-lW_T%qZr!/;U%"
 
 #### Réponse
 
@@ -261,7 +262,7 @@ Requête :
 ```sh
 $ curl -X POST "https://api.participamap.org/login" \
     -H "Content-Type: application/json" \
-    -d '{"username":"user007","password":"3u|lW_T%qZr!|;U%"}'
+    -d '{"username":"user007","password":"3u-lW_T%qZr!/;U%"}'
 ```
 
 Réponse :
@@ -318,6 +319,7 @@ Attribut | Description | Exemple
 _id | Identifiant de l’utilisateur | "57dbe334c3eaf116f88e0318"
 username | Nom d’utilisateur | "user007"
 email | Adresse électronique | "user@domain.com"
+role | Rôle de l’utilisateur | "user"
 registrationDate | Date d’inscription | "2016-10-14T15:27:43.123Z"
 
 #### Exemple
@@ -342,12 +344,14 @@ Content-Type: application/json; charset=utf-8
     "_id": "57dbe334c3eaf116f88e0319",
     "username": "thierry23",
     "email": "thierry@example.com",
+    "role": "user",
     "registrationDate": "2016-10-14T15:56:52.690Z"
   },
   {
     "_id": "57dbe334c3eaf116f88e0318",
     "username": "user007",
     "email": "user@domain.com",
+    "role": "user",
     "registrationDate": "2016-10-14T15:27:43.123Z"
   }
 ]
@@ -392,6 +396,7 @@ Attribut | Description | Exemple
 _id | Identifiant de l’utilisateur | "57dbe334c3eaf116f88e0318"
 username | Nom d’utilisateur | "user007"
 email | Adresse électronique | "user@domain.com"
+role | Rôle de l’utilisateur | "user"
 registrationDate | Date d’inscription | "2016-10-14T15:27:43.123Z"
 
 #### Exemple
@@ -415,6 +420,82 @@ Content-Type: application/json; charset=utf-8
   "_id": "57dbe334c3eaf116f88e0318",
   "username": "user007",
   "email": "user@domain.com",
+  "role": "user",
+  "registrationDate": "2016-10-14T15:27:43.123Z"
+}
+```
+
+### Création d’un utilisateur
+
+#### Nom de la requête
+
+`createUser`
+
+#### Description
+
+Crée un utilisateur.
+
+#### Point d’accès
+
+Méthode | Chemin | Autorisation
+:------:|:------:|:-----------:
+POST | /users/ | `admin`
+
+#### Paramètres de chemin
+
+*Néant*
+
+#### Paramètres de requête
+
+*Néant*
+
+#### Contenu
+
+Un utilisateur :
+
+Attribut | Description | Exemple
+---------|-------------|--------
+username | Nom d’utilisateur | "user007"
+password | Mot de passe | "3u-lW_T%qZr!/;U%"
+email | Adresse électronique | "user@domain.com"
+*role* | Rôle de l’utilisateur | "user"
+
+#### Réponse
+
+Un utilisateur :
+
+Attribut | Description | Exemple
+---------|-------------|--------
+_id | Identifiant de l’utilisateur | "57dbe334c3eaf116f88e0318"
+username | Nom d’utilisateur | "user007"
+email | Adresse électronique | "user@domain.com"
+role | Rôle de l’utilisateur | "content-owner"
+registrationDate | Date d’inscription | "2016-10-14T15:27:43.123Z"
+
+#### Exemple
+
+Requête :
+
+```sh
+$ curl -X POST "https://api.participamap.org/users/" \
+    -H "Authorization: Bearer JSON_WEB_TOKEN" \
+    -H "Content-Type: application/json" \
+    -d '{"username":"user007","password":"3u-lW_T%qZr!/;U%","email":"user@domain.com","role":"content-owner"}'
+```
+
+Réponse :
+
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+```
+
+```json
+{
+  "_id": "57dbe334c3eaf116f88e0318",
+  "username": "user007",
+  "email": "user@domain.com",
+  "role": "content-owner",
   "registrationDate": "2016-10-14T15:27:43.123Z"
 }
 ```
@@ -451,8 +532,11 @@ Un utilisateur :
 
 Attribut | Description | Exemple
 ---------|-------------|--------
-*password* | Mot de passe | "3u|lW_T%qZr!|;U%"
+*password* | Mot de passe | "3u-lW_T%qZr!/;U%"
 *email* | Adresse électronique | "user@domain.com"
+*role*\* | Rôle de l’utilisateur | "moderator"
+
+\* N’est paramétrable qu’en étant authentifié avec un rôle `admin`.
 
 #### Réponse
 
@@ -463,6 +547,7 @@ Attribut | Description | Exemple
 _id | Identifiant de l’utilisateur | "57dbe334c3eaf116f88e0318"
 username | Nom d’utilisateur | "user007"
 email | Adresse électronique | "user@domain.com"
+role | Rôle de l’utilisateur | "user"
 registrationDate | Date d’inscription | "2016-10-14T15:27:43.123Z"
 
 #### Exemple
@@ -473,7 +558,7 @@ Requête :
 $ curl -X PUT "https://api.participamap.org/users/57dbe334c3eaf116f88e0318" \
     -H "Authorization: Bearer JSON_WEB_TOKEN" \
     -H "Content-Type: application/json" \
-    -d '{"password":"3u|lW_T%qZr!|;U%"}'
+    -d '{"password":"3u-lW_T%qZr!/;U%"}'
 ```
 
 Réponse :
@@ -488,6 +573,7 @@ Content-Type: application/json; charset=utf-8
   "_id": "57dbe334c3eaf116f88e0318",
   "username": "user007",
   "email": "user@domain.com",
+  "role": "user",
   "registrationDate": "2016-10-14T15:27:43.123Z"
 }
 ```
