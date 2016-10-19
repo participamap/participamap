@@ -159,6 +159,20 @@ function createUser(req, res, next) {
 function updateUser(req, res, next) {
   var user = req.user;
   var modifications = req.body;
+  var role = req.jwt.role;
+
+  if (role !== 'admin' && modifications.role) {
+    var err = new Error('Forbidden: Unsufficient permissions to change the '
+      + 'role');
+    err.status = 403;
+    return next(err);
+  }
+
+  // Delete unchangeable attributes
+  delete modifications._id;
+  delete modifications.username;
+  delete modifications.passwordSalt;
+  delete modifications.passwordHash;
 
   for (attribute in modifications)
     user[attribute] = modifications[attribute];
