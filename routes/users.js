@@ -149,6 +149,11 @@ function getUserInfo(req, res, next) {
 
 
 function createUser(req, res, next) {
+  // Delete unchangable attributes
+  delete req.body._id;
+  delete req.body.passwordSalt;
+  delete req.body.passwordHash;
+
   var user = new User(req.body);
 
   var onUserSaved = Utils.returnSavedEntity(req, res, next, 201);
