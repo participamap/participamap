@@ -13,7 +13,7 @@ function Supervisor(config) {
   cleanPendingUploads = function () {
     var now = new Date();
     var minDate = new Date(now);
-    minDate.setSeconds(now.getSeconds() + config.pendingUploadsValidity);
+    minDate.setSeconds(now.getSeconds() + 1000); //config.pendingUploadsValidity
 
     var condition = { date: { $lt: minDate } };
 
@@ -21,8 +21,13 @@ function Supervisor(config) {
       if (error) console.log(error);
     });
   };
+<<<<<<< HEAD
+  
+  setInterval(cleanPendingUploads,1000 ); //config.pendingUploadsValidity
+=======
 
   setInterval(cleanPendingUploads, config.pendingUploadsValidity * 1000);
+>>>>>>> e6920bb382031a5d482f9fa62a7a2cc53aa53381
 }
 
 module.exports = Supervisor;

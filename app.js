@@ -12,6 +12,7 @@ var Auth = require('./modules/auth');
 var routes = require('./routes/index');
 var users = require('./routes/users');
 var places = require('./routes/places');
+var parcours = require('./routes/parcours');
 var upload = require('./routes/upload');
 // TODO: Définir les statics via la config
 var uploads = express.static('./uploads');
@@ -31,6 +32,13 @@ db.once('open', function onDBOpen() {
   console.log('Successfully connected to MongoDB!\n');
 });
 
+<<<<<<< HEAD
+//utiliser passport pout auth
+var passport = require('passport');
+require('./config/passport');
+
+=======
+>>>>>>> e6920bb382031a5d482f9fa62a7a2cc53aa53381
 // Supervisor to automate some actions
 var supervisor = new Supervisor(config.supervisor);
 
@@ -50,11 +58,26 @@ app.use(Auth.jwt);
 
 // Route declarations
 app.use('/', routes);
+<<<<<<< HEAD
+app.use('/places', places);
+app.use('/users', users);
+app.use('/images',images);
+
+
+//Route static express
+app.use(express.static(path.join(__dirname,'public')));
+//Initialisation du passport
+app.use(passport.initialize());
+app.use('/parcours', parcours);
+app.use('/upload', upload);
+app.use('/uploads', uploads);
+=======
 app.use('/users/', users);
 app.use('/places/', places);
 app.use('/upload/', upload);
 app.use('/uploads/', uploads);
 app.use(slash());
+>>>>>>> e6920bb382031a5d482f9fa62a7a2cc53aa53381
 
 // catch 404 and forward to error handler
 app.use(function notFound(req, res, next) {

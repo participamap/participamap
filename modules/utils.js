@@ -18,6 +18,17 @@ function Utils() {
 /**
  * Creates a callback to return an entity after saving it in the database
  */
+<<<<<<< HEAD
+Utils.returnSavedEntity = function (res, next) {
+  return function (error, savedEntity) {
+    if (error) return next(error);
+
+    if (!status) var status=200;
+
+    // Remove unwanted info
+    savedEntity.__v = undefined;
+    savedEntity.place = undefined;
+=======
 Utils.returnSavedEntity = function (req, res, next, status) {
   return function (error, savedEntity) {
     if (error) return next(error);
@@ -46,6 +57,7 @@ Utils.cleanEntityToSend = function (attributes = []) {
     var i, len;
     for (i = 0, len = attributes.length; i < len; i++)
       req.toSend[attributes[i]] = undefined;
+>>>>>>> e6920bb382031a5d482f9fa62a7a2cc53aa53381
 
     next();
   };
