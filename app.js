@@ -7,9 +7,9 @@ var config = require('./config.json');
 
 var Supervisor = require('./modules/supervisor');
 
-var routes = require('./routes/index');
+var index = require('./routes/index');
 var places = require('./routes/places');
-var parcours = require('./routes/parcours');
+var routes = require('./routes/routes');
 var upload = require('./routes/upload');
 var uploads = express.static('./uploads');
 
@@ -36,9 +36,9 @@ app.use(bodyParser.raw({ type: 'image/jpeg', limit: '5MB' }));
 app.use(bodyParser.raw({ type: 'image/png', limit: '5MB' }));
 
 // Routes declarations
-app.use('/', routes);
+app.use('/', index);
 app.use('/places', places);
-app.use('/parcours', parcours);
+app.use('/routes', routes);
 app.use('/upload', upload);
 app.use('/uploads', uploads);
 
