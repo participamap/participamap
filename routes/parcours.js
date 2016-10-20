@@ -15,9 +15,10 @@ router.param('id', getParcours);
 router.get('/',Checks.db,getParcoursHeaders);
 router.post('/', Checks.db, createParcours);
 
+router.delete('/:id', Checks.db, deleteParcours);
 
 function getParcours(req, res, next, id) {
-  Place.findById(id, { __v: false }, function onPlaceFound(error, parcours) {
+  Parcours.findById(id, { __v: false }, function onParcoursFound(error, parcours) {
     if (error) return next(error);
 
     if (!parcours) {
@@ -46,6 +47,17 @@ function getParcoursHeaders(req,res,next){
       		res.json(parcoursHeaders);
     	});
 }
+
+function deleteParcours(req, res, next) {
+
+  var parcours = req.parcours;
+
+  parcours.remove(function onParcoursRemoved(error) {
+    if (error) return next(error);
+    res.status(204).end();
+  });
+}
+
 
 function createParcours(req, res, next) {
   var parcours = req.parcours;
