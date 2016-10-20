@@ -1,4 +1,5 @@
 
+
 var express = require('express');
 var mongoose = require('mongoose');
 
@@ -13,6 +14,7 @@ var router = express.Router();
 router.param('id', getParcours);
 
 
+router.get('/',Checks.db,getParcours);
 router.post('/', Checks.db, createParcours);
 
 
@@ -32,6 +34,22 @@ function getParcours(req, res, next, id) {
   });
 }
 
+function getParcoursHeaders(req,res,next){
+	
+	var projection = {
+		title: true,
+		
+		headerPhoto: true
+	};
+
+  Place.find(filter, projection,
+    function returnPlacesHeaders(error, placesHeaders) {
+      if (error) return next(error);
+      res.json(placesHeaders);
+    });
+
+
+}
 
 function createParcours(req, res, next) {
   var parcours = req.parcours;
