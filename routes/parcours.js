@@ -1,5 +1,3 @@
-
-
 var express = require('express');
 var mongoose = require('mongoose');
 
@@ -14,7 +12,7 @@ var router = express.Router();
 router.param('id', getParcours);
 
 
-router.get('/',Checks.db,getParcours);
+router.get('/',Checks.db,getParcoursHeaders);
 router.post('/', Checks.db, createParcours);
 
 
@@ -35,20 +33,18 @@ function getParcours(req, res, next, id) {
 }
 
 function getParcoursHeaders(req,res,next){
-	
+	var filter = {};	
 	var projection = {
 		title: true,
+		places: true
 		
-		headerPhoto: true
 	};
 
-  Place.find(filter, projection,
-    function returnPlacesHeaders(error, placesHeaders) {
-      if (error) return next(error);
-      res.json(placesHeaders);
-    });
-
-
+	Parcours.find(filter, projection,
+	function returnParcoursHeaders(error, parcoursHeaders) {
+      		if (error) return next(error);
+      		res.json(parcoursHeaders);
+    	});
 }
 
 function createParcours(req, res, next) {
