@@ -22,7 +22,12 @@ var placeSchema = new Schema({
   moderateDocuments: Boolean,
   denyComments: Boolean,
   denyPictures: Boolean,
-  denyDocuments: Boolean
+  denyDocuments: Boolean,
+  generic1: Schema.Types.Mixed,
+  generic2: Schema.Types.Mixed,
+  generic3: Schema.Types.Mixed,
+  generic4: Schema.Types.Mixed,
+  generic5: Schema.Types.Mixed
 });
 
 var Place = mongoose.model('Place', placeSchema);
