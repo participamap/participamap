@@ -30,6 +30,8 @@
     * [Suppression d’un commentaire](#suppression-dun-commentaire)
     * [Images d’un lieu](#images-dun-lieu)
     * [Création d’une image](#création-dune-image)
+    * [Récuparation de sa notation d’un lieu](#récupération-de-sa-notation-dun-lieu)
+    * [Notation d’un lieu](#notation-dun-lieu)
 
 ## Informations générales
 
@@ -762,6 +764,7 @@ isVerified | État de vérification du lieu | true
 *description* | Description | "Maison de la Recherche et de l’Imagination"
 *startDate* | Date de création | "2015-01-01T13:00:00.000Z"
 *endDate* | Date de suppression | "2016-09-09T08:00:00.000Z"
+*rating* | Note moyenne du lieu | 4.8
 *moderateComments* | Modération des commentaires | true
 *moderatePictures* | Modération des photos | true
 *moderateDocuments* | Modération des documents | true
@@ -797,7 +800,8 @@ Content-Type: application/json; charset=utf-8
   "isVerified": true,
   "headerPhoto": "https://photos.participamap.org/97a15d97-847e-450c-8bd0-1f922883f523.jpg",
   "description": "Maison de la Recherche et de l’Imagination",
-  "startDate": "2015-01-01T13:00:00.000Z"
+  "startDate": "2015-01-01T13:00:00.000Z",
+  "rating": 5
 }
 ```
 
@@ -943,7 +947,9 @@ PUT | /places/{id} | `content-owner`
 
 #### Paramètres de chemin
 
-*Néant*
+Nom | Description | Exemple
+----|-------------|--------
+id | Identifiant du lieu | 57dbe334c3eaf116f88e0318
 
 #### Paramètres de requête
 
@@ -994,6 +1000,7 @@ isVerified | État de vérification du lieu | true
 *description* | Description | "Maison de la Recherche et de l’Imagination"
 *startDate* | Date de création | "2015-01-01T13:00:00.000Z"
 *endDate* | Date de suppression | "2016-09-09T08:00:00.000Z"
+*rating* | Note moyenne du lieu | 4.8
 *moderateComments* | Modération des commentaires | true
 *moderatePictures* | Modération des photos | true
 *moderateDocuments* | Modération des documents | true
@@ -1464,7 +1471,7 @@ Ajoute une image à un lieu.
 
 Méthode | Chemin | Autorisation
 :------:|:------:|:-----------:
-POST | /places/{id}/pictures | `user`
+POST | /places/{id}/pictures/ | `user`
 
 #### Paramètres de chemin
 
@@ -1543,5 +1550,131 @@ Content-Type: application/json; charset=utf-8
   },
   "date": "2016-09-19T19:30:45.173Z",
   "url": "https://photos.participamap.org/97a15d97-847e-450c-8bd0-1f922883f523.jpg"
+}
+```
+
+### Récupération de sa notation d’un lieu
+
+#### Nom de la requête
+
+`getUserRating`
+
+#### Description
+
+Récupère sa notation du lieu (en étant identifié).
+
+#### Point d’accès
+
+Méthode | Chemin | Autorisation
+:------:|:------:|:-----------:
+GET | /places/{id}/rating | `user`
+
+#### Paramètres de chemin
+
+Nom | Description | Exemple
+----|-------------|--------
+id | Identifiant du lieu | 57dbe334c3eaf116f88e0318
+
+#### Paramètres de requête
+
+*Néant*
+
+#### Contenu
+
+*Néant*
+
+#### Réponse
+
+Une note :
+
+Attribut | Description | Exemple
+---------|-------------|--------
+value | Notation du lieu par l’utilisateur | 4 (0 si l’utilisateur n’a pas noté le lieu)
+
+#### Exemple
+
+Requête :
+
+```sh
+$ curl "https://api.participamap.org/places/57dbe334c3eaf116f88e0318/rating"
+    -H "Authorization: Bearer JSON_WEB_TOKEN"
+```
+
+Réponse :
+
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+```
+
+```json
+{
+  "value": 0
+}
+```
+
+### Notation d’un lieu
+
+#### Nom de la requête
+
+`ratePlace`
+
+#### Description
+
+Note un lieu.
+
+#### Point d’accès
+
+Méthode | Chemin | Autorisation
+:------:|:------:|:-----------:
+POST | /places/{id}/rating | `user`
+
+#### Paramètres de chemin
+
+Nom | Description | Exemple
+----|-------------|--------
+id | Identifiant du lieu | 57dbe334c3eaf116f88e0318
+
+#### Paramètres de requête
+
+*Néant*
+
+#### Contenu
+
+Une note :
+
+Attribut | Description | Exemple
+---------|-------------|--------
+value | Notation du lieu par l’utilisateur | 4
+
+#### Réponse
+
+Une note :
+
+Attribut | Description | Exemple
+---------|-------------|--------
+value | Notation du lieu par l’utilisateur | 4
+
+#### Exemple
+
+Requête :
+
+```sh
+$ curl -X POST "https://api.participamap.org/places/57dbe334c3eaf116f88e0318/rating"
+    -H "Authorization: Bearer JSON_WEB_TOKEN" \
+    -H "Content-Type: application/json" \
+    -d '{"value": 4}'
+```
+
+Réponse :
+
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+```
+
+```json
+{
+  "value": 4
 }
 ```

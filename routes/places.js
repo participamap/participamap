@@ -10,6 +10,7 @@ var Comment = require('../models/comment');
 var Picture = require('../models/picture');
 var Document = require('../models/document');
 var Vote = require('../models/vote');
+var Rating = require('../models/rating');
 var PendingUpload = require('../models/pending_upload');
 
 var ObjectId = mongoose.Types.ObjectId;
@@ -146,6 +147,18 @@ router.post('/:id/pictures/',
 //router.get('/:id/votes', getVotes);
 //router.post('/:id/votes', createVote);
 //router.delete('/:id/votes/:vote_id', deleteVote);
+
+// getUserRating
+router.get('/:id/rating',
+  Checks.auth('user'),
+  getUserRating);
+
+// ratePlace
+router.post('/:id/rating',
+  Checks.auth('user'),
+  ratePlace,
+  Utils.cleanEntityToSend(['_id', 'place', 'user']),
+  Utils.send);
 
 
 function getPlace(req, res, next, id) {
@@ -287,6 +300,7 @@ function createPlace(req, res, next) {
   // Delete unchangeable attributes
   delete req.body._id;
   delete req.body.headerPhoto;
+  delete req.body.rating;
 
   var place = new Place(req.body);
   var role = req.jwt.role;
@@ -343,6 +357,7 @@ function updatePlace(req, res, next) {
   delete modifications._id;
   delete modifications.proposedBy;
   delete modifications.headerPhoto;
+  delete modifications.rating;
 
   for (attribute in modifications)
     place[attribute] = modifications[attribute];
@@ -650,6 +665,101 @@ function createPicture(req, res, next) {
     var uploadPath = 'upload/' + pendingUpload._id;
     var uploadURL = url.resolve(config.serverURL, uploadPath);
     res.redirect(204, uploadURL);
+  }
+}
+
+
+function getUserRating(req, res, next) {
+  var place = req.place;
+
+  var filter = {
+    place: place._id,
+    user: req.jwt._id
+  };
+
+  var projection = {
+    value: true
+  };
+
+  Rating.find(filter, projection, function returnUserRating(error, ratings) {
+    if (error) return next(error);
+
+    if (ratings.length === 0)
+      return res.json({ value: 0 });
+
+    res.json({ value: ratings[0].value });
+  });
+}
+
+
+function ratePlace(req, res, next) {
+  var place = req.place;
+
+  if (req.body.value === undefined) {
+    var err = new Error('Bad Request: A value must be set');
+    err.status = 400;
+    return next(err);
+  }
+
+  var value = parseInt(req.body.value);
+
+  if (isNaN(value) || value < 1 || value > 5) {
+    var err = new Error('Bad Request: The value must be an integer between '
+      + '1 and 5');
+    err.status = 400;
+    return next(err);
+  }
+
+  var filter = {
+    place: place._id,
+    user: req.jwt._id
+  };
+
+  var projection = {
+    value: true
+  };
+
+  Rating.find(filter, projection, function upsertUserRating(error, ratings) {
+    if (error) return next(error);
+
+    if (ratings.length === 0) {
+      var rating = new Rating({
+        place: place._id,
+        user: req.jwt._id,
+        value: value
+      });
+
+      rating.save(onRatingSaved);
+    }
+    else {
+      var rating = ratings[0];
+      rating.value = value;
+      rating.save(onRatingSaved);
+    }
+  });
+
+  function onRatingSaved(error, rating) {
+    if (error) return next(error);
+
+    req.toSend = rating.toObject();
+    next();
+
+    // Select all the ratings for this place and update the average
+    Rating.find({ place: place._id }, projection, updatePlaceRating);
+  }
+
+  function updatePlaceRating(error, ratings) {
+    if (error) return console.log(error);
+
+    var sum = 0;
+    var len = ratings.length;
+
+    var i
+    for (i = 0; i < len; i++)
+      sum += ratings[i].value;
+
+    place.rating = sum / len;
+    place.save();
   }
 }
 

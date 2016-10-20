@@ -17,6 +17,7 @@ var placeSchema = new Schema({
   description: String,
   startDate: { type: Date, default: Date.now },
   endDate: Date,
+  rating: Number,
   moderateComments: Boolean,
   moderatePictures: Boolean,
   moderateDocuments: Boolean,
