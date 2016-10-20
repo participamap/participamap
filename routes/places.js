@@ -10,6 +10,7 @@ var Comment = require('../models/comment');
 var Picture = require('../models/picture');
 var Document = require('../models/document');
 var Vote = require('../models/vote');
+var Rating = require('../models/rating');
 var PendingUpload = require('../models/pending_upload');
 
 var ObjectId = mongoose.Types.ObjectId;
@@ -146,6 +147,16 @@ router.post('/:id/pictures/',
 //router.get('/:id/votes', getVotes);
 //router.post('/:id/votes', createVote);
 //router.delete('/:id/votes/:vote_id', deleteVote);
+
+// getUserRating
+router.get('/:id/rating',
+  Checks.auth('user'),
+  getUserRating);
+
+// ratePlace
+router.post('/:id/rating',
+  Checks.auth('user'),
+  ratePlace);
 
 
 function getPlace(req, res, next, id) {
@@ -287,6 +298,7 @@ function createPlace(req, res, next) {
   // Delete unchangeable attributes
   delete req.body._id;
   delete req.body.headerPhoto;
+  delete req.body.rating;
 
   var place = new Place(req.body);
   var role = req.jwt.role;
@@ -343,6 +355,7 @@ function updatePlace(req, res, next) {
   delete modifications._id;
   delete modifications.proposedBy;
   delete modifications.headerPhoto;
+  delete modifications.rating;
 
   for (attribute in modifications)
     place[attribute] = modifications[attribute];
@@ -651,6 +664,38 @@ function createPicture(req, res, next) {
     var uploadURL = url.resolve(config.serverURL, uploadPath);
     res.redirect(204, uploadURL);
   }
+}
+
+
+function getUserRating(req, res, next) {
+  var place = req.place;
+
+  var filter = {
+    place: place._id,
+    user: req.jwt._id
+  };
+
+  var projection = {
+    value: true
+  };
+
+  Rating.find(filter, projection, function returnUserRating(error, ratings) {
+    if (error) return next(error);
+
+    if (ratings.length === 0)
+      return res.json({ value: 0 });
+
+    // TODO: Vérifier que le champ _id n’est pas présent
+    res.json(ratings[0]);
+  });
+}
+
+
+// TODO: Implémenter ratePlace
+function ratePlace(req, res, next) {
+  var err = new Error('Not implemented');
+  err.status = 501;
+  return next(err);
 }
 
 
