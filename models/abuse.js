@@ -8,6 +8,6 @@ var abuseReportedSchema = new Schema({
   type: { type: String, enum: ["comment","document","picture"], required: true }
 });
 
-var AbuseReportedSchema = mongoose.model('AbuseReported', abuseReportedSchema);
+var Abuse = mongoose.model('Abuse', abuseReportedSchema);
 
-module.exports = AbuseReportedSchema;
+module.exports = Abuse;
