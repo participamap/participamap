@@ -129,7 +129,7 @@ Utils.addAuthorsNames = function (req, res, next) {
 
       req.toSend[i].author = {
         id: authorId,
-        name: req.authorsNames[authorId]
+        name: req.authorsNames[authorId] || 'Utilisateur Supprimé'
       };
     }
   }
@@ -137,7 +137,7 @@ Utils.addAuthorsNames = function (req, res, next) {
     var authorId = req.toSend.author || req.toSend.proposedBy;
     var author = {
       id: authorId,
-      name: req.authorsNames[authorId]
+      name: req.authorsNames[authorId] || 'Utilisateur Supprimé'
     };
 
     if (req.toSend.author)
