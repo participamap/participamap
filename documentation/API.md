@@ -771,6 +771,11 @@ isVerified | État de vérification du lieu | true
 *denyComments* | Interdiction des commentaires | true
 *denyPictures* | Interdiction des photos | true
 *denyDocuments* | Interdiction des documents | true
+*generic1* | Attribut générique nº 1 | *
+*generic2* | Attribut générique nº 2 | *
+*generic3* | Attribut générique nº 3 | *
+*generic4* | Attribut générique nº 4 | *
+*generic5* | Attribut générique nº 5 | *
 
 \* N’apparaît que si authentifié avec un rôle `content-owner` au minimum.
 
@@ -849,6 +854,11 @@ title | Titre du lieu | "Le Dôme"
 *denyComments*\*| Interdiction des commentaires | true
 *denyPictures*\* | Interdiction des photos | true
 *denyDocuments*\* | Interdiction des documents | true
+*generic1* | Attribut générique nº 1 | *
+*generic2* | Attribut générique nº 2 | *
+*generic3* | Attribut générique nº 3 | *
+*generic4* | Attribut générique nº 4 | *
+*generic5* | Attribut générique nº 5 | *
 
 \* N’est paramétrable qu’en étant authentifié avec un rôle `content-owner` au minimum.
 
@@ -881,6 +891,11 @@ isVerified | État de vérification du lieu | true
 *denyComments* | Interdiction des commentaires | true
 *denyPictures* | Interdiction des photos | true
 *denyDocuments* | Interdiction des documents | true
+*generic1* | Attribut générique nº 1 | *
+*generic2* | Attribut générique nº 2 | *
+*generic3* | Attribut générique nº 3 | *
+*generic4* | Attribut générique nº 4 | *
+*generic5* | Attribut générique nº 5 | *
 
 #### Exemple
 
@@ -976,6 +991,11 @@ Attribut | Description | Exemple
 *denyComments* | Interdiction des commentaires | true
 *denyPictures* | Interdiction des photos | true
 *denyDocuments* | Interdiction des documents | true
+*generic1* | Attribut générique nº 1 | *
+*generic2* | Attribut générique nº 2 | *
+*generic3* | Attribut générique nº 3 | *
+*generic4* | Attribut générique nº 4 | *
+*generic5* | Attribut générique nº 5 | *
 
 \* Pour changer la photo d’en-tête, la procédure est la suivante :
 
@@ -1007,6 +1027,11 @@ isVerified | État de vérification du lieu | true
 *denyComments* | Interdiction des commentaires | true
 *denyPictures* | Interdiction des photos | true
 *denyDocuments* | Interdiction des documents | true
+*generic1* | Attribut générique nº 1 | *
+*generic2* | Attribut générique nº 2 | *
+*generic3* | Attribut générique nº 3 | *
+*generic4* | Attribut générique nº 4 | *
+*generic5* | Attribut générique nº 5 | *
 
 #### Exemple
 
