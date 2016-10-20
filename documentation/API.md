@@ -740,9 +740,7 @@ id | Identifiant du lieu | 57dbe334c3eaf116f88e0318
 
 #### Paramètres de requête
 
-Nom | Description | Exemple | Absence
-----|-------------|---------|--------
-admin | Récupérer des informations administrateur | true | false
+*Néant*
 
 #### Contenu
 
@@ -771,7 +769,7 @@ isVerified | État de vérification du lieu | true
 *denyPictures* | Interdiction des photos | true
 *denyDocuments* | Interdiction des documents | true
 
-\* N’apparaît que si authentifié avec un role `content-owner` au minimum.
+\* N’apparaît que si authentifié avec un rôle `content-owner` au minimum.
 
 #### Exemple
 
@@ -848,7 +846,7 @@ title | Titre du lieu | "Le Dôme"
 *denyPictures*\* | Interdiction des photos | true
 *denyDocuments*\* | Interdiction des documents | true
 
-\* N’est paramétrable qu’en étant authentifié avec un role `content-owner` au minimum.
+\* N’est paramétrable qu’en étant authentifié avec un rôle `content-owner` au minimum.
 
 \*\* Pour ajouter une photo d’en-tête, la procédure est la suivante :
 
