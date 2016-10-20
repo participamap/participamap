@@ -6,19 +6,24 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
+    "array-unique": "^0.3.2",
     "body-parser": "~1.15.1",
     "debug": "~2.2.0",
     "express": "~4.13.4",
     "express-jwt": "^5.0.0",
+    "express-slash": "^2.0.1",
+    "file-type": "^3.8.0",
     "jsonwebtoken": "^7.1.9",
     "mongoose": "^4.6.0",
     "morgan": "~1.7.0",
-    "multer": "^1.2.0",
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
+<<<<<<< HEAD
     "file-type": "^3.8.0",
     "mongoose": "^4.6.0",
     "morgan": "~1.7.0",
+=======
+>>>>>>> e6920bb382031a5d482f9fa62a7a2cc53aa53381
     "uuid": "^2.0.3"
   }
 }

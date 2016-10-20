@@ -48,6 +48,7 @@ jspm_packages
 # Optional REPL history
 .node_repl_history
 
+<<<<<<< HEAD
 # Configuration
 config.json
 
@@ -63,6 +64,8 @@ public/libs
 .idea
 
 
+=======
+>>>>>>> e6920bb382031a5d482f9fa62a7a2cc53aa53381
 
 #######
 # vim #
@@ -81,8 +84,11 @@ Session.vim
 
 # auto-generated tag files
 tags
+<<<<<<< HEAD
 databaseSample/participamap/
 =======
+=======
+>>>>>>> e6920bb382031a5d482f9fa62a7a2cc53aa53381
 
 
 #########

@@ -1,29 +1,26 @@
 var express = require('express');
-var multer = require('multer');
-var path = require('path');
+var slash = require('express-slash');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
-require('./models/users');
-require('./models/place');
-
-var config = require('./config.json');
+var passport = require('passport');
+var LocalStrategy = require('passport-local').Strategy;
 
 var Supervisor = require('./modules/supervisor');
+var Auth = require('./modules/auth');
 
 var routes = require('./routes/index');
+var users = require('./routes/users');
 var places = require('./routes/places');
 var parcours = require('./routes/parcours');
 var upload = require('./routes/upload');
+// TODO: Définir les statics via la config
 var uploads = express.static('./uploads');
 
-// Routes pour FONT
-var users = require('./routes/users');
-var images = require('./routes/images');
+var config = require('./config.json');
 
-
+// Connection to the database
 mongoose.connect(config.mongodb.uri, config.mongodb.options);
-
 var db = mongoose.connection;
 
 db.on('error', function onDBConnectionError() {
@@ -35,30 +32,33 @@ db.once('open', function onDBOpen() {
   console.log('Successfully connected to MongoDB!\n');
 });
 
+<<<<<<< HEAD
 //utiliser passport pout auth
 var passport = require('passport');
 require('./config/passport');
 
+=======
+>>>>>>> e6920bb382031a5d482f9fa62a7a2cc53aa53381
 // Supervisor to automate some actions
 var supervisor = new Supervisor(config.supervisor);
 
+// Passport for authentication
+passport.use(new LocalStrategy(Auth.verify));
+
 var app = express();
-app.get('/',function(req,res){
-  res.sendfile('./public/index.html');
-});
+app.enable('strict routing');
 
-
-//view engine setup
-app.set('views', path.join(__dirname,'views'));
-app.set('view engine', 'hbs');
-
+// Module declarations
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.raw({ type: 'image/jpeg', limit: '5MB' }));
 app.use(bodyParser.raw({ type: 'image/png', limit: '5MB' }));
+app.use(passport.initialize());
+app.use(Auth.jwt);
 
-// Routes declarations
+// Route declarations
 app.use('/', routes);
+<<<<<<< HEAD
 app.use('/places', places);
 app.use('/users', users);
 app.use('/images',images);
@@ -71,6 +71,13 @@ app.use(passport.initialize());
 app.use('/parcours', parcours);
 app.use('/upload', upload);
 app.use('/uploads', uploads);
+=======
+app.use('/users/', users);
+app.use('/places/', places);
+app.use('/upload/', upload);
+app.use('/uploads/', uploads);
+app.use(slash());
+>>>>>>> e6920bb382031a5d482f9fa62a7a2cc53aa53381
 
 // catch 404 and forward to error handler
 app.use(function notFound(req, res, next) {
@@ -111,4 +118,4 @@ app.use(function errorHandler(err, req, res, next) {
 
 module.exports = app;
 
-/* vim: set ts=2 sw=2 et si colorcolumn=80 : */
+/* vim: set ts=2 sw=2 et si cc=80 : */
