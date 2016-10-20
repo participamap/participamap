@@ -156,7 +156,9 @@ router.get('/:id/rating',
 // ratePlace
 router.post('/:id/rating',
   Checks.auth('user'),
-  ratePlace);
+  ratePlace,
+  Utils.cleanEntityToSend(['_id', 'place', 'user']),
+  Utils.send);
 
 
 function getPlace(req, res, next, id) {
@@ -685,17 +687,80 @@ function getUserRating(req, res, next) {
     if (ratings.length === 0)
       return res.json({ value: 0 });
 
-    // TODO: Vérifier que le champ _id n’est pas présent
-    res.json(ratings[0]);
+    res.json({ value: ratings[0].value });
   });
 }
 
 
-// TODO: Implémenter ratePlace
 function ratePlace(req, res, next) {
-  var err = new Error('Not implemented');
-  err.status = 501;
-  return next(err);
+  var place = req.place;
+
+  if (req.body.value === undefined) {
+    var err = new Error('Bad Request: A value must be set');
+    err.status = 400;
+    return next(err);
+  }
+
+  var value = parseInt(req.body.value);
+
+  if (isNaN(value) || value < 1 || value > 5) {
+    var err = new Error('Bad Request: The value must be an integer between '
+      + '1 and 5');
+    err.status = 400;
+    return next(err);
+  }
+
+  var filter = {
+    place: place._id,
+    user: req.jwt._id
+  };
+
+  var projection = {
+    value: true
+  };
+
+  Rating.find(filter, projection, function upsertUserRating(error, ratings) {
+    if (error) return next(error);
+
+    if (ratings.length === 0) {
+      var rating = new Rating({
+        place: place._id,
+        user: req.jwt._id,
+        value: value
+      });
+
+      rating.save(onRatingSaved);
+    }
+    else {
+      var rating = ratings[0];
+      rating.value = value;
+      rating.save(onRatingSaved);
+    }
+  });
+
+  function onRatingSaved(error, rating) {
+    if (error) return next(error);
+
+    req.toSend = rating.toObject();
+    next();
+
+    // Select all the ratings for this place and update the average
+    Rating.find({ place: place._id }, projection, updatePlaceRating);
+  }
+
+  function updatePlaceRating(error, ratings) {
+    if (error) return console.log(error);
+
+    var sum = 0;
+    var len = ratings.length;
+
+    var i
+    for (i = 0; i < len; i++)
+      sum += ratings[i].value;
+
+    place.rating = sum / len;
+    place.save();
+  }
 }
 
 
