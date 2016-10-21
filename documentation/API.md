@@ -33,11 +33,11 @@
     * [Récuparation de sa notation d’un lieu](#récupération-de-sa-notation-dun-lieu)
     * [Notation d’un lieu](#notation-dun-lieu)
 * [**Parcours**](#parcours)
-   * [Parcours](#lister-parcours)
+   * [Lister les parcours](#lister-parcours)
    * [Création d’un parcours](#création-dun-parcours)
    * [Suppression d’un parcours](#suppression-dun-parcours)
 * [**Abus**](#abus)
-   * [lister les abus](#lister-les-abus)
+   * [Lister les abus](#lister-les-abus)
    * [Création d’un abus](#création-dun-abus)
    * [Suppression d’un abus](#suppression-dun-abus)
 
@@ -1711,6 +1711,170 @@ Content-Type: application/json; charset=utf-8
   "value": 4
 }
 ```
+### Parcours
+
+### Création d’un parcours
+
+#### Nom de la requête
+
+`createRoute`
+
+#### Description
+
+Creer un parcours avec une liste de lieux
+
+#### Point d’accès
+
+Méthode | Chemin | Autorisation
+:------:|:------:|:-----------:
+POST | /routes | non requis
+
+#### Paramètres de chemin
+
+*Néant*
+
+#### Paramètres de requête
+
+*Néant*
+
+#### Contenu
+
+Identifiants :
+
+Attribut | Description | Exemple
+---------|-------------|--------
+title | titre du parcours | parcours du Dôme
+places | liste des places | 57e5261dab4feb4a2af3f419
+
+#### Exemple
+
+Requête :
+
+```sh
+curl -X POST -H "Content-Type: application/json" http://https://api.participamap.org/routes -d '{"title":"parcours du Dôme","places" : ["57e5261dab4feb4a2af3f419"]}'
+```
+
+Réponse :
+
+```http
+HTTP/1.1 201 Created
+Content-Type: application/json; charset=utf-8
+```
+
+```json
+{
+  //TODO https://api.participamap.org/abuses/
+}
+```
+
+### Lister les parcours
+
+#### Nom de la requête
+
+`getRoute`
+
+#### Description
+
+Récuperer tous les parcours
+
+#### Point d’accès
+
+Méthode | Chemin | Autorisation
+:------:|:------:|:-----------:
+GET | /routes | non requis
+
+#### Paramètres de chemin
+
+*Néant*
+
+#### Paramètres de requête
+
+*Néant*
+
+#### Contenu
+
+Identifiants :
+
+Attribut | Description | Exemple
+---------|-------------|--------
+title | titre du parcours | parcours du Dôme
+places | liste des places | 57e5261dab4feb4a2af3f419
+
+#### Exemple
+
+Requête :
+
+```sh
+curl -X GET -H "Content-Type: application/json" https://api.participamap.org/routes/
+```
+
+Réponse :
+
+```http
+HTTP/1.1 201 Created
+Content-Type: application/json; charset=utf-8
+```
+
+```json
+{
+  //TODO
+}
+```
+### Suppression d'un parcours
+
+### Lister les parcours
+
+#### Nom de la requête
+
+`deleteRoute`
+
+#### Description
+
+Supprime un parcours
+
+#### Point d’accès
+
+Méthode | Chemin | Autorisation
+:------:|:------:|:-----------:
+DELETE | /routes/{id} | non requis
+
+#### Paramètres de chemin
+
+*Néant*
+
+#### Paramètres de requête
+
+*Néant*
+
+#### Contenu
+
+Identifiants :
+
+Attribut | Description | Exemple
+---------|-------------|--------
+title | titre du parcours | parcours du Dôme
+places | liste des places | 57e5261dab4feb4a2af3f419
+
+#### Exemple
+
+Requête :
+
+```sh
+curl -X DELETE -H "Content-Type: application/json" https://api.participamap.org/routes/58086fc915e92e10f3244e73
+```
+
+Réponse :
+
+```http
+HTTP/1.1 204 
+```
+
+```json
+{
+  //TODO
+}
+```
+
 
 ### Abuse
 
@@ -1859,14 +2023,13 @@ contentReport | id du contenu de l'objet | 57ff35e1e446c90c26e9980f
 Requête :
 
 ```sh
-curl -X DELETE https://api.participamap.org/abuses/deleteContentReport/57ff3eb2a940364068b81f91
+curl -X DELETE -H "Content-Type: application/json" http://localhost:3000/abuses/57e5261dab4feb4a2af3f419
 ```
 
 Réponse :
 
 ```http
-HTTP/1.1 201 Created
-Content-Type: application/json; charset=utf-8
+HTTP/1.1 204
 ```
 
 ```json
@@ -1875,111 +2038,3 @@ Content-Type: application/json; charset=utf-8
 }
 ```
 
-### Parcours
-
-### Lister les Parcours
-
-#### Nom de la requête
-
-`getRoute`
-
-#### Description
-
-Récuperer tous les parcours
-
-#### Point d’accès
-
-Méthode | Chemin | Autorisation
-:------:|:------:|:-----------:
-GET | /routes | non requis
-
-#### Paramètres de chemin
-
-*Néant*
-
-#### Paramètres de requête
-
-*Néant*
-
-#### Contenu
-
-Identifiants :
-
-Attribut | Description | Exemple
----------|-------------|--------
-title | titre du parcours | parcours du Dôme
-places | liste des places | 57e5261dab4feb4a2af3f419
-
-#### Exemple
-
-Requête :
-
-```sh
-curl -X GET -H "Content-Type: application/json" https://api.participamap.org/routes/
-```
-
-Réponse :
-
-```http
-HTTP/1.1 201 Created
-Content-Type: application/json; charset=utf-8
-```
-
-```json
-{
-  //TODO
-}
-```
-### Création d’un parcours
-
-#### Nom de la requête
-
-`createRoute`
-
-#### Description
-
-Creer un parcours avec une liste de lieux
-
-#### Point d’accès
-
-Méthode | Chemin | Autorisation
-:------:|:------:|:-----------:
-POST | /routes | non requis
-
-#### Paramètres de chemin
-
-*Néant*
-
-#### Paramètres de requête
-
-*Néant*
-
-#### Contenu
-
-Identifiants :
-
-Attribut | Description | Exemple
----------|-------------|--------
-title | titre du parcours | parcours du Dôme
-places | liste des places | 57e5261dab4feb4a2af3f419
-
-#### Exemple
-
-Requête :
-
-```sh
-curl -X POST -H "Content-Type: application/json" http://https://api.participamap.org/routes -d '{"title":"parcours du Dôme","places" : ["57e5261dab4feb4a2af3f419"]}'
-```
-
-Réponse :
-
-```http
-HTTP/1.1 201 Created
-Content-Type: application/json; charset=utf-8
-```
-
-```json
-{
-  //TODO https://api.participamap.org/abuses/
-}
-```
