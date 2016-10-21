@@ -37,7 +37,7 @@
    * [Création d’un parcours](#création-dun-parcours)
    * [Suppression d’un parcours](#suppression-dun-parcours)
 * [**Abus**](#abus)
-   * [lister les abus](#liste-abus)
+   * [lister les abus](#lister-les-abus)
    * [Création d’un abus](#création-dun-abus)
    * [Suppression d’un abus](#suppression-dun-abus)
 
@@ -1859,7 +1859,7 @@ contentReport | id du contenu de l'objet | 57ff35e1e446c90c26e9980f
 Requête :
 
 ```sh
-curl -X DELETE localhost:3000/abuses/deleteContentReport/57ff3eb2a940364068b81f91
+curl -X DELETE https://api.participamap.org/abuses/deleteContentReport/57ff3eb2a940364068b81f91
 ```
 
 Réponse :
@@ -1876,6 +1876,8 @@ Content-Type: application/json; charset=utf-8
 ```
 
 ### Parcours
+
+### Lister les Parcours
 
 #### Nom de la requête
 
@@ -1928,6 +1930,7 @@ Content-Type: application/json; charset=utf-8
   //TODO
 }
 ```
+### Création d’un parcours
 
 #### Nom de la requête
 
@@ -1977,6 +1980,6 @@ Content-Type: application/json; charset=utf-8
 
 ```json
 {
-  //TODO
+  //TODO https://api.participamap.org/abuses/
 }
 ```
