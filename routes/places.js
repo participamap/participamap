@@ -31,6 +31,7 @@ router.delete('/:id/comments/:comment_id', Checks.db, deleteComment);
 router.get('/:id/pictures', Checks.db, getPictures);
 router.post('/:id/pictures', Checks.db, createPicture);
 
+
 function getPlace(req, res, next, id) {
   Place.findById(id, { __v: false }, function onPlaceFound(error, place) {
     if (error) return next(error);
