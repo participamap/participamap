@@ -32,6 +32,14 @@
     * [Création d’une image](#création-dune-image)
     * [Récuparation de sa notation d’un lieu](#récupération-de-sa-notation-dun-lieu)
     * [Notation d’un lieu](#notation-dun-lieu)
+* [**Parcours**](#parcours)
+   * [Parcours](#lister-parcours)
+   * [Création d’un parcours](#création-dun-parcours)
+   * [Suppression d’un parcours](#suppression-dun-parcours)
+* [**Abus**](#abus)
+   * [lister les abus](#liste-abus)
+   * [Création d’un abus](#création-dun-abus)
+   * [Suppression d’un abus](#suppression-dun-abus)
 
 ## Informations générales
 
@@ -1852,12 +1860,6 @@ Requête :
 
 ```sh
 curl -X DELETE localhost:3000/abuses/deleteContentReport/57ff3eb2a940364068b81f91
-
-
-
-
-
-
 ```
 
 Réponse :
@@ -1881,7 +1883,7 @@ Content-Type: application/json; charset=utf-8
 
 #### Description
 
-Recuperer tous les parcours
+Récuperer tous les parcours
 
 #### Point d’accès
 
@@ -1903,8 +1905,8 @@ Identifiants :
 
 Attribut | Description | Exemple
 ---------|-------------|--------
-title | titre du parcours | "parcours du Dôme"
-places | liste des places | ["57e5261dab4feb4a2af3f419"]
+title | titre du parcours | parcours du Dôme
+places | liste des places | 57e5261dab4feb4a2af3f419
 
 #### Exemple
 
@@ -1955,8 +1957,8 @@ Identifiants :
 
 Attribut | Description | Exemple
 ---------|-------------|--------
-title | titre du parcours | "parcours du Dôme"
-places | liste des places | ["57e5261dab4feb4a2af3f419"]
+title | titre du parcours | parcours du Dôme
+places | liste des places | 57e5261dab4feb4a2af3f419
 
 #### Exemple
 
