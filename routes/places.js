@@ -9,7 +9,10 @@ var Place = require('../models/place');
 var Comment = require('../models/comment');
 var Picture = require('../models/picture');
 var Document = require('../models/document');
+
+// TODO: Nommage
 var AbuseReported = require('../models/abuseReported');
+
 var Vote = require('../models/vote');
 var Rating = require('../models/rating');
 var PendingUpload = require('../models/pending_upload');
