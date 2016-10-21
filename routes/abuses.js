@@ -38,6 +38,7 @@ function getAbuseReport(req, res, next) {
 	});
 }
 
+
 function getAbuse(req, res, next, id) {
 	Abuse.findById(id, { __v: false }, function onPlaceFound(error, abuse) {
 		if (error) return next(error);
@@ -78,6 +79,31 @@ function deleteContentReport(req, res, next) {
 	}
 	
 }
+
+function deleteContentReport(req, res, next) {
+	var abuse = req.abuse;
+	var type = req.abuse.type;
+	var contentReported=req.abuse.contentReported;
+	//res.send(type)
+	switch (type){
+		case "comment":
+			Comment.remove({ _id: contentReported }, onRemoved); 
+			
+		
+		case "picture":
+			Picture.remove({ _id: contentReported }, onRemoved);
+			
+			
+		case "document":
+			Document.remove({ _id: contentReported }, onRemoved);
+		
+	}
+	function onRemoved(error) {
+		if (error) return next(error);
+	}
+	
+}
+
 
 function deleteAbuseReported(req, res, next) {
   var abuse = req.abuse;
