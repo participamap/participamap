@@ -33,7 +33,7 @@
     * [Récuparation de sa notation d’un lieu](#récupération-de-sa-notation-dun-lieu)
     * [Notation d’un lieu](#notation-dun-lieu)
 * [**Parcours**](#parcours)
-   * [Lister les parcours](#lister-parcours)
+   * [Lister les parcours](#lister-les-parcours)
    * [Création d’un parcours](#création-dun-parcours)
    * [Suppression d’un parcours](#suppression-dun-parcours)
 * [**Abus**](#abus)
@@ -1987,7 +1987,7 @@ Content-Type: application/json; charset=utf-8
 }
 ```
 
-#### Supression d'un abus
+#### Suppression d'un abus
 
 #### Nom de la requête
 
