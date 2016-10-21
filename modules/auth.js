@@ -17,7 +17,7 @@ function Auth() {
  * Verify a users’s credentials for passport
  */
 Auth.verify = function (username, password, done) {
-  User.findOne({ username: username },
+  User.findOne({ username: username.toLowerCase() },
     function onUserFoundForAuth(error, user) {
       if (error) return done(error);
 
