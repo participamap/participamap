@@ -1711,9 +1711,9 @@ Content-Type: application/json; charset=utf-8
   "value": 4
 }
 ```
-### Parcours
+#### Parcours
 
-### Création d’un parcours
+#### Création d’un parcours
 
 #### Nom de la requête
 
@@ -1727,7 +1727,7 @@ Creer un parcours avec une liste de lieux
 
 Méthode | Chemin | Autorisation
 :------:|:------:|:-----------:
-POST | /routes | non requis
+POST | /routes | Content-owner
 
 #### Paramètres de chemin
 
@@ -1781,7 +1781,7 @@ Récuperer tous les parcours
 
 Méthode | Chemin | Autorisation
 :------:|:------:|:-----------:
-GET | /routes | non requis
+GET | /routes | Content-owner
 
 #### Paramètres de chemin
 
@@ -1822,8 +1822,6 @@ Content-Type: application/json; charset=utf-8
 ```
 ### Suppression d'un parcours
 
-### Lister les parcours
-
 #### Nom de la requête
 
 `deleteRoute`
@@ -1836,7 +1834,7 @@ Supprime un parcours
 
 Méthode | Chemin | Autorisation
 :------:|:------:|:-----------:
-DELETE | /routes/{id} | non requis
+DELETE | /routes/{id} | Content-owner
 
 #### Paramètres de chemin
 
@@ -1876,7 +1874,9 @@ HTTP/1.1 204
 ```
 
 
-### Abuse
+#### Abuse
+
+#### Lister les abus
 
 #### Nom de la requête
 
@@ -1921,7 +1921,7 @@ curl -X GET -H "Content-Type: application/json" https://api.participamap.org/abu
 Réponse :
 
 ```http
-HTTP/1.1 201 Created
+HTTP/1.1 200 ok
 Content-Type: application/json; charset=utf-8
 ```
 
@@ -1931,6 +1931,7 @@ Content-Type: application/json; charset=utf-8
 }
 ```
 
+#### Création d'un abus
 
 
 #### Nom de la requête
@@ -1939,7 +1940,7 @@ Content-Type: application/json; charset=utf-8
 
 #### Description
 
-Creer un abus reporté par un commentaire,image ou document
+Créer un abus reporté par un commentaire,image ou document
 
 #### Point d’accès
 
@@ -1985,6 +1986,8 @@ Content-Type: application/json; charset=utf-8
   //TODO
 }
 ```
+
+#### Supression d'un abus
 
 #### Nom de la requête
 
