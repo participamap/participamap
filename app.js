@@ -12,6 +12,10 @@ var Auth = require('./modules/auth');
 var routes = require('./routes/index');
 var users = require('./routes/users');
 var places = require('./routes/places');
+
+// TODO: Nommage
+var abuses = require('./routes/abuses');
+
 var upload = require('./routes/upload');
 // TODO: Définir les statics via la config
 var uploads = express.static('./uploads');
@@ -52,6 +56,7 @@ app.use(Auth.jwt);
 app.use('/', routes);
 app.use('/users/', users);
 app.use('/places/', places);
+app.use('/abuses/', abuses);
 app.use('/upload/', upload);
 app.use('/uploads/', uploads);
 app.use(slash());

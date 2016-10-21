@@ -9,6 +9,7 @@ var Place = require('../models/place');
 var Comment = require('../models/comment');
 var Picture = require('../models/picture');
 var Document = require('../models/document');
+var AbuseReported = require('../models/abuseReported');
 var Vote = require('../models/vote');
 var Rating = require('../models/rating');
 var PendingUpload = require('../models/pending_upload');
@@ -159,6 +160,9 @@ router.post('/:id/rating',
   ratePlace,
   Utils.cleanEntityToSend(['_id', 'place', 'user']),
   Utils.send);
+
+// TODO: Sécuriser + nommage
+router.post('/:id/abuse/:comment_id', Checks.db, createAbuseReported);
 
 
 function getPlace(req, res, next, id) {
@@ -761,6 +765,19 @@ function ratePlace(req, res, next) {
     place.rating = sum / len;
     place.save();
   }
+}
+ 
+
+// TODO: Valider + nommage
+function createAbuseReported(req, res, next) {
+  var place = req.place;
+
+  var abuse = new AbuseReported(req.body);
+  // TODO: Véritable auteur
+  abuse.user = mongoose.Types.ObjectId("57e4d06ff0653747e4559bfe");
+
+  var onAbuseSaved = Utils.returnSavedEntity(res, next, 201);
+  abuse.save(onAbuseSaved);
 }
 
 
