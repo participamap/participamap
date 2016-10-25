@@ -1,5 +1,3 @@
-// TODO: En validant, penser à retab, gg=G, %s/\s\+//
-
 var express = require('express');
 var slash = require('express-slash');
 var logger = require('morgan');
@@ -14,11 +12,7 @@ var Auth = require('./modules/auth');
 var routes = require('./routes/index');
 var users = require('./routes/users');
 var places = require('./routes/places');
-
-// TODO: Nommage + fusion
-var abuses = require('./routes/abuses');
-var abuseReporteds = require('./routes/abuses');
-
+var abuseReports = require('./routes/abuse_reports');
 var upload = require('./routes/upload');
 // TODO: Définir les statics via la config
 var uploads = express.static('./uploads');
@@ -59,11 +53,7 @@ app.use(Auth.jwt);
 app.use('/', routes);
 app.use('/users/', users);
 app.use('/places/', places);
-
-// TODO: Nommage + fusion
-app.use('/abuses/', abuses);
-app.use('/abuses', abuseReporteds);
-
+app.use('/abuse-reports/', abuseReports);
 app.use('/upload/', upload);
 app.use('/uploads/', uploads);
 app.use(slash());

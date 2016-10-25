@@ -9,12 +9,9 @@ var Place = require('../models/place');
 var Comment = require('../models/comment');
 var Picture = require('../models/picture');
 var Document = require('../models/document');
-
-// TODO: Nommage
-var AbuseReported = require('../models/abuseReported');
-
 var Vote = require('../models/vote');
 var Rating = require('../models/rating');
+var AbuseReport = require('../models/abuse_report');
 var PendingUpload = require('../models/pending_upload');
 
 var ObjectId = mongoose.Types.ObjectId;
@@ -164,8 +161,49 @@ router.post('/:id/rating',
   Utils.cleanEntityToSend(['_id', 'place', 'user']),
   Utils.send);
 
-// TODO: Sécuriser + nommage
-router.post('/:id/abuse/:comment_id', Checks.db, createAbuseReported);
+
+// reportAbuse for a place
+router.post('/:id/report',
+  Checks.auth('user'),
+  reportAbuse('place'),
+  Utils.cleanEntityToSend(),
+  Utils.listAuthorsInObjectsToSend,
+  Utils.getAuthorsInfos,
+  Utils.addAuthorsNames,
+  Utils.send);
+
+
+// reportAbuse for a comment
+router.post('/:id/comments/:comment_id/report',
+  Checks.auth('user'),
+  reportAbuse('comment'),
+  Utils.cleanEntityToSend(),
+  Utils.listAuthorsInObjectsToSend,
+  Utils.getAuthorsInfos,
+  Utils.addAuthorsNames,
+  Utils.send);
+
+
+// TODO: reportAbuse for a picture
+//router.post('/:id/pictures/:picture_id/report',
+//  Checks.auth('user'),
+//  reportAbuse('picture'),
+//  Utils.cleanEntityToSend(),
+//  Utils.listAuthorsInObjectsToSend,
+//  Utils.getDocuments,
+//  Utils.addAuthorsNames,
+//  Utils.send);
+
+
+// TODO: reportAbuse for a document
+//router.post('/:id/documents/:document_id/report',
+//  Checks.auth('user'),
+//  reportAbuse('document'),
+//  Utils.cleanEntityToSend(),
+//  Utils.listAuthorsInObjectsToSend,
+//  Utils.getDocuments,
+//  Utils.addAuthorsNames,
+//  Utils.send);
 
 
 function getPlace(req, res, next, id) {
@@ -769,18 +807,21 @@ function ratePlace(req, res, next) {
     place.save();
   }
 }
- 
 
-// TODO: Valider + nommage
-function createAbuseReported(req, res, next) {
-  var place = req.place;
 
-  var abuse = new AbuseReported(req.body);
-  // TODO: Véritable auteur
-  abuse.user = mongoose.Types.ObjectId("57e4d06ff0653747e4559bfe");
+function reportAbuse(type) {
+  return function (req, res, next) {
+    var place = req.place;
 
-  var onAbuseSaved = Utils.returnSavedEntity(res, next, 201);
-  abuse.save(onAbuseSaved);
+    var abuseReport = new AbuseReport({
+      author: ObjectId(req.jwt._id),
+      type: type,
+      reportedContent: req[type]._id
+    });
+
+    var onAbuseReportSaved = Utils.returnSavedEntity(req, res, next);
+    abuseReport.save(onAbuseReportSaved);
+  };
 }
 
 
