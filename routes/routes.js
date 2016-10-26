@@ -13,6 +13,8 @@ var router = express.Router({ strict: true });
 router.param('id', Checks.isValidObjectId);
 router.param('id', getRoute);
 
+router.param('index', parseIndex);
+
 // getRoutesHeaders
 router.get('/',
   Checks.db,
@@ -44,12 +46,12 @@ router.post('/:id',
   Utils.cleanEntityToSend(),
   Utils.send);
 
-// TODO: removePlace
-//router.delete('/:id/place_id',
-//  Checks.auth('content-owner'),
-//  removePlace,
-//  Utils.cleanEntityToSend(),
-//  Utils.send);
+// removePlace
+router.delete('/:id/:index',
+  Checks.auth('content-owner'),
+  removePlace,
+  Utils.cleanEntityToSend(),
+  Utils.send);
 
 // deleteRoute
 router.delete('/:id',
@@ -71,6 +73,27 @@ function getRoute(req, res, next, id) {
 
     next();
   });
+}
+
+
+function parseIndex(req, res, next, index) {
+  var i = parseInt(index);
+
+  if (isNaN(i)) {
+    var err = new Error('Bad Request: The index must be an integer');
+    err.status = 400;
+    return next(err);
+  }
+
+  if (i < 0) {
+    var err = new Error('Bad Request: The index must be positive');
+    err.status = 400;
+    return next(err);
+  }
+
+  req.index = i;
+
+  next();
 }
 
 
@@ -110,7 +133,6 @@ function createRoute(req, res, next) {
     places: req.body.places
   });
 
-  // TODO: Un lieu ne peut pas être deux fois dans un parcours
   // TODO: Un lieu doit exister pour être dans un parcours
 
   var onRouteSaved = Utils.returnSavedEntity(req, res, next, 201);
@@ -126,7 +148,6 @@ function updateRoute(req, res, next) {
   delete modifications._id;
   delete modifications.__v;
 
-  // TODO: Un lieu ne peut pas être deux fois dans un parcours
   // TODO: Un lieu doit exister pour être dans un parcours
 
   for (attribute in modifications)
@@ -155,10 +176,26 @@ function addPlace(req, res, next) {
     return next(err);
   }
 
-  // TODO: Un lieu ne peut pas être deux fois dans un parcours
   // TODO: Un lieu doit exister pour être dans un parcours
 
   route.places.push(place);
+
+  var onRouteSaved = Utils.returnSavedEntity(req, res, next);
+  route.save(onRouteSaved);
+}
+
+
+function removePlace(req, res, next) {
+  var route = req.placesRoute;
+  var i = req.index;
+
+  if (i >= route.places.length) {
+    var err = new Error('Bad Request: Index out of range');
+    err.status = 400;
+    return next(err);
+  }
+
+  route.places.splice(i, 1);
 
   var onRouteSaved = Utils.returnSavedEntity(req, res, next);
   route.save(onRouteSaved);

@@ -7,7 +7,7 @@ var Schema = mongoose.Schema;
 
 var routeSchema = new Schema({
   title: { type: String, required: true },
-  places: { type: [Schema.Types.ObjectId], required: true },
+  places: [Schema.Types.ObjectId]
 });
 
 var Route = mongoose.model('Route', routeSchema);
