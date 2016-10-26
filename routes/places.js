@@ -30,8 +30,8 @@ router.param('comment_id', getComment);
 router.param('picture_id', Checks.isValidObjectId);
 router.param('picture_id', getPicture);
 
-//router.param('document_id', Checks.isValidObjectId);
-//router.param('document_id', getDocument);
+router.param('document_id', Checks.isValidObjectId);
+router.param('document_id', getDocument);
 
 //router.param('vote_id', Checks.isValidObjectId);
 //router.param('vote_id', getVote);
@@ -136,23 +136,33 @@ router.delete('/:id/pictures/:picture_id',
   Checks.auth('moderator'),
   deletePicture);
 
-// TODO: getDocuments
-//router.get('/:id/documents',
-//  getDocuments,
-//  Utils.listAuthorsInObjectsToSend,
-//  Utils.getAuthorsInfos,
-//  Utils.addAuthorsNames,
-//  Utils.send);
+// getDocuments
+router.get('/:id/documents/',
+  getDocuments,
+  Utils.listAuthorsInObjectsToSend,
+  Utils.getAuthorsInfos,
+  Utils.addAuthorsNames,
+  Utils.send);
 
-// TODO: createDocument
-//router.post('/:id/documents',
-//  Checks.auth('user'),
-//  createDocument);
+// createDocument
+router.post('/:id/documents/',
+  Checks.auth('user'),
+  createDocument);
 
-// TODO: deleteDocument
-//router.delete('/:id/documents/:document_id',
-//  Checks.auth('moderator');
-//  deleteDocument);
+// acceptDocument
+router.post('/:id/documents/:document_id/accept',
+  Checks.auth('moderator'),
+  acceptDocument,
+  Utils.cleanEntityToSend(['place']),
+  Utils.listAuthorsInObjectsToSend,
+  Utils.getAuthorsInfos,
+  Utils.addAuthorsNames,
+  Utils.send);
+
+// deleteDocument
+router.delete('/:id/documents/:document_id',
+  Checks.auth('moderator'),
+  deleteDocument);
 
 // TODO: Votes ou non ?
 //router.get('/:id/votes', getVotes);
@@ -171,7 +181,6 @@ router.post('/:id/rating',
   Utils.cleanEntityToSend(['_id', 'place', 'user']),
   Utils.send);
 
-
 // reportAbuse for a place
 router.post('/:id/report',
   Checks.auth('user'),
@@ -184,7 +193,6 @@ router.post('/:id/report',
   Utils.getObjects,
   Utils.replaceByObjects,
   Utils.send);
-
 
 // reportAbuse for a comment
 router.post('/:id/comments/:comment_id/report',
@@ -199,27 +207,31 @@ router.post('/:id/comments/:comment_id/report',
   Utils.replaceByObjects,
   Utils.send);
 
+// reportAbuse for a picture
+router.post('/:id/pictures/:picture_id/report',
+  Checks.auth('user'),
+  reportAbuse('picture'),
+  Utils.cleanEntityToSend(),
+  Utils.listAuthorsInObjectsToSend,
+  Utils.getAuthorsInfos,
+  Utils.addAuthorsNames,
+  Utils.listReportedContentsInObjectsToSend,
+  Utils.getObjects,
+  Utils.replaceByObjects,
+  Utils.send);
 
-// TODO: reportAbuse for a picture
-//router.post('/:id/pictures/:picture_id/report',
-//  Checks.auth('user'),
-//  reportAbuse('picture'),
-//  Utils.cleanEntityToSend(),
-//  Utils.listAuthorsInObjectsToSend,
-//  Utils.getDocuments,
-//  Utils.addAuthorsNames,
-//  Utils.send);
-
-
-// TODO: reportAbuse for a document
-//router.post('/:id/documents/:document_id/report',
-//  Checks.auth('user'),
-//  reportAbuse('document'),
-//  Utils.cleanEntityToSend(),
-//  Utils.listAuthorsInObjectsToSend,
-//  Utils.getDocuments,
-//  Utils.addAuthorsNames,
-//  Utils.send);
+// reportAbuse for a document
+router.post('/:id/documents/:document_id/report',
+  Checks.auth('user'),
+  reportAbuse('document'),
+  Utils.cleanEntityToSend(),
+  Utils.listAuthorsInObjectsToSend,
+  Utils.getAuthorsInfos,
+  Utils.addAuthorsNames,
+  Utils.listReportedContentsInObjectsToSend,
+  Utils.getObjects,
+  Utils.replaceByObjects,
+  Utils.send);
 
 
 function getPlace(req, res, next, id) {
@@ -269,6 +281,26 @@ function getPicture(req, res, next, picture_id) {
 
     req.picture = picture;
     req.owner = picture.author;
+
+    next();
+  });
+}
+
+
+function getDocument(req, res, next, document_id) {
+  Document.findById(document_id, function onDocumentFound(error, document) {
+    if (error) return next(error);
+
+    if (!document
+      || (document.place.toString() !== req.place._id.toString()))
+    {
+      var err = new Error('Not Found');
+      err.status = 404;
+      return next(err);
+    }
+
+    req.document = document;
+    req.owner = document.author;
 
     next();
   });
@@ -498,7 +530,7 @@ function deletePlace(req, res, next) {
 }
 
 
-function getComments(req,res,next) {
+function getComments(req, res, next) {
   var place = req.place;
 
   var role = req.jwt
@@ -627,7 +659,7 @@ function deleteComment(req, res, next) {
 
 
 // TODO: Factoriser le code avec getComments
-function getPictures(req,res,next) {
+function getPictures(req, res, next) {
   var place = req.place;
 
   var role = req.jwt
@@ -761,6 +793,155 @@ function deletePicture(req, res, next) {
   var picture = req.picture;
 
   picture.remove(function onPictureRemoved(error) {
+    if (error) return next(error);
+    res.status(204).end();
+  });
+}
+
+
+// TODO: Factoriser le code avec getComments
+function getDocuments(req, res, next) {
+  var place = req.place;
+
+  var role = req.jwt
+    ? req.jwt.role
+    : 'guest';
+
+  var page = 1;
+  var n = 0;
+
+  if (req.query.page) {
+    page = parseInt(req.query.page)
+
+    if (isNaN(page)) {
+      var err = new Error('Bad Request: page must be an integer');
+      err.status = 400;
+      return next(err);
+    }
+
+    if (page <= 0) {
+      var err = new Error('Bad Request: page must be strictly positive');
+      err.status = 400;
+      return next(err);
+    }
+
+    n = 10;
+  }
+
+  if (req.query.n) {
+    n = parseInt(req.query.n);
+
+    if (isNaN(n)) {
+      var err = new Error('Bad Request: n must be an integer');
+      err.status = 400;
+      return next(err);
+    }
+
+    if (n <= 0) {
+      var err = new Error('Bad Request: n must be strictly positive');
+      err.status = 400;
+      return next(err);
+    }
+  }
+
+  var filter = { place: place._id };
+
+  if (req.query.tomoderate === 'true') {
+    if (role !== 'moderator' && role !== 'admin') {
+      var err = new Error('Forbidden: Insufficient permissions to view '
+        + 'unmoderated documents');
+      err.status = 403;
+      return next(err);
+    }
+
+    filter.toModerate = true;
+    var sort = 'date';
+  }
+  else {
+    var sort = '-date';
+  }
+
+  var projection = {
+    __v: false,
+    place: false
+  };
+
+  if (role !== 'moderator' && role !== 'admin') {
+    filter.toModerate = { $ne: true };
+    projection.toModerate = false;
+  }
+
+  Document.find(filter, projection)
+    .sort(sort)
+    .skip((page - 1) * n)
+    .limit(n)
+    .lean()
+    .exec(function returnDocuments(error, documents) {
+      if (error) return next(error);
+
+      req.toSend = documents;
+      next();
+    });
+}
+
+
+function createDocument(req, res, next) {
+  var place = req.place;
+
+  if (place.denyDocuments) {
+    var err = new Error('Forbidden: Documents are denied on this place');
+    err.status = 403;
+    return next(err);
+  }
+
+  if (!req.body.title) {
+    var err = new Error('Bad Request: No title in the request content');
+    err.status = 400;
+    return next(err);
+  }
+
+  // Not a Document object in order to get the real timestamp on document
+  // upload
+  var document = {
+    place: place._id,
+    author: ObjectId(req.jwt._id),
+    title: req.body.title
+  };
+
+  if (place.moderateDocuments)
+    document.toModerate = true;
+
+  var pendingUpload = new PendingUpload({
+    contentType: 'document',
+    content: document
+  });
+  pendingUpload.save(sendUploadURL);
+
+  // TODO: Factoriser avec les autres requêtes utilisant l’upload
+  function sendUploadURL(error, pendingUpload) {
+    if (error) return next(error);
+
+    var uploadPath = 'upload/' + pendingUpload._id;
+    var uploadURL = url.resolve(config.serverURL, uploadPath);
+    res.redirect(204, uploadURL);
+  }
+}
+
+
+function acceptDocument(req, res, next) {
+  var document = req.document;
+
+  document.toModerate = undefined;
+
+  var onDocumentSaved = Utils.returnSavedEntity(req, res, next);
+  document.save(onDocumentSaved);
+}
+
+
+function deleteDocument(req, res, next) {
+  var document = req.document;
+
+  document.remove(function onDocumentRemoved(error) {
     if (error) return next(error);
     res.status(204).end();
   });

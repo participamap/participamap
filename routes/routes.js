@@ -162,8 +162,7 @@ function addPlace(req, res, next) {
   var route = req.placesRoute;
 
   if (!req.body.place) {
-    var err = new Error('Bad Request: A place must be provided in the request '
-      + 'content');
+    var err = new Error('Bad Request: No place in the request content');
     err.status = 400;
     return next(err);
   }

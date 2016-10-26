@@ -47,6 +47,11 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.raw({ type: 'image/jpeg', limit: '5MB' }));
 app.use(bodyParser.raw({ type: 'image/png', limit: '5MB' }));
+app.use(bodyParser.raw({ type: 'text/plain', limit: '1MB' }));
+app.use(bodyParser.raw({ type: 'application/pdf', limit: '10MB' }));
+app.use(bodyParser.raw({ type: 'application/msword', limit: '5MB' }));
+app.use(bodyParser.raw({ type: 'application/vnd.oasis.opendocument.text',
+  limit: '5MB' }));
 app.use(passport.initialize());
 app.use(Auth.jwt);
 
