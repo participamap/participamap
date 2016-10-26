@@ -136,13 +136,13 @@ router.delete('/:id/pictures/:picture_id',
   Checks.auth('moderator'),
   deletePicture);
 
-// TODO: getDocuments
-//router.get('/:id/documents',
-//  getDocuments,
-//  Utils.listAuthorsInObjectsToSend,
-//  Utils.getAuthorsInfos,
-//  Utils.addAuthorsNames,
-//  Utils.send);
+// getDocuments
+router.get('/:id/documents',
+  getDocuments,
+  Utils.listAuthorsInObjectsToSend,
+  Utils.getAuthorsInfos,
+  Utils.addAuthorsNames,
+  Utils.send);
 
 // TODO: createDocument
 //router.post('/:id/documents',
@@ -504,7 +504,7 @@ function deletePlace(req, res, next) {
 }
 
 
-function getComments(req,res,next) {
+function getComments(req, res, next) {
   var place = req.place;
 
   var role = req.jwt
@@ -633,7 +633,7 @@ function deleteComment(req, res, next) {
 
 
 // TODO: Factoriser le code avec getComments
-function getPictures(req,res,next) {
+function getPictures(req, res, next) {
   var place = req.place;
 
   var role = req.jwt
@@ -770,6 +770,92 @@ function deletePicture(req, res, next) {
     if (error) return next(error);
     res.status(204).end();
   });
+}
+
+
+// TODO: Factoriser le code avec getComments
+function getDocuments(req, res, next) {
+  var place = req.place;
+
+  var role = req.jwt
+    ? req.jwt.role
+    : 'guest';
+
+  var page = 1;
+  var n = 0;
+
+  if (req.query.page) {
+    page = parseInt(req.query.page)
+
+    if (isNaN(page)) {
+      var err = new Error('Bad Request: page must be an integer');
+      err.status = 400;
+      return next(err);
+    }
+
+    if (page <= 0) {
+      var err = new Error('Bad Request: page must be strictly positive');
+      err.status = 400;
+      return next(err);
+    }
+
+    n = 10;
+  }
+
+  if (req.query.n) {
+    n = parseInt(req.query.n);
+
+    if (isNaN(n)) {
+      var err = new Error('Bad Request: n must be an integer');
+      err.status = 400;
+      return next(err);
+    }
+
+    if (n <= 0) {
+      var err = new Error('Bad Request: n must be strictly positive');
+      err.status = 400;
+      return next(err);
+    }
+  }
+
+  var filter = { place: place._id };
+
+  if (req.query.tomoderate === 'true') {
+    if (role !== 'moderator' && role !== 'admin') {
+      var err = new Error('Forbidden: Insufficient permissions to view '
+        + 'unmoderated documents');
+      err.status = 403;
+      return next(err);
+    }
+
+    filter.toModerate = true;
+    var sort = 'date';
+  }
+  else {
+    var sort = '-date';
+  }
+
+  var projection = {
+    __v: false,
+    place: false
+  };
+
+  if (role !== 'moderator' && role !== 'admin') {
+    filter.toModerate = { $ne: true };
+    projection.toModerate = false;
+  }
+
+  Document.find(filter, projection)
+    .sort(sort)
+    .skip((page - 1) * n)
+    .limit(n)
+    .lean()
+    .exec(function returnDocuments(error, documents) {
+      if (error) return next(error);
+
+      req.toSend = documents;
+      next();
+    });
 }
 
 
