@@ -144,10 +144,10 @@ router.get('/:id/documents/',
   Utils.addAuthorsNames,
   Utils.send);
 
-// TODO: createDocument
-//router.post('/:id/documents',
-//  Checks.auth('user'),
-//  createDocument);
+// createDocument
+router.post('/:id/documents/',
+  Checks.auth('user'),
+  createDocument);
 
 // TODO: acceptDocument
 //router.post('/:id/documents/:document_id/accept',
@@ -862,6 +862,49 @@ function getDocuments(req, res, next) {
       req.toSend = documents;
       next();
     });
+}
+
+
+function createDocument(req, res, next) {
+  var place = req.place;
+
+  if (place.denyDocuments) {
+    var err = new Error('Forbidden: Documents are denied on this place');
+    err.status = 403;
+    return next(err);
+  }
+
+  if (!req.body.title) {
+    var err = new Error('Bad Request: No title in the request content');
+    err.status = 400;
+    return next(err);
+  }
+
+  // Not a Document object in order to get the real timestamp on document
+  // upload
+  var document = {
+    place: place._id,
+    author: ObjectId(req.jwt._id),
+    title: req.body.title
+  };
+
+  if (place.moderateDocuments)
+    document.toModerate = true;
+
+  var pendingUpload = new PendingUpload({
+    contentType: 'document',
+    content: document
+  });
+  pendingUpload.save(sendUploadURL);
+
+  // TODO: Factoriser avec les autres requêtes utilisant l’upload
+  function sendUploadURL(error, pendingUpload) {
+    if (error) return next(error);
+
+    var uploadPath = 'upload/' + pendingUpload._id;
+    var uploadURL = url.resolve(config.serverURL, uploadPath);
+    res.redirect(204, uploadURL);
+  }
 }
 
 

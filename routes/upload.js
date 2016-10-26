@@ -84,6 +84,50 @@ function upload(req, res, next) {
       fileSaver.save(fileName, req.body, onFileSaved);
       break;
 
+    case 'text/plain':
+      if (mimeType !== 'text/plain')
+        return badContentType();
+
+      if (contentType !== 'document')
+        return unsupportedMediaType();
+
+      var fileName = uuid.v4() + '.txt';
+      fileSaver.save(fileName, req.body, onFileSaved);
+      break;
+
+    case 'application/pdf':
+      if (mimeType !== 'application/pdf')
+        return badContentType();
+
+      if (contentType !== 'document')
+        return unsupportedMediaType();
+
+      var fileName = uuid.v4() + '.pdf';
+      fileSaver.save(fileName, req.body, onFileSaved);
+      break;
+
+    case 'application/msword':
+      if (mimeType !== 'application/msword')
+        return badContentType();
+
+      if (contentType !== 'document')
+        return unsupportedMediaType();
+
+      var fileName = uuid.v4() + '.doc';
+      fileSaver.save(fileName, req.body, onFileSaved);
+      break;
+
+    case 'application/vnd.oasis.opendocument.text':
+      if (mimeType !== 'application/vnd.oasis.opendocument.text')
+        return badContentType();
+
+      if (contentType !== 'document')
+        return unsupportedMediaType();
+
+      var fileName = uuid.v4() + '.odt';
+      fileSaver.save(fileName, req.body, onFileSaved);
+      break;
+
     default:
       return unsupportedMediaType();
   }
@@ -125,6 +169,15 @@ function upload(req, res, next) {
 
         var onPictureSaved = Utils.returnSavedEntity(req, res, next, 201);
         picture.save(onPictureSaved);
+        break;
+      
+      case 'document':
+        var document = new Document(pendingUpload.content);
+        document.type = mimeType;
+        document.url = url;
+
+        var onDocumentSaved = Utils.returnSavedEntity(req, res, next, 201);
+        document.save(onDocumentSaved);
         break;
     }
   }
