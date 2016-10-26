@@ -53,6 +53,7 @@ function getPendingUpload(req, res, next, id) {
 function upload(req, res, next) {
   var pendingUpload = req.pendingUpload;
   var contentType = pendingUpload.contentType;
+  var mimeType = fileType(req.body).mime;
 
   pendingUpload.remove(function onPendingUpdateRemoved(error) {
     if (error) return next(error);
@@ -62,7 +63,7 @@ function upload(req, res, next) {
 
   switch (req.get('Content-Type')) {
     case 'image/jpeg':
-      if (fileType(req.body).mime !== 'image/jpeg')
+      if (mimeType !== 'image/jpeg')
         return badContentType();
 
       if (!(contentType === 'place' || contentType === 'picture'))
@@ -73,7 +74,7 @@ function upload(req, res, next) {
       break;
 
     case 'image/png':
-      if (fileType(req.body).mime !== 'image/png')
+      if (mimeType !== 'image/png')
         return badContentType();
 
       if (!(contentType === 'place' || contentType === 'picture'))

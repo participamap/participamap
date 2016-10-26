@@ -137,7 +137,7 @@ router.delete('/:id/pictures/:picture_id',
   deletePicture);
 
 // getDocuments
-router.get('/:id/documents',
+router.get('/:id/documents/',
   getDocuments,
   Utils.listAuthorsInObjectsToSend,
   Utils.getAuthorsInfos,
@@ -213,8 +213,11 @@ router.post('/:id/pictures/:picture_id/report',
   reportAbuse('picture'),
   Utils.cleanEntityToSend(),
   Utils.listAuthorsInObjectsToSend,
-  Utils.getDocuments,
+  Utils.getAuthorsInfos,
   Utils.addAuthorsNames,
+  Utils.listReportedContentsInObjectsToSend,
+  Utils.getObjects,
+  Utils.replaceByObjects,
   Utils.send);
 
 // reportAbuse for a document
@@ -223,8 +226,11 @@ router.post('/:id/documents/:document_id/report',
   reportAbuse('document'),
   Utils.cleanEntityToSend(),
   Utils.listAuthorsInObjectsToSend,
-  Utils.getDocuments,
+  Utils.getAuthorsInfos,
   Utils.addAuthorsNames,
+  Utils.listReportedContentsInObjectsToSend,
+  Utils.getObjects,
+  Utils.replaceByObjects,
   Utils.send);
 
 
