@@ -40,7 +40,7 @@ router.put('/:id',
   Utils.send);
 
 // addPlace
-router.post('/:id',
+router.post('/:id/',
   Checks.auth('content-owner'),
   addPlace,
   Utils.cleanEntityToSend(),
