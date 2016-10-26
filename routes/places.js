@@ -149,6 +149,16 @@ router.delete('/:id/pictures/:picture_id',
 //  Checks.auth('user'),
 //  createDocument);
 
+// TODO: acceptDocument
+//router.post('/:id/documents/:document_id/accept',
+//  Checks.auth('moderator'),
+//  acceptDocument,
+//  Utils.cleanEntityToSend(['place']),
+//  Utils.listAuthorsInObjectsToSend,
+//  Utils.getAuthorsInfos,
+//  Utils.addAuthorsNames,
+//  Utils.send);
+
 // TODO: deleteDocument
 //router.delete('/:id/documents/:document_id',
 //  Checks.auth('moderator');
@@ -171,7 +181,6 @@ router.post('/:id/rating',
   Utils.cleanEntityToSend(['_id', 'place', 'user']),
   Utils.send);
 
-
 // reportAbuse for a place
 router.post('/:id/report',
   Checks.auth('user'),
@@ -184,7 +193,6 @@ router.post('/:id/report',
   Utils.getObjects,
   Utils.replaceByObjects,
   Utils.send);
-
 
 // reportAbuse for a comment
 router.post('/:id/comments/:comment_id/report',
@@ -199,27 +207,25 @@ router.post('/:id/comments/:comment_id/report',
   Utils.replaceByObjects,
   Utils.send);
 
+// reportAbuse for a picture
+router.post('/:id/pictures/:picture_id/report',
+  Checks.auth('user'),
+  reportAbuse('picture'),
+  Utils.cleanEntityToSend(),
+  Utils.listAuthorsInObjectsToSend,
+  Utils.getDocuments,
+  Utils.addAuthorsNames,
+  Utils.send);
 
-// TODO: reportAbuse for a picture
-//router.post('/:id/pictures/:picture_id/report',
-//  Checks.auth('user'),
-//  reportAbuse('picture'),
-//  Utils.cleanEntityToSend(),
-//  Utils.listAuthorsInObjectsToSend,
-//  Utils.getDocuments,
-//  Utils.addAuthorsNames,
-//  Utils.send);
-
-
-// TODO: reportAbuse for a document
-//router.post('/:id/documents/:document_id/report',
-//  Checks.auth('user'),
-//  reportAbuse('document'),
-//  Utils.cleanEntityToSend(),
-//  Utils.listAuthorsInObjectsToSend,
-//  Utils.getDocuments,
-//  Utils.addAuthorsNames,
-//  Utils.send);
+// reportAbuse for a document
+router.post('/:id/documents/:document_id/report',
+  Checks.auth('user'),
+  reportAbuse('document'),
+  Utils.cleanEntityToSend(),
+  Utils.listAuthorsInObjectsToSend,
+  Utils.getDocuments,
+  Utils.addAuthorsNames,
+  Utils.send);
 
 
 function getPlace(req, res, next, id) {
