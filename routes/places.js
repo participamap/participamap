@@ -131,10 +131,10 @@ router.post('/:id/pictures/:picture_id/accept',
   Utils.addAuthorsNames,
   Utils.send);
 
-// TODO: deletePicture
-//router.delete('/:id/pictures/:picture_id',
-//  Checks.auth('moderator'),
-//  deletePicture);
+// deletePicture
+router.delete('/:id/pictures/:picture_id',
+  Checks.auth('moderator'),
+  deletePicture);
 
 // TODO: getDocuments
 //router.get('/:id/documents',
@@ -754,6 +754,16 @@ function acceptPicture(req, res, next) {
 
   var onPictureSaved = Utils.returnSavedEntity(req, res, next);
   picture.save(onPictureSaved);
+}
+
+
+function deletePicture(req, res, next) {
+  var picture = req.picture;
+
+  picture.remove(function onPictureRemoved(error) {
+    if (error) return next(error);
+    res.status(204).end();
+  });
 }
 
 
