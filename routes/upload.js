@@ -9,10 +9,8 @@ var Utils = require('../modules/utils');
 var PendingUpload = require('../models/pending_upload');
 var FileSaver = require('../modules/filesaver');
 var Place = require('../models/place');
-var Comment = require('../models/comment');
 var Picture = require('../models/picture');
 var Document = require('../models/document');
-var Vote = require('../models/vote');
 
 var config = require('../config.json');
 

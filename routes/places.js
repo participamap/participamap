@@ -9,7 +9,6 @@ var Place = require('../models/place');
 var Comment = require('../models/comment');
 var Picture = require('../models/picture');
 var Document = require('../models/document');
-var Vote = require('../models/vote');
 var Rating = require('../models/rating');
 var AbuseReport = require('../models/abuse_report');
 var PendingUpload = require('../models/pending_upload');
@@ -24,17 +23,14 @@ router.param('id', Checks.isValidObjectId);
 router.param('id', Checks.db);
 router.param('id', getPlace);
 
-router.param('comment_id', Checks.isValidObjectId);
-router.param('comment_id', getComment);
+router.param('commentId', Checks.isValidObjectId);
+router.param('commentId', getComment);
 
-router.param('picture_id', Checks.isValidObjectId);
-router.param('picture_id', getPicture);
+router.param('pictureId', Checks.isValidObjectId);
+router.param('pictureId', getPicture);
 
-router.param('document_id', Checks.isValidObjectId);
-router.param('document_id', getDocument);
-
-//router.param('vote_id', Checks.isValidObjectId);
-//router.param('vote_id', getVote);
+router.param('documentId', Checks.isValidObjectId);
+router.param('documentId', getDocument);
 
 // getPlacesHeaders
 router.get('/',
@@ -94,7 +90,7 @@ router.post('/:id/comments/',
   Utils.send);
 
 // acceptComment
-router.post('/:id/comments/:comment_id/accept',
+router.post('/:id/comments/:commentId/accept',
   Checks.auth('moderator'),
   acceptComment,
   Utils.cleanEntityToSend(['place']),
@@ -104,7 +100,7 @@ router.post('/:id/comments/:comment_id/accept',
   Utils.send);
 
 // deleteComment
-router.delete('/:id/comments/:comment_id',
+router.delete('/:id/comments/:commentId',
   Checks.auth('moderator'),
   deleteComment);
 
@@ -122,7 +118,7 @@ router.post('/:id/pictures/',
   createPicture);
 
 // acceptPicture
-router.post('/:id/pictures/:picture_id/accept',
+router.post('/:id/pictures/:pictureId/accept',
   Checks.auth('moderator'),
   acceptPicture,
   Utils.cleanEntityToSend(['place']),
@@ -132,7 +128,7 @@ router.post('/:id/pictures/:picture_id/accept',
   Utils.send);
 
 // deletePicture
-router.delete('/:id/pictures/:picture_id',
+router.delete('/:id/pictures/:pictureId',
   Checks.auth('moderator'),
   deletePicture);
 
@@ -150,7 +146,7 @@ router.post('/:id/documents/',
   createDocument);
 
 // acceptDocument
-router.post('/:id/documents/:document_id/accept',
+router.post('/:id/documents/:documentId/accept',
   Checks.auth('moderator'),
   acceptDocument,
   Utils.cleanEntityToSend(['place']),
@@ -160,14 +156,9 @@ router.post('/:id/documents/:document_id/accept',
   Utils.send);
 
 // deleteDocument
-router.delete('/:id/documents/:document_id',
+router.delete('/:id/documents/:documentId',
   Checks.auth('moderator'),
   deleteDocument);
-
-// TODO: Votes ou non ?
-//router.get('/:id/votes', getVotes);
-//router.post('/:id/votes', createVote);
-//router.delete('/:id/votes/:vote_id', deleteVote);
 
 // getUserRating
 router.get('/:id/rating',
@@ -195,7 +186,7 @@ router.post('/:id/report',
   Utils.send);
 
 // reportAbuse for a comment
-router.post('/:id/comments/:comment_id/report',
+router.post('/:id/comments/:commentId/report',
   Checks.auth('user'),
   reportAbuse('comment'),
   Utils.cleanEntityToSend(),
@@ -208,7 +199,7 @@ router.post('/:id/comments/:comment_id/report',
   Utils.send);
 
 // reportAbuse for a picture
-router.post('/:id/pictures/:picture_id/report',
+router.post('/:id/pictures/:pictureId/report',
   Checks.auth('user'),
   reportAbuse('picture'),
   Utils.cleanEntityToSend(),
@@ -221,7 +212,7 @@ router.post('/:id/pictures/:picture_id/report',
   Utils.send);
 
 // reportAbuse for a document
-router.post('/:id/documents/:document_id/report',
+router.post('/:id/documents/:documentId/report',
   Checks.auth('user'),
   reportAbuse('document'),
   Utils.cleanEntityToSend(),
@@ -251,8 +242,8 @@ function getPlace(req, res, next, id) {
 }
 
 
-function getComment(req, res, next, comment_id) {
-  Comment.findById(comment_id, function onCommentFound(error, comment) {
+function getComment(req, res, next, commentId) {
+  Comment.findById(commentId, function onCommentFound(error, comment) {
     if (error) return next(error);
 
     if (!comment || (comment.place.toString() !== req.place._id.toString())) {
@@ -269,8 +260,8 @@ function getComment(req, res, next, comment_id) {
 }
 
 
-function getPicture(req, res, next, picture_id) {
-  Picture.findById(picture_id, function onPictureFound(error, picture) {
+function getPicture(req, res, next, pictureId) {
+  Picture.findById(pictureId, function onPictureFound(error, picture) {
     if (error) return next(error);
 
     if (!picture || (picture.place.toString() !== req.place._id.toString())) {
@@ -287,8 +278,8 @@ function getPicture(req, res, next, picture_id) {
 }
 
 
-function getDocument(req, res, next, document_id) {
-  Document.findById(document_id, function onDocumentFound(error, document) {
+function getDocument(req, res, next, documentId) {
+  Document.findById(documentId, function onDocumentFound(error, document) {
     if (error) return next(error);
 
     if (!document
@@ -407,6 +398,7 @@ function getPlaceInfo(req, res, next) {
 function createPlace(req, res, next) {
   // Delete unchangeable attributes
   delete req.body._id;
+  delete req.body.__v;
   delete req.body.headerPhoto;
   delete req.body.rating;
 
@@ -459,25 +451,26 @@ function createPlace(req, res, next) {
 
 function updatePlace(req, res, next) {
   var place = req.place;
-  var modifications = req.body;
+  var changes = req.body;
 
   // Delete unchangeable attributes
-  delete modifications._id;
-  delete modifications.proposedBy;
-  delete modifications.headerPhoto;
-  delete modifications.rating;
+  delete changes._id;
+  delete changes.__v;
+  delete changes.proposedBy;
+  delete changes.headerPhoto;
+  delete changes.rating;
 
-  for (attribute in modifications)
-    place[attribute] = modifications[attribute];
+  for (attribute in changes)
+    place[attribute] = changes[attribute];
 
-  if (modifications.deleteHeaderPhoto) {
+  if (changes.deleteHeaderPhoto) {
     // TODO: Supprimer le fichier
 
     place.headerPhoto = undefined;
   }
 
   // TODO: Factoriser du code
-  if (!modifications.setHeaderPhoto) {
+  if (!changes.setHeaderPhoto) {
     var onPlaceSaved = Utils.returnSavedEntity(req, res, next);
     place.save(onPlaceSaved);
   }

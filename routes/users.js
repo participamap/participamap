@@ -151,6 +151,7 @@ function getUserInfo(req, res, next) {
 function createUser(req, res, next) {
   // Delete unchangable attributes
   delete req.body._id;
+  delete req.body.__v;
   delete req.body.passwordSalt;
   delete req.body.passwordHash;
 
@@ -163,10 +164,10 @@ function createUser(req, res, next) {
 
 function updateUser(req, res, next) {
   var user = req.user;
-  var modifications = req.body;
+  var changes = req.body;
   var role = req.jwt.role;
 
-  if (role !== 'admin' && modifications.role) {
+  if (role !== 'admin' && changes.role) {
     var err = new Error('Forbidden: Unsufficient permissions to change the '
       + 'role');
     err.status = 403;
@@ -174,13 +175,14 @@ function updateUser(req, res, next) {
   }
 
   // Delete unchangeable attributes
-  delete modifications._id;
-  delete modifications.username;
-  delete modifications.passwordSalt;
-  delete modifications.passwordHash;
+  delete changes._id;
+  delete changes.__v;
+  delete changes.username;
+  delete changes.passwordSalt;
+  delete changes.passwordHash;
 
-  for (attribute in modifications)
-    user[attribute] = modifications[attribute];
+  for (attribute in changes)
+    user[attribute] = changes[attribute];
 
   var onUserSaved = Utils.returnSavedEntity(req, res, next);
   user.save(onUserSaved);

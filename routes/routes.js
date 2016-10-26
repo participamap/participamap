@@ -142,16 +142,16 @@ function createRoute(req, res, next) {
 
 function updateRoute(req, res, next) {
   var route = req.placesRoute;
-  var modifications = req.body;
+  var changes = req.body;
 
   // Delete unchangeable attributes
-  delete modifications._id;
-  delete modifications.__v;
+  delete changes._id;
+  delete changes.__v;
 
   // TODO: Un lieu doit exister pour être dans un parcours
 
-  for (attribute in modifications)
-    route[attribute] = modifications[attribute];
+  for (attribute in changes)
+    route[attribute] = changes[attribute];
 
   var onRouteSaved = Utils.returnSavedEntity(req, res, next);
   route.save(onRouteSaved);

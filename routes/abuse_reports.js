@@ -12,8 +12,6 @@ var Document = require('../models/document');
 
 var ObjectId = mongoose.Types.ObjectId;
 
-var config = require('../config.json');
-
 var router = express.Router({ strict: true });
 
 router.param('id', Checks.isValidObjectId);

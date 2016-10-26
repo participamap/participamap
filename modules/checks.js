@@ -3,7 +3,7 @@
  */
 
 var mongoose = require('mongoose');
-var ObjectId = require('mongodb').ObjectId;
+var ObjectId = mongoose.Types.ObjectId;
 
 function Checks() {
   this.db = Checks.db;
