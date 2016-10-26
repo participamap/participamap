@@ -37,12 +37,12 @@ router.put('/:id',
   Utils.cleanEntityToSend(),
   Utils.send);
 
-// TODO: addPlace
-//router.post('/:id/',
-//  Checks.auth('content-owner'),
-//  addPlace,
-//  Utils.cleanEntityToSend(),
-//  Utils.send);
+// addPlace
+router.post('/:id',
+  Checks.auth('content-owner'),
+  addPlace,
+  Utils.cleanEntityToSend(),
+  Utils.send);
 
 // TODO: removePlace
 //router.delete('/:id/place_id',
@@ -76,7 +76,7 @@ function getRoute(req, res, next, id) {
 
 function getRoutesHeaders(req, res, next) {
   var filter = {};
-  
+
   if (req.query.place) {
     if (!ObjectId.isValid(req.query.place)) {
       var err = new Error('Bad Request: place must be a valid ObjectId');
@@ -86,11 +86,11 @@ function getRoutesHeaders(req, res, next) {
 
     filter.places = req.query.place;
   }
-  
+
   var projection = {
     title: true
   };
-  
+
   Route.find(filter, projection,
     function returnRoutesHeaders(error, routesHeaders) {
       if (error) return next(error);
@@ -110,8 +110,8 @@ function createRoute(req, res, next) {
     places: req.body.places
   });
 
-  // TODO: Un lieu ne peut pas être deux fois dans une route
-  // TODO: Un lieu doit exister pour être dans une route
+  // TODO: Un lieu ne peut pas être deux fois dans un parcours
+  // TODO: Un lieu doit exister pour être dans un parcours
 
   var onRouteSaved = Utils.returnSavedEntity(req, res, next, 201);
   route.save(onRouteSaved);
@@ -126,11 +126,39 @@ function updateRoute(req, res, next) {
   delete modifications._id;
   delete modifications.__v;
 
-  // TODO: Un lieu ne peut pas être deux fois dans une route
-  // TODO: Un lieu doit exister pour être dans une route
+  // TODO: Un lieu ne peut pas être deux fois dans un parcours
+  // TODO: Un lieu doit exister pour être dans un parcours
 
   for (attribute in modifications)
     route[attribute] = modifications[attribute];
+
+  var onRouteSaved = Utils.returnSavedEntity(req, res, next);
+  route.save(onRouteSaved);
+}
+
+
+function addPlace(req, res, next) {
+  var route = req.placesRoute;
+
+  if (!req.body.place) {
+    var err = new Error('Bad Request: A place must be provided in the request '
+      + 'content');
+    err.status = 400;
+    return next(err);
+  }
+
+  var place = req.body.place;
+
+  if (!ObjectId.isValid(place)) {
+    var err = new Error('Bad Request: place must be a valid ObjectId');
+    err.status = 400;
+    return next(err);
+  }
+
+  // TODO: Un lieu ne peut pas être deux fois dans un parcours
+  // TODO: Un lieu doit exister pour être dans un parcours
+
+  route.places.push(place);
 
   var onRouteSaved = Utils.returnSavedEntity(req, res, next);
   route.save(onRouteSaved);
