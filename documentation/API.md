@@ -24,18 +24,22 @@
     * [Création d’un lieu](#création-dun-lieu)
     * [Modification d’un lieu](#modification-dun-lieu)
     * [Suppression d’un lieu](#suppression-dun-lieu)
+* [**Commentaires**](#commentaires)
     * [Commentaires d’un lieu](#commentaires-dun-lieu)
     * [Création d’un commentaire](#création-dun-commentaire)
     * [Acceptation d’un commentaire](#acceptation-dun-commentaire)
     * [Suppression d’un commentaire](#suppression-dun-commentaire)
+* [**Images**](#images)
     * [Images d’un lieu](#images-dun-lieu)
     * [Création d’une image](#création-dune-image)
     * [Acceptation d’une image](#acceptation-dune-image)
     * [Suppression d’une image](#suppression-dune-image)
+* [**Documents**](#documents)
     * [Documents d’un lieu](#documents-dun-lieu)
     * [Création d’un document](#création-dun-document)
     * [Acceptation d’un document](#acceptation-dun-document)
     * [Suppression d’un document](#suppression-dun-document)
+* [**Notations**](#notations)
     * [Récuparation de sa notation d’un lieu](#récupération-de-sa-notation-dun-lieu)
     * [Notation d’un lieu](#notation-dun-lieu)
 * [**Parcours**](#parcours)
@@ -1129,6 +1133,8 @@ Réponse :
 HTTP/1.1 204 No Content
 ```
 
+## Commentaires
+
 ### Commentaires d’un lieu
 
 #### Nom de la requête
@@ -1415,6 +1421,8 @@ Réponse :
 ```http
 HTTP/1.1 204 No Content
 ```
+
+## Images
 
 ### Images d’un lieu
 
@@ -1715,6 +1723,8 @@ Réponse :
 ```http
 HTTP/1.1 204 No Content
 ```
+
+## Documents
 
 ### Documents d’un lieu
 
@@ -2031,6 +2041,8 @@ Réponse :
 ```http
 HTTP/1.1 204 No Content
 ```
+
+## Notations
 
 ### Récupération de sa notation d’un lieu
 
