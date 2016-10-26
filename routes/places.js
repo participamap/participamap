@@ -30,8 +30,8 @@ router.param('comment_id', getComment);
 router.param('picture_id', Checks.isValidObjectId);
 router.param('picture_id', getPicture);
 
-//router.param('document_id', Checks.isValidObjectId);
-//router.param('document_id', getDocument);
+router.param('document_id', Checks.isValidObjectId);
+router.param('document_id', getDocument);
 
 //router.param('vote_id', Checks.isValidObjectId);
 //router.param('vote_id', getVote);
@@ -281,6 +281,26 @@ function getPicture(req, res, next, picture_id) {
 
     req.picture = picture;
     req.owner = picture.author;
+
+    next();
+  });
+}
+
+
+function getDocument(req, res, next, document_id) {
+  Document.findById(document_id, function onDocumentFound(error, document) {
+    if (error) return next(error);
+
+    if (!document
+      || (document.place.toString() !== req.place._id.toString()))
+    {
+      var err = new Error('Not Found');
+      err.status = 404;
+      return next(err);
+    }
+
+    req.document = document;
+    req.owner = document.author;
 
     next();
   });
