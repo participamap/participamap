@@ -27,8 +27,8 @@ router.param('id', getPlace);
 router.param('comment_id', Checks.isValidObjectId);
 router.param('comment_id', getComment);
 
-//router.param('picture_id', Checks.isValidObjectId);
-//router.param('picture_id', getPicture);
+router.param('picture_id', Checks.isValidObjectId);
+router.param('picture_id', getPicture);
 
 //router.param('document_id', Checks.isValidObjectId);
 //router.param('document_id', getDocument);
@@ -120,6 +120,16 @@ router.get('/:id/pictures/',
 router.post('/:id/pictures/',
   Checks.auth('user'),
   createPicture);
+
+// TODO: acceptPicture
+//router.post('/:id/pictures/:picture_id/accept',
+//  Checks.auth('moderator'),
+//  acceptComment,
+//  Utils.cleanEntityToSend(['place']),
+//  Utils.listAuthorsInObjectsToSend,
+//  Utils.getAuthorsInfos,
+//  Utils.addAuthorsNames,
+//  Utils.send);
 
 // TODO: deletePicture
 //router.delete('/:id/pictures/:picture_id',
@@ -233,9 +243,6 @@ function getComment(req, res, next, comment_id) {
   Comment.findById(comment_id, function onCommentFound(error, comment) {
     if (error) return next(error);
 
-    console.log(req.place._id);
-    console.log(comment.place);
-
     if (!comment || (comment.place.toString() !== req.place._id.toString())) {
       var err = new Error('Not Found');
       err.status = 404;
@@ -244,6 +251,24 @@ function getComment(req, res, next, comment_id) {
 
     req.comment = comment;
     req.owner = comment.author;
+
+    next();
+  });
+}
+
+
+function getPicture(req, res, next, picture_id) {
+  Picture.findById(picture_id, function onPictureFound(error, picture) {
+    if (error) return next(error);
+
+    if (!picture || (picture.place.toString() !== req.place._id.toString())) {
+      var err = new Error('Not Found');
+      err.status = 404;
+      return next(err);
+    }
+
+    req.picture = picture;
+    req.owner = picture.author;
 
     next();
   });
