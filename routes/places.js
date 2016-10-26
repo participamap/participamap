@@ -149,20 +149,20 @@ router.post('/:id/documents/',
   Checks.auth('user'),
   createDocument);
 
-// TODO: acceptDocument
-//router.post('/:id/documents/:document_id/accept',
-//  Checks.auth('moderator'),
-//  acceptDocument,
-//  Utils.cleanEntityToSend(['place']),
-//  Utils.listAuthorsInObjectsToSend,
-//  Utils.getAuthorsInfos,
-//  Utils.addAuthorsNames,
-//  Utils.send);
+// acceptDocument
+router.post('/:id/documents/:document_id/accept',
+  Checks.auth('moderator'),
+  acceptDocument,
+  Utils.cleanEntityToSend(['place']),
+  Utils.listAuthorsInObjectsToSend,
+  Utils.getAuthorsInfos,
+  Utils.addAuthorsNames,
+  Utils.send);
 
-// TODO: deleteDocument
-//router.delete('/:id/documents/:document_id',
-//  Checks.auth('moderator');
-//  deleteDocument);
+// deleteDocument
+router.delete('/:id/documents/:document_id',
+  Checks.auth('moderator'),
+  deleteDocument);
 
 // TODO: Votes ou non ?
 //router.get('/:id/votes', getVotes);
@@ -925,6 +925,26 @@ function createDocument(req, res, next) {
     var uploadURL = url.resolve(config.serverURL, uploadPath);
     res.redirect(204, uploadURL);
   }
+}
+
+
+function acceptDocument(req, res, next) {
+  var document = req.document;
+
+  document.toModerate = undefined;
+
+  var onDocumentSaved = Utils.returnSavedEntity(req, res, next);
+  document.save(onDocumentSaved);
+}
+
+
+function deleteDocument(req, res, next) {
+  var document = req.document;
+
+  document.remove(function onDocumentRemoved(error) {
+    if (error) return next(error);
+    res.status(204).end();
+  });
 }
 
 
