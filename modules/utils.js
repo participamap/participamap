@@ -5,6 +5,10 @@
 var unique = require('array-unique');
 
 var User = require('../models/user');
+var Place = require('../models/place');
+var Comment = require('../models/comment');
+var Picture = require('../models/picture');
+var Document = require('../models/document');
 
 function Utils() {
   this.returnSavedEntity = Utils.returnSavedEntity;
@@ -13,6 +17,10 @@ function Utils() {
   this.listAuthorsInObjectsToSend = Utils.listAuthorsInObjectsToSend;
   this.getAuthorsInfos = Utils.getAuthorsInfos;
   this.addAuthorsNames = Utils.addAuthorsNames;
+  this.listReportedContentsInObjectsToSend
+    = Utils.listReportedContentsInObjectsToSend;
+  this.getObjects = Utils.getObjects;
+  this.replaceByObjects = Utils.replaceByObjects;
 }
 
 /**
@@ -106,9 +114,8 @@ Utils.getAuthorsInfos = function (req, res, next) {
     var names = {};
 
     var i, len;
-    for (i = 0, len = authors.length; i < len; i++) {
+    for (i = 0, len = authors.length; i < len; i++)
       names[authors[i]._id] = authors[i].username;
-    }
 
     req.authorsNames = names;
     next();
@@ -144,6 +151,162 @@ Utils.addAuthorsNames = function (req, res, next) {
       req.toSend.author = author;
     else if (req.toSend.proposedBy)
       req.toSend.proposedBy = author;
+  }
+
+  next();
+};
+
+/**
+ * List reported contents IDs in an array of objects to send in
+ * req.reportedContents
+ */
+Utils.listReportedContentsInObjectsToSend = function (req, res, next) {
+  var reportedContents = {
+    place: [],
+    comment: [],
+    picture: [],
+    document: []
+  };
+
+  if (Array.isArray(req.toSend)) {
+    var i, len;
+    for (i = 0, len = req.toSend.length; i < len; i++) {
+      if (req.toSend[i].reportedContent) {
+        reportedContents[req.toSend[i].type]
+          .push(req.toSend[i].reportedContent);
+      }
+    }
+  }
+  else {
+    if (req.toSend.reportedContent)
+      reportedContents[req.toSend.type].push(req.toSend.reportedContent);
+  }
+
+  if (reportedContents.place.length === 0
+    && reportedContents.comment.length === 0
+    && reportedContents.picture.length === 0
+    && reportedContents.document.length === 0)
+  {
+    return next();
+  }
+
+  for (var type in reportedContents) {
+    var i, len;
+    for (i = 0, len = reportedContents[type].length; i < len; i++)
+      reportedContents[type][i] = reportedContents[type][i].toString();
+
+    unique(reportedContents[type]);
+  }
+
+  req.reportedContents = reportedContents;
+  next();
+};
+
+/**
+ * Construct dictionaries of ObjectIds to objects in req.objects given lists
+ * of ObjectIds in req.reportedContents
+ */
+Utils.getObjects = function (req, res, next) {
+  if (!req.reportedContents)
+    return next();
+
+  var filter = {
+    $or: []
+  };
+
+  var filters = {
+    place: filter,
+    comment: filter,
+    picture: filter,
+    document: filter
+  };
+
+  req.objects = {};
+
+  for (var type in req.reportedContents)
+    getObjectsOfType(type);
+
+  function getObjectsOfType(type) {
+    if (req.reportedContents[type].length === 0) {
+      req.objects[type] = false;
+    }
+    else {
+      var i, len;
+      for (i = 0, len = req.reportedContents[type].length; i < len; i++)
+        filters[type].$or.push({ _id: req.reportedContents[type][i] });
+      
+      switch (type) {
+        case 'place':
+          var Type = Place;
+          break;
+
+        case 'comment':
+          var Type = Comment;
+          break;
+
+        case 'picture':
+          var Type = Picture;
+          break;
+
+        case 'document':
+          var Type = Document;
+          break
+
+        default:
+          var err = new Error('Bad object type');
+          return next(err);
+      }
+
+      Type.find(filters[type], { __v: false },
+        function onObjectsFound(error, objects) {
+          if (error) return next(error);
+
+          var dict = {};
+
+          var i, len;
+          for (i = 0, len = objects.length; i < len; i++)
+            dict[objects[i]._id] = objects[i];
+
+          req.objects[type] = dict;
+          sync();
+        });
+    }
+  }
+
+  function sync() {
+    if (req.objects.place !== undefined
+      && req.objects.comment !== undefined
+      && req.objects.picture !== undefined
+      && req.objects.document !== undefined
+      && !req.isSynchronized)
+    {
+      req.isSynchronized = true;
+      next();
+    }
+  }
+};
+
+/**
+ * Replace reportedContent ObjectIds by Objects in an array of objects to send
+ */
+Utils.replaceByObjects = function (req, res, next) {
+  if (!req.objects)
+    return next();
+
+  if (Array.isArray(req.toSend)) {
+    var i, len;
+    for (i = 0, len = req.toSend.length; i < len; i++) {
+      var type = req.toSend[i].type;
+      var id = req.toSend[i].reportedContent;
+
+      req.toSend[i].reportedContent = req.objects[type][id];
+    }
+  }
+  else {
+    var type = req.toSend.type;
+    var id = req.toSend.reportedContent;
+
+    req.toSend.reportedContent = req.objects[type][id];
   }
 
   next();
