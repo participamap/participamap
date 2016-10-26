@@ -30,6 +30,12 @@
     * [Suppression d’un commentaire](#suppression-dun-commentaire)
     * [Images d’un lieu](#images-dun-lieu)
     * [Création d’une image](#création-dune-image)
+    * [Acceptation d’une image](#acceptation-dune-image)
+    * [Suppression d’une image](#suppression-dune-image)
+    * [Documents d’un lieu](#documents-dun-lieu)
+    * [Création d’un document](#création-dun-document)
+    * [Acceptation d’un document](#acceptation-dun-document)
+    * [Suppression d’un document](#suppression-dun-document)
     * [Récuparation de sa notation d’un lieu](#récupération-de-sa-notation-dun-lieu)
     * [Notation d’un lieu](#notation-dun-lieu)
 * [**Parcours**](#parcours)
@@ -687,7 +693,7 @@ Attribut | Description | Exemple
 _id | Identifiant du lieu | "57dbe334c3eaf116f88e0318"
 location | Localisation du lieu | { "latitude": 49.18165, "longitude": -0.34709 }
 title | Titre du lieu | "Le Dôme"
-*headerPhoto* | Photo d’en-tête | "https://photos.participamap.org/97a15d97-847e-450c-8bd0-1f922883f523.jpg"
+*headerPhoto* | Photo d’en-tête | "https://files.participamap.org/97a15d97-847e-450c-8bd0-1f922883f523.jpg"
 
 #### Exemple
 
@@ -713,7 +719,7 @@ Content-Type: application/json; charset=utf-8
       "longitude": -0.34709
     },
     "title": "Le Dôme",
-    "headerPhoto": "https://photos.participamap.org/97a15d97-847e-450c-8bd0-1f922883f523.jpg"
+    "headerPhoto": "https://files.participamap.org/97a15d97-847e-450c-8bd0-1f922883f523.jpg"
   },
   {
     "_id": "57dbe738c3eaf116f88e0319",
@@ -722,7 +728,7 @@ Content-Type: application/json; charset=utf-8
       "longitude": -0.36847
     },
     "title": "Salle 417",
-    "headerPhoto": "https://photos.participamap.org/83ca8f9d.jpg"
+    "headerPhoto": "https://files.participamap.org/83ca8f9d.jpg"
   }
 ]
 ```
@@ -769,7 +775,7 @@ title | Titre du lieu | "Le Dôme"
 isVerified | État de vérification du lieu | true
 *proposedBy*\* | Utilisateur ayant proposé le lieu | { "id": "57dbe334c3eaf116f88eca27", "name": "Jean Dupont" }
 *type* | Type du lieu | 0
-*headerPhoto* | Photo d’en-tête | "https://photos.participamap.org/97a15d97-847e-450c-8bd0-1f922883f523.jpg"
+*headerPhoto* | Photo d’en-tête | "https://files.participamap.org/97a15d97-847e-450c-8bd0-1f922883f523.jpg"
 *description* | Description | "Maison de la Recherche et de l’Imagination"
 *startDate* | Date de création | "2015-01-01T13:00:00.000Z"
 *endDate* | Date de suppression | "2016-09-09T08:00:00.000Z"
@@ -812,7 +818,7 @@ Content-Type: application/json; charset=utf-8
   },
   "title": "Le Dôme",
   "isVerified": true,
-  "headerPhoto": "https://photos.participamap.org/97a15d97-847e-450c-8bd0-1f922883f523.jpg",
+  "headerPhoto": "https://files.participamap.org/97a15d97-847e-450c-8bd0-1f922883f523.jpg",
   "description": "Maison de la Recherche et de l’Imagination",
   "startDate": "2015-01-01T13:00:00.000Z",
   "rating": 5
@@ -890,7 +896,7 @@ title | Titre du lieu | "Le Dôme"
 isVerified | État de vérification du lieu | true
 *proposedBy* | Utilisateur ayant proposé le lieu | { "id": "57dbe334c3eaf116f88eca27", "name": "Jean Dupont" }
 *type* | Type du lieu | 0
-*headerPhoto* | Photo d’en-tête | "https://photos.participamap.org/97a15d97-847e-450c-8bd0-1f922883f523.jpg"
+*headerPhoto* | Photo d’en-tête | "https://files.participamap.org/97a15d97-847e-450c-8bd0-1f922883f523.jpg"
 *description* | Description | "Maison de la Recherche et de l’Imagination"
 *startDate* | Date de création | "2015-01-01T13:00:00.000Z"
 *endDate* | Date de suppression | "2016-09-09T08:00:00.000Z"
@@ -949,7 +955,7 @@ Content-Type: application/json; charset=utf-8
     "longitude": -0.34709
   },
   "title": "Le Dôme",
-  "headerPhoto": "https://photos.participamap.org/97a15d97-847e-450c-8bd0-1f922883f523.jpg"
+  "headerPhoto": "https://files.participamap.org/97a15d97-847e-450c-8bd0-1f922883f523.jpg"
 }
 ```
 
@@ -1025,7 +1031,7 @@ title | Titre du lieu | "Le Dôme"
 isVerified | État de vérification du lieu | true
 *proposedBy* | Utilisateur ayant proposé le lieu | { "id": "57dbe334c3eaf116f88eca27", "name": "Jean Dupont" }
 *type* | Type du lieu | 0
-*headerPhoto* | Photo d’en-tête | "https://photos.participamap.org/97a15d97-847e-450c-8bd0-1f922883f523.jpg"
+*headerPhoto* | Photo d’en-tête | "https://files.participamap.org/97a15d97-847e-450c-8bd0-1f922883f523.jpg"
 *description* | Description | "Maison de la Recherche et de l’Imagination"
 *startDate* | Date de création | "2015-01-01T13:00:00.000Z"
 *endDate* | Date de suppression | "2016-09-09T08:00:00.000Z"
@@ -1068,7 +1074,7 @@ Content-Type: application/json; charset=utf-8
     "longitude": -0.34709
   },
   "title": "Le Dôme modifié",
-  "headerPhoto": "https://photos.participamap.org/97a15d97-847e-450c-8bd0-1f922883f523.jpg"
+  "headerPhoto": "https://files.participamap.org/97a15d97-847e-450c-8bd0-1f922883f523.jpg"
 }
 ```
 
@@ -1171,7 +1177,7 @@ _id | Identifiant du commentaire | "57ed7489c6358c1278552be5"
 author | Auteur du commentaire | { "id": "57dbe334c3eaf116f88eca27", "name": "Jean Dupont" }
 date | Date du commentaire | "2016-09-19T19:30:26.037Z"
 content | Contenu du commentaire | "Très bel endroit"
-*toModerate*\* | Drapeaux indiquant que le commentaire doit être modéré | true
+*toModerate*\* | Drapeau indiquant que le commentaire doit être modéré | true
 
 \* N’apparait qu’en étant authentifié avec un rôle `moderator` au minimum.
 
@@ -1455,10 +1461,10 @@ Liste de liens vers des images :
 Attribut | Description | Exemple
 ---------|-------------|--------
 _id | Identifiant de l’image | 57ed7489c6358c1278552be5
-author | Auteur de la photo | { "id": "57dbe334c3eaf116f88eca27", "name": "Jean Dupont" }
+author | Auteur de l’image | { "id": "57dbe334c3eaf116f88eca27", "name": "Jean Dupont" }
 date | Date de mise en ligne | "2016-09-19T19:30:26.037Z"
-url | URL de la photo | "https://photos.participamap.org/97a15d97-847e-450c-8bd0-1f922883f523.jpg"
-*toModerate*\* | Drapeaux indiquant que l’image doit être modérée | true
+url | URL de l’image | "https://files.participamap.org/97a15d97-847e-450c-8bd0-1f922883f523.jpg"
+*toModerate*\* | Drapeau indiquant que l’image doit être modérée | true
 
 \* N’apparait qu’en étant authentifié avec un rôle `moderator` au minimum.
 
@@ -1486,7 +1492,7 @@ Content-Type: application/json; charset=utf-8
       "name": "Jean Dupont"
     },
     "date": "2016-09-19T19:30:45.173Z",
-    "url": "https://photos.participamap.org/97a15d97-847e-450c-8bd0-1f922883f523.jpg"
+    "url": "https://files.participamap.org/97a15d97-847e-450c-8bd0-1f922883f523.jpg"
   }
 ]
 ```
@@ -1537,9 +1543,10 @@ Lien vers une image :
 Attribut | Description | Exemple
 ---------|-------------|--------
 _id | Identifiant de l’image | 57ed7489c6358c1278552be5
-author | Auteur de la photo | { "id": "57dbe334c3eaf116f88eca27", "name": "Jean Dupont" }
+author | Auteur de l’image | { "id": "57dbe334c3eaf116f88eca27", "name": "Jean Dupont" }
 date | Date de mise en ligne | "2016-09-19T19:30:26.037Z"
-url | URL de la photo | "https://photos.participamap.org/97a15d97-847e-450c-8bd0-1f922883f523.jpg"
+url | URL de l’image | "https://files.participamap.org/97a15d97-847e-450c-8bd0-1f922883f523.jpg"
+*toModerate* | Drapeau indiquant que l’image doit être modérée | true
 
 #### Exemple
 
@@ -1563,7 +1570,7 @@ On poursuit alors avec la requête suivante :
 ```sh
 $ curl -X PUT "https://api.participamap.org/upload/57f3d7cf0a7cc112cb8ae23c" \
     -H "Authorization: Bearer JSON_WEB_TOKEN" \
-    -H "Content-Type:image/jpeg" \
+    -H "Content-Type: image/jpeg" \
     --data-binary "@test.jpg"
 ```
 
@@ -1583,8 +1590,446 @@ Content-Type: application/json; charset=utf-8
     "name": "Jean Dupont"
   },
   "date": "2016-09-19T19:30:45.173Z",
-  "url": "https://photos.participamap.org/97a15d97-847e-450c-8bd0-1f922883f523.jpg"
+  "url": "https://files.participamap.org/97a15d97-847e-450c-8bd0-1f922883f523.jpg"
 }
+```
+
+### Acceptation d’une image
+
+#### Nom de la requête
+
+`acceptPicture`
+
+#### Description
+
+Accepte une image.
+
+#### Point d’accès
+
+Méthode | Chemin | Autorisation
+:------:|:------:|:-----------:
+POST | /places/{id}/pictures/{picture_id}/accept | `moderator`
+
+#### Paramètres de chemin
+
+Nom | Description | Exemple
+----|-------------|--------
+id | Identifiant du lieu | 57dbe334c3eaf116f88e0318
+picture_id | Identifiant de l’image | 57ed7489c6358c1278552be5
+
+#### Paramètres de requête
+
+*Néant*
+
+#### Contenu
+
+*Néant*
+
+#### Réponse
+
+Lien vers une image :
+
+Attribut | Description | Exemple
+---------|-------------|--------
+_id | Identifiant de l’image | 57ed7489c6358c1278552be5
+author | Auteur de l’image | { "id": "57dbe334c3eaf116f88eca27", "name": "Jean Dupont" }
+date | Date de mise en ligne | "2016-09-19T19:30:26.037Z"
+url | URL de l’image | "https://files.participamap.org/97a15d97-847e-450c-8bd0-1f922883f523.jpg"
+
+#### Exemple
+
+Requête :
+
+```sh
+$ curl -X POST "https://api.participamap.org/places/57dbe334c3eaf116f88e0318/pictures/57ed7489c6358c1278552be5/accept" \
+    -H "Authorization: Bearer JSON_WEB_TOKEN"
+```
+
+Réponse :
+
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+```
+
+```json
+{
+  "_id": "57ed7489c6358c1278552be5",
+  "author": {
+    "id": "57dbe334c3eaf116f88eca27",
+    "name": "Jean Dupont"
+  },
+  "date": "2016-09-19T19:30:45.173Z",
+  "url": "https://files.participamap.org/97a15d97-847e-450c-8bd0-1f922883f523.jpg"
+}
+```
+
+### Suppression d’une image
+
+#### Nom de la requête
+
+`deletePicture`
+
+#### Description
+
+Supprime une image.
+
+#### Point d’accès
+
+Méthode | Chemin | Autorisation
+:------:|:------:|:-----------:
+DELETE | /places/{id}/picture/{picture_id} | `moderator` (tous) / `user` (ses images)
+
+#### Paramètres de chemin
+
+Nom | Description | Exemple
+----|-------------|--------
+id | Identifiant du lieu | 57dbe334c3eaf116f88e0318
+picture_id | Identifiant de l’image | 57ed7489c6358c1278552be5
+
+#### Paramètres de requête
+
+*Néant*
+
+#### Contenu
+
+*Néant*
+
+#### Réponse
+
+```http
+HTTP/1.1 204 No Content
+```
+
+#### Exemple
+
+Requête :
+
+```sh
+$ curl -X DELETE "https://api.participamap.org/places/57dbe334c3eaf116f88e0318/pictures/57ed7489c6358c1278552be5"
+    -H "Authorization: Bearer JSON_WEB_TOKEN"
+```
+
+Réponse :
+
+```http
+HTTP/1.1 204 No Content
+```
+
+### Documents d’un lieu
+
+#### Nom de la requête
+
+`getDocuments`
+
+#### Description
+
+Récupère les documents d’un lieu dans l’ordre rétro-chronologique.
+
+Les éventuels documents en attente de modération ne sont affichés qu’en étant authentifié avec un rôle `moderator` au minimum.
+
+#### Point d’accès
+
+Méthode | Chemin | Autorisation
+:------:|:------:|:-----------:
+GET | /places/{id}/documents/ | non requis
+
+#### Paramètres de chemin
+
+Nom | Description | Exemple
+----|-------------|--------
+id | Identifiant du lieu | 57dbe334c3eaf116f88e0318
+
+#### Paramètres de requête
+
+Nom | Description | Exemple | Absence
+----|-------------|---------|--------
+page | Numéro de page | 3 | 1
+n | Nombre de documents par page | 25 | 10 si `page` est fixé, infini sinon
+tomoderate\* | Affiche les documents à modérer | true | false
+
+\* Authentification requise avec un rôle `moderator` au minimum. Seuls les documents à modérer sont alors affichés, dans l’ordre chronologique.
+
+#### Contenu
+
+*Néant*
+
+#### Réponse
+
+Liste de liens vers des documents :
+
+Attribut | Description | Exemple
+---------|-------------|--------
+_id | Identifiant du document | 57ed7489c6358c1278552be5
+author | Auteur du document | { "id": "57dbe334c3eaf116f88eca27", "name": "Jean Dupont" }
+date | Date de mise en ligne | "2016-09-19T19:30:26.037Z"
+title | Titre du document | "histoire\_presquile.pdf"
+type | Type MIME du document | "application/pdf"
+url | URL du document | "https://files.participamap.org/97a15d97-847e-450c-8bd0-1f922883f523.pdf"
+*toModerate*\* | Drapeau indiquant que le document doit être modérée | true
+
+\* N’apparait qu’en étant authentifié avec un rôle `moderator` au minimum.
+
+#### Exemple
+
+Requête :
+
+```sh
+$ curl "https://api.participamap.org/places/57dbe334c3eaf116f88e0318/documents/?page=1"
+```
+
+Réponse :
+
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+```
+
+```json
+[
+  {
+    "_id": "57ed7489c6358c1278552be5",
+    "author": {
+      "id": "57dbe334c3eaf116f88eca27",
+      "name": "Jean Dupont"
+    },
+    "date": "2016-09-19T19:30:45.173Z",
+    "title": "histoire_presquile.pdf",
+    "type": "application/pdf",
+    "url": "https://files.participamap.org/97a15d97-847e-450c-8bd0-1f922883f523.pdf"
+  }
+]
+```
+
+### Création d’un document
+
+#### Nom de la requête
+
+`createDocument`
+
+#### Description
+
+Ajoute un document à un lieu.
+
+#### Point d’accès
+
+Méthode | Chemin | Autorisation
+:------:|:------:|:-----------:
+POST | /places/{id}/documents/ | `user`
+
+#### Paramètres de chemin
+
+Nom | Description | Exemple
+----|-------------|--------
+id | Identifiant du lieu | 57dbe334c3eaf116f88e0318
+
+#### Paramètres de requête
+
+*Néant*
+
+#### Contenu
+
+Métadonnées d’un document\* :
+
+Attribut | Description | Exemple
+---------|-------------|--------
+title | Titre du document | "historique_presquile.pdf"
+
+\* Pour poster un document, la procédure est la suivante :
+
+1. créer un document avec ses métadonnées
+2. le serveur répond avec un statut HTTP `204 No Content` et un en-tête `Location` précisant une adresse de mise en ligne ;
+3. envoyer le document au serveur avec une requête `PUT` vers l’adresse précisée par la réponse précédente, en précisant bien le bon `Content-Type` ;
+4. le serveur répond avec le document créée si tout s’est bien passé
+
+#### Réponse
+
+Lien vers un document :
+
+Attribut | Description | Exemple
+---------|-------------|--------
+_id | Identifiant du document | 57ed7489c6358c1278552be5
+author | Auteur du document | { "id": "57dbe334c3eaf116f88eca27", "name": "Jean Dupont" }
+date | Date de mise en ligne | "2016-09-19T19:30:26.037Z"
+title | Titre du document | "histoire\_presquile.pdf"
+type | Type MIME du document | "application/pdf"
+url | URL du document | "https://files.participamap.org/97a15d97-847e-450c-8bd0-1f922883f523.pdf"
+*toModerate* | Drapeau indiquant que le document doit être modérée | true
+
+#### Exemple
+
+Requête :
+
+```sh
+$ curl -X POST "https://api.participamap.org/places/57dbe334c3eaf116f88e0318/documents/"
+    -H "Authorization: Bearer JSON_WEB_TOKEN" \
+    -H "Content-Type: application/json" \
+    -d '{"title":"histoire_presquile.pdf"}'
+```
+
+Le serveur répond avec :
+
+```http
+HTTP/1.1 204 No Content
+Location: https://api.participamap.org/upload/57f3d7cf0a7cc112cb8ae23c
+Content-Length: 0
+```
+
+On poursuit alors avec la requête suivante :
+
+```sh
+$ curl -X PUT "https://api.participamap.org/upload/57f3d7cf0a7cc112cb8ae23c" \
+    -H "Authorization: Bearer JSON_WEB_TOKEN" \
+    -H "Content-Type: application/pdf" \
+    --data-binary "@histoire_presquile.pdf"
+```
+
+
+Réponse :
+
+```http
+HTTP/1.1 201 Created
+Content-Type: application/json; charset=utf-8
+```
+
+```json
+{
+  "_id": "57ed7489c6358c1278552be5",
+  "author": {
+    "id": "57dbe334c3eaf116f88eca27",
+    "name": "Jean Dupont"
+  },
+  "date": "2016-09-19T19:30:45.173Z",
+  "title": "histoire_presquile.pdf",
+  "type": "application/pdf",
+  "url": "https://files.participamap.org/97a15d97-847e-450c-8bd0-1f922883f523.pdf"
+}
+```
+
+### Acceptation d’un document
+
+#### Nom de la requête
+
+`acceptDocument`
+
+#### Description
+
+Accepte un document.
+
+#### Point d’accès
+
+Méthode | Chemin | Autorisation
+:------:|:------:|:-----------:
+POST | /places/{id}/documents/{document_id}/accept | `moderator`
+
+#### Paramètres de chemin
+
+Nom | Description | Exemple
+----|-------------|--------
+id | Identifiant du lieu | 57dbe334c3eaf116f88e0318
+document_id | Identifiant du document | 57ed7489c6358c1278552be5
+
+#### Paramètres de requête
+
+*Néant*
+
+#### Contenu
+
+*Néant*
+
+#### Réponse
+
+Lien vers un document :
+
+Attribut | Description | Exemple
+---------|-------------|--------
+_id | Identifiant du document | 57ed7489c6358c1278552be5
+author | Auteur du document | { "id": "57dbe334c3eaf116f88eca27", "name": "Jean Dupont" }
+date | Date de mise en ligne | "2016-09-19T19:30:26.037Z"
+title | Titre du document | "histoire\_presquile.pdf"
+type | Type MIME du document | "application/pdf"
+url | URL du document | "https://files.participamap.org/97a15d97-847e-450c-8bd0-1f922883f523.pdf"
+
+#### Exemple
+
+Requête :
+
+```sh
+$ curl -X POST "https://api.participamap.org/places/57dbe334c3eaf116f88e0318/documents/57ed7489c6358c1278552be5/accept" \
+    -H "Authorization: Bearer JSON_WEB_TOKEN"
+```
+
+Réponse :
+
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+```
+
+```json
+{
+  "_id": "57ed7489c6358c1278552be5",
+  "author": {
+    "id": "57dbe334c3eaf116f88eca27",
+    "name": "Jean Dupont"
+  },
+  "date": "2016-09-19T19:30:45.173Z",
+  "title": "histoire_presquile.pdf",
+  "type": "application/pdf",
+  "url": "https://files.participamap.org/97a15d97-847e-450c-8bd0-1f922883f523.pdf"
+}
+```
+
+### Suppression d’un document
+
+#### Nom de la requête
+
+`deleteDocument`
+
+#### Description
+
+Supprime un document.
+
+#### Point d’accès
+
+Méthode | Chemin | Autorisation
+:------:|:------:|:-----------:
+DELETE | /places/{id}/document/{document_id} | `moderator` (tous) / `user` (ses documents)
+
+#### Paramètres de chemin
+
+Nom | Description | Exemple
+----|-------------|--------
+id | Identifiant du lieu | 57dbe334c3eaf116f88e0318
+document_id | Identifiant du document | 57ed7489c6358c1278552be5
+
+#### Paramètres de requête
+
+*Néant*
+
+#### Contenu
+
+*Néant*
+
+#### Réponse
+
+```http
+HTTP/1.1 204 No Content
+```
+
+#### Exemple
+
+Requête :
+
+```sh
+$ curl -X DELETE "https://api.participamap.org/places/57dbe334c3eaf116f88e0318/documents/57ed7489c6358c1278552be5"
+    -H "Authorization: Bearer JSON_WEB_TOKEN"
+```
+
+Réponse :
+
+```http
+HTTP/1.1 204 No Content
 ```
 
 ### Récupération de sa notation d’un lieu
@@ -1712,7 +2157,8 @@ Content-Type: application/json; charset=utf-8
   "value": 4
 }
 ```
-#### Parcours
+
+## Parcours
 
 #### Création d’un parcours
 
