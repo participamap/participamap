@@ -9,7 +9,7 @@ function Utils() {
 /**
  * Creates a callback to return an entity after saving it in the database
  */
-Utils.returnSavedEntity = function (res, next) {
+Utils.returnSavedEntity = function (res, next, status = 200) {
   return function (error, savedEntity) {
     if (error) return next(error);
 
