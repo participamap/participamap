@@ -3,24 +3,26 @@
  */
 
 var fs = require('fs');
+var path = require('path');
+var url = require('url');
 
 function FileSaver(config) {
   switch (config.method) {
     case 'local':
       /**
        * Save the file locally
-       * 
+       *
        * options:
        *   - uploadDir: directory where the files are uploaded
        *   - fileServerURL: URL to access the files remotely
        */
       this.save = function (fileName, content, callback) {
-        var filePath = config.options.uploadDir + fileName;
-        
+        var filePath = path.join(config.options.uploadDir, fileName);
+
         fs.writeFile(filePath, content, function onFileSaved(error) {
           if (error) return callback(error);
 
-          var fileURL = config.options.fileServerURL + fileName;
+          var fileURL = url.resolve(config.options.fileServerURL, fileName);
           callback(null, fileURL);
         });
       };
@@ -34,4 +36,4 @@ function FileSaver(config) {
 
 module.exports = FileSaver;
 
-/* vim: set ts=2 sw=2 et si colorcolumn=80 : */
+/* vim: set ts=2 sw=2 et si cc=80 : */

@@ -17,16 +17,22 @@ var placeSchema = new Schema({
   description: String,
   startDate: { type: Date, default: Date.now },
   endDate: Date,
+  rating: Number,
   moderateComments: Boolean,
   moderatePictures: Boolean,
   moderateDocuments: Boolean,
   denyComments: Boolean,
   denyPictures: Boolean,
-  denyDocuments: Boolean
+  denyDocuments: Boolean,
+  generic1: Schema.Types.Mixed,
+  generic2: Schema.Types.Mixed,
+  generic3: Schema.Types.Mixed,
+  generic4: Schema.Types.Mixed,
+  generic5: Schema.Types.Mixed
 });
 
 var Place = mongoose.model('Place', placeSchema);
 
 module.exports = Place;
 
-/* vim: set ts=2 sw=2 et si colorcolumn=80 : */
+/* vim: set ts=2 sw=2 et si cc=80 : */

@@ -1,18 +1,26 @@
 var express = require('express');
+var slash = require('express-slash');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
+var passport = require('passport');
+var LocalStrategy = require('passport-local').Strategy;
+
+var Supervisor = require('./modules/supervisor');
+var Auth = require('./modules/auth');
+
+var index = require('./routes/index');
+var users = require('./routes/users');
+var places = require('./routes/places');
+var routes = require('./routes/routes');
+var abuseReports = require('./routes/abuse_reports');
+var upload = require('./routes/upload');
+// TODO: Définir les statics via la config
+var uploads = express.static('./uploads');
 
 var config = require('./config.json');
 
-var Supervisor = require('./modules/supervisor');
-
-var index = require('./routes/index');
-var places = require('./routes/places');
-var routes = require('./routes/routes');
-var upload = require('./routes/upload');
-var uploads = express.static('./uploads');
-
+// Connection to the database
 mongoose.connect(config.mongodb.uri, config.mongodb.options);
 var db = mongoose.connection;
 
@@ -28,19 +36,29 @@ db.once('open', function onDBOpen() {
 // Supervisor to automate some actions
 var supervisor = new Supervisor(config.supervisor);
 
-var app = express();
+// Passport for authentication
+passport.use(new LocalStrategy(Auth.verify));
 
+var app = express();
+app.enable('strict routing');
+
+// Module declarations
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.raw({ type: 'image/jpeg', limit: '5MB' }));
 app.use(bodyParser.raw({ type: 'image/png', limit: '5MB' }));
+app.use(passport.initialize());
+app.use(Auth.jwt);
 
-// Routes declarations
+// Route declarations
 app.use('/', index);
-app.use('/places', places);
-app.use('/routes', routes);
-app.use('/upload', upload);
-app.use('/uploads', uploads);
+app.use('/users/', users);
+app.use('/places/', places);
+app.use('/routes/', routes);
+app.use('/abuse-reports/', abuseReports);
+app.use('/upload/', upload);
+app.use('/uploads/', uploads);
+app.use(slash());
 
 // catch 404 and forward to error handler
 app.use(function notFound(req, res, next) {
@@ -81,4 +99,4 @@ app.use(function errorHandler(err, req, res, next) {
 
 module.exports = app;
 
-/* vim: set ts=2 sw=2 et si colorcolumn=80 : */
+/* vim: set ts=2 sw=2 et si cc=80 : */
