@@ -27,8 +27,8 @@ router.param('id', getPlace);
 router.param('comment_id', Checks.isValidObjectId);
 router.param('comment_id', getComment);
 
-//router.param('picture_id', Checks.isValidObjectId);
-//router.param('picture_id', getPicture);
+router.param('picture_id', Checks.isValidObjectId);
+router.param('picture_id', getPicture);
 
 //router.param('document_id', Checks.isValidObjectId);
 //router.param('document_id', getDocument);
@@ -121,10 +121,20 @@ router.post('/:id/pictures/',
   Checks.auth('user'),
   createPicture);
 
-// TODO: deletePicture
-//router.delete('/:id/pictures/:picture_id',
-//  Checks.auth('moderator'),
-//  deletePicture);
+// acceptPicture
+router.post('/:id/pictures/:picture_id/accept',
+  Checks.auth('moderator'),
+  acceptPicture,
+  Utils.cleanEntityToSend(['place']),
+  Utils.listAuthorsInObjectsToSend,
+  Utils.getAuthorsInfos,
+  Utils.addAuthorsNames,
+  Utils.send);
+
+// deletePicture
+router.delete('/:id/pictures/:picture_id',
+  Checks.auth('moderator'),
+  deletePicture);
 
 // TODO: getDocuments
 //router.get('/:id/documents',
@@ -233,9 +243,6 @@ function getComment(req, res, next, comment_id) {
   Comment.findById(comment_id, function onCommentFound(error, comment) {
     if (error) return next(error);
 
-    console.log(req.place._id);
-    console.log(comment.place);
-
     if (!comment || (comment.place.toString() !== req.place._id.toString())) {
       var err = new Error('Not Found');
       err.status = 404;
@@ -244,6 +251,24 @@ function getComment(req, res, next, comment_id) {
 
     req.comment = comment;
     req.owner = comment.author;
+
+    next();
+  });
+}
+
+
+function getPicture(req, res, next, picture_id) {
+  Picture.findById(picture_id, function onPictureFound(error, picture) {
+    if (error) return next(error);
+
+    if (!picture || (picture.place.toString() !== req.place._id.toString())) {
+      var err = new Error('Not Found');
+      err.status = 404;
+      return next(err);
+    }
+
+    req.picture = picture;
+    req.owner = picture.author;
 
     next();
   });
@@ -719,6 +744,26 @@ function createPicture(req, res, next) {
     var uploadURL = url.resolve(config.serverURL, uploadPath);
     res.redirect(204, uploadURL);
   }
+}
+
+
+function acceptPicture(req, res, next) {
+  var picture = req.picture;
+
+  picture.toModerate = undefined;
+
+  var onPictureSaved = Utils.returnSavedEntity(req, res, next);
+  picture.save(onPictureSaved);
+}
+
+
+function deletePicture(req, res, next) {
+  var picture = req.picture;
+
+  picture.remove(function onPictureRemoved(error) {
+    if (error) return next(error);
+    res.status(204).end();
+  });
 }
 
 
