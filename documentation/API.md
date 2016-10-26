@@ -33,13 +33,14 @@
     * [Récuparation de sa notation d’un lieu](#récupération-de-sa-notation-dun-lieu)
     * [Notation d’un lieu](#notation-dun-lieu)
 * [**Parcours**](#parcours)
-   * [Lister les parcours](#lister-parcours)
+   * [Lister les parcours](#lister-les-parcours)
    * [Création d’un parcours](#création-dun-parcours)
    * [Suppression d’un parcours](#suppression-dun-parcours)
 * [**Abus**](#abus)
    * [Lister les abus](#lister-les-abus)
    * [Création d’un abus](#création-dun-abus)
    * [Suppression d’un abus](#suppression-dun-abus)
+   * [Suppression du contenu d'un abus](#suppression-du-contenu-dun-abus)
 
 ## Informations générales
 
@@ -1711,9 +1712,9 @@ Content-Type: application/json; charset=utf-8
   "value": 4
 }
 ```
-### Parcours
+#### Parcours
 
-### Création d’un parcours
+#### Création d’un parcours
 
 #### Nom de la requête
 
@@ -1727,7 +1728,7 @@ Creer un parcours avec une liste de lieux
 
 Méthode | Chemin | Autorisation
 :------:|:------:|:-----------:
-POST | /routes | non requis
+POST | /routes | Content-owner
 
 #### Paramètres de chemin
 
@@ -1781,7 +1782,7 @@ Récuperer tous les parcours
 
 Méthode | Chemin | Autorisation
 :------:|:------:|:-----------:
-GET | /routes | non requis
+GET | /routes | content-owner
 
 #### Paramètres de chemin
 
@@ -1798,7 +1799,7 @@ Identifiants :
 Attribut | Description | Exemple
 ---------|-------------|--------
 title | titre du parcours | parcours du Dôme
-places | liste des places | 57e5261dab4feb4a2af3f419
+places | liste des places | ['57e5261dab4feb4a2af3f419']
 
 #### Exemple
 
@@ -1822,8 +1823,6 @@ Content-Type: application/json; charset=utf-8
 ```
 ### Suppression d'un parcours
 
-### Lister les parcours
-
 #### Nom de la requête
 
 `deleteRoute`
@@ -1836,7 +1835,7 @@ Supprime un parcours
 
 Méthode | Chemin | Autorisation
 :------:|:------:|:-----------:
-DELETE | /routes/{id} | non requis
+DELETE | /routes/{id} | Content-owner
 
 #### Paramètres de chemin
 
@@ -1853,7 +1852,7 @@ Identifiants :
 Attribut | Description | Exemple
 ---------|-------------|--------
 title | titre du parcours | parcours du Dôme
-places | liste des places | 57e5261dab4feb4a2af3f419
+places | liste des places | ['57e5261dab4feb4a2af3f419']
 
 #### Exemple
 
@@ -1876,7 +1875,9 @@ HTTP/1.1 204
 ```
 
 
-### Abuse
+#### Abuse
+
+#### Lister les abus
 
 #### Nom de la requête
 
@@ -1890,7 +1891,7 @@ Récupère tous les abus
 
 Méthode | Chemin | Autorisation
 :------:|:------:|:-----------:
-GET | /abuses/ | non requis
+GET | /abuses/ | moderator
 
 #### Paramètres de chemin
 
@@ -1921,7 +1922,7 @@ curl -X GET -H "Content-Type: application/json" https://api.participamap.org/abu
 Réponse :
 
 ```http
-HTTP/1.1 201 Created
+HTTP/1.1 200 ok
 Content-Type: application/json; charset=utf-8
 ```
 
@@ -1931,6 +1932,7 @@ Content-Type: application/json; charset=utf-8
 }
 ```
 
+#### Création d'un abus
 
 
 #### Nom de la requête
@@ -1939,13 +1941,13 @@ Content-Type: application/json; charset=utf-8
 
 #### Description
 
-Creer un abus reporté par un commentaire,image ou document
+Créer un abus reporté par un commentaire,image ou document
 
 #### Point d’accès
 
 Méthode | Chemin | Autorisation
 :------:|:------:|:-----------:
-POST | /places/{id}/comments/{id}/abuseReport | non requis
+POST | /places/{id}/comments/{id}/abuseReport | user
 
 #### Paramètres de chemin
 
@@ -1986,6 +1988,8 @@ Content-Type: application/json; charset=utf-8
 }
 ```
 
+#### Suppression d'un abus
+
 #### Nom de la requête
 
 `deleteAbuse`
@@ -1998,7 +2002,7 @@ Supprimer un abus
 
 Méthode | Chemin | Autorisation
 :------:|:------:|:-----------:
-DELETE | /abuses/{id} | non requis
+DELETE | /abuses/{id} | moderator
 
 #### Paramètres de chemin
 
@@ -2023,7 +2027,62 @@ contentReport | id du contenu de l'objet | 57ff35e1e446c90c26e9980f
 Requête :
 
 ```sh
-curl -X DELETE -H "Content-Type: application/json" http://localhost:3000/abuses/57e5261dab4feb4a2af3f419
+curl -X DELETE -H "Content-Type: application/json" https://api.participamap.org/abuses/57e5261dab4feb4a2af3f419
+```
+
+Réponse :
+
+```http
+HTTP/1.1 204
+```
+
+```json
+{
+  //TODO
+}
+```
+#### Suppression du contenu d'un abus
+
+#### Suppression d'un abus
+
+#### Nom de la requête
+
+`deleteContentReport`
+
+#### Description
+
+Supprime le contenu d'un abus
+
+#### Point d’accès
+
+Méthode | Chemin | Autorisation
+:------:|:------:|:-----------:
+DELETE | /deleteContentReport/{id} | moderator
+
+#### Paramètres de chemin
+
+*Néant*
+
+#### Paramètres de requête
+
+*Néant*
+
+#### Contenu
+
+Identifiants :
+
+Attribut | Description | Exemple
+---------|-------------|--------
+type | type de l'objet (commentaire,document,image) | parcours du Dôme
+user | id de l'utilisateur concerné | 57e4d06ff0653747e4559bfe
+contentReport | id du contenu de l'objet | 57ff35e1e446c90c26e9980f
+
+#### Exemple
+
+Requête :
+
+```sh
+curl -X DELETE -H "Content-Type: application/json" https://api.participamap.org/abuseContentReport/57e5261dab4feb4a2af3f419
 ```
 
 Réponse :
