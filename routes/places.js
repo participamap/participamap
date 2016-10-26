@@ -121,15 +121,15 @@ router.post('/:id/pictures/',
   Checks.auth('user'),
   createPicture);
 
-// TODO: acceptPicture
-//router.post('/:id/pictures/:picture_id/accept',
-//  Checks.auth('moderator'),
-//  acceptComment,
-//  Utils.cleanEntityToSend(['place']),
-//  Utils.listAuthorsInObjectsToSend,
-//  Utils.getAuthorsInfos,
-//  Utils.addAuthorsNames,
-//  Utils.send);
+// acceptPicture
+router.post('/:id/pictures/:picture_id/accept',
+  Checks.auth('moderator'),
+  acceptPicture,
+  Utils.cleanEntityToSend(['place']),
+  Utils.listAuthorsInObjectsToSend,
+  Utils.getAuthorsInfos,
+  Utils.addAuthorsNames,
+  Utils.send);
 
 // TODO: deletePicture
 //router.delete('/:id/pictures/:picture_id',
@@ -744,6 +744,16 @@ function createPicture(req, res, next) {
     var uploadURL = url.resolve(config.serverURL, uploadPath);
     res.redirect(204, uploadURL);
   }
+}
+
+
+function acceptPicture(req, res, next) {
+  var picture = req.picture;
+
+  picture.toModerate = undefined;
+
+  var onPictureSaved = Utils.returnSavedEntity(req, res, next);
+  picture.save(onPictureSaved);
 }
 
 
