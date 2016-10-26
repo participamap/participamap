@@ -43,14 +43,18 @@
     * [Récuparation de sa notation d’un lieu](#récupération-de-sa-notation-dun-lieu)
     * [Notation d’un lieu](#notation-dun-lieu)
 * [**Parcours**](#parcours)
-   * [Lister les parcours](#lister-les-parcours)
-   * [Création d’un parcours](#création-dun-parcours)
-   * [Suppression d’un parcours](#suppression-dun-parcours)
-* [**Abus**](#abus)
-   * [Lister les abus](#lister-les-abus)
-   * [Création d’un abus](#création-dun-abus)
-   * [Suppression d’un abus](#suppression-dun-abus)
-   * [Suppression du contenu d'un abus](#suppression-du-contenu-dun-abus)
+    * [Liste des parcours](#liste-des-parcours)
+    * [Informations d’un parcours](#informations-dun-parcours)
+    * [Création d’un parcours](#création-dun-parcours)
+    * [Modification d’un parcours](#modification-dun-parcours)
+    * [Ajout d’un lieu à un parcours](#ajout-dun-lieu-à-un-parcours)
+    * [Suppression d’un lieu dans un parcours](#suppression-dun-lieu-dans-un-parcours)
+    * [Suppression d’un parcours](#suppression-dun-parcours)
+* [**Rapports d’abus**](#rapports-dabus)
+    * [Rapport d’un contenu abusif](#rapport-dun-contenu-abusif)
+    * [Liste des rapports d’abus](#liste-des-rapports-dabus)
+    * [Suppression d’un rapport d’abus](#suppression-dun-rapport-dabus)
+    * [Suppression d’un contenu abusif](#suppression-dun-contenu-abusif)
 
 ## Informations générales
 
@@ -483,7 +487,7 @@ email | Adresse électronique | "user@domain.com"
 
 #### Réponse
 
-Un utilisateur :
+L’utilisateur créé :
 
 Attribut | Description | Exemple
 ---------|-------------|--------
@@ -561,7 +565,7 @@ Attribut | Description | Exemple
 
 #### Réponse
 
-Un utilisateur :
+L’utilisateur mis à jour :
 
 Attribut | Description | Exemple
 ---------|-------------|--------
@@ -1025,7 +1029,7 @@ Attribut | Description | Exemple
 
 #### Réponse
 
-Le lieu modifié :
+Le lieu mis à jour :
 
 Attribut | Description | Exemple
 ---------|-------------|--------
@@ -1261,7 +1265,7 @@ content | Contenu du commentaire | "Très bel endroit"
 
 #### Réponse
 
-Un commentaire :
+Le commentaire créé :
 
 Attribut | Description | Exemple
 ---------|-------------|--------
@@ -1333,7 +1337,7 @@ comment_id | Identifiant du commentaire | 57ed7489c6358c1278552be5
 
 #### Réponse
 
-Un commentaire :
+Le commentaire accepté :
 
 Attribut | Description | Exemple
 ---------|-------------|--------
@@ -1546,7 +1550,7 @@ id | Identifiant du lieu | 57dbe334c3eaf116f88e0318
 
 #### Réponse
 
-Lien vers une image :
+Lien vers l’image créée :
 
 Attribut | Description | Exemple
 ---------|-------------|--------
@@ -1635,7 +1639,7 @@ picture_id | Identifiant de l’image | 57ed7489c6358c1278552be5
 
 #### Réponse
 
-Lien vers une image :
+Lien vers l’image acceptée :
 
 Attribut | Description | Exemple
 ---------|-------------|--------
@@ -1854,7 +1858,7 @@ title | Titre du document | "historique_presquile.pdf"
 
 #### Réponse
 
-Lien vers un document :
+Lien vers le document créé :
 
 Attribut | Description | Exemple
 ---------|-------------|--------
@@ -1949,7 +1953,7 @@ document_id | Identifiant du document | 57ed7489c6358c1278552be5
 
 #### Réponse
 
-Lien vers un document :
+Lien vers le document accepté :
 
 Attribut | Description | Exemple
 ---------|-------------|--------
@@ -2140,7 +2144,7 @@ value | Notation du lieu par l’utilisateur | 4
 
 #### Réponse
 
-Une note :
+La note enregistrée :
 
 Attribut | Description | Exemple
 ---------|-------------|--------
@@ -2172,7 +2176,140 @@ Content-Type: application/json; charset=utf-8
 
 ## Parcours
 
-#### Création d’un parcours
+### Liste des parcours
+
+#### Nom de la requête
+
+`getRoutesHeaders`
+
+#### Description
+
+Récupère les en-têtes de parcours.
+
+#### Point d’accès
+
+Méthode | Chemin | Autorisation
+:------:|:------:|:-----------:
+GET | /routes/ | non requis
+
+#### Paramètres de chemin
+
+*Néant*
+
+#### Paramètres de requête
+
+Nom | Description | Exemple | Absence
+----|-------------|---------|--------
+place | Identifiant d’un lieu devant être contenu dans le parcours | 57e5261dab4feb4a2af3f419 | Tout
+
+#### Contenu
+
+*Néant*
+
+#### Réponse
+
+Liste d’en-têtes de parcours :
+
+Attribut | Description | Exemple
+---------|-------------|--------
+_id | Identifiant du parcours | "58108eda412d1215e99378cd"
+title | Titre du parcours | "Parcours historique"
+
+#### Exemple
+
+Requête :
+
+```sh
+$ curl "https://api.participamap.org/routes/"
+```
+
+Réponse :
+
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+```
+
+```json
+[
+  {
+    "_id": "58108eda412d1215e99378cd",
+    "title": "Parcours historique"
+  },
+  {
+    "_id": "5810a4061a833d09b5c04b7c",
+    "title": "Découverte"
+  }
+]
+```
+
+### Informations d’un parcours
+
+#### Nom de la requête
+
+`getRouteInfo`
+
+#### Description
+
+Récupère les informations d’un parcours.
+
+#### Point d’accès
+
+Méthode | Chemin | Autorisation
+:------:|:------:|:-----------:
+GET | /routes/{id} | non requis
+
+#### Paramètres de chemin
+
+Nom | Description | Exemple
+----|-------------|--------
+id | Identifiant du parcours | 57dbe334c3eaf116f88e0318
+
+#### Paramètres de requête
+
+*Néant*
+
+#### Contenu
+
+*Néant*
+
+#### Réponse
+
+Un parcours :
+
+Attribut | Description | Exemple
+---------|-------------|--------
+_id | Identifiant du parcours | "57dbe334c3eaf116f88e0318"
+title | Titre du parcours | "Parcours historique"
+places | Liste des lieux constituant le parcours | ["57e5261dab4feb4a2af3f419", "57e5261dab4feb4a2af3f4a8"]
+
+#### Exemple
+
+Requête :
+
+```sh
+$ curl "https://api.participamap.org/routes/57dbe334c3eaf116f88e0318"
+```
+
+Réponse :
+
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+```
+
+```json
+{
+  "_id": "58108eda412d1215e99378cd",
+  "title": "Parcours historique",
+  "places": [
+    "57e5261dab4feb4a2af3f419",
+    "57e5261dab4feb4a2af3f4a8"
+  ]
+}
+```
+
+### Création d’un parcours
 
 #### Nom de la requête
 
@@ -2180,13 +2317,13 @@ Content-Type: application/json; charset=utf-8
 
 #### Description
 
-Creer un parcours avec une liste de lieux
+Crée un nouveau parcours.
 
 #### Point d’accès
 
 Méthode | Chemin | Autorisation
 :------:|:------:|:-----------:
-POST | /routes | Content-owner
+POST | /routes/ | `content-owner`
 
 #### Paramètres de chemin
 
@@ -2198,19 +2335,32 @@ POST | /routes | Content-owner
 
 #### Contenu
 
-Identifiants :
+Un parcours :
 
 Attribut | Description | Exemple
 ---------|-------------|--------
-title | titre du parcours | parcours du Dôme
-places | liste des places | 57e5261dab4feb4a2af3f419
+title | Titre du parcours | "Parcours historique"
+places | Liste des lieux constituant le parcours | ["57e5261dab4feb4a2af3f419", "57e5261dab4feb4a2af3f4a8"]
+
+#### Réponse
+
+Le parcours créé :
+
+Attribut | Description | Exemple
+---------|-------------|--------
+_id | Identifiant du parcours | "57dbe334c3eaf116f88e0318"
+title | Titre du parcours | "Parcours historique"
+places | Liste des lieux constituant le parcours | ["57e5261dab4feb4a2af3f419", "57e5261dab4feb4a2af3f4a8"]
 
 #### Exemple
 
 Requête :
 
 ```sh
-curl -X POST -H "Content-Type: application/json" http://https://api.participamap.org/routes -d '{"title":"parcours du Dôme","places" : ["57e5261dab4feb4a2af3f419"]}'
+$ curl -X POST "https://api.participamap.org/routes/" \
+    -H "Authorization: Bearer JSON_WEB_TOKEN" \
+    -H "Content-Type: application/json" \
+    -d '{"title":"Parcours historique","places":["57e5261dab4feb4a2af3f419","57e5261dab4feb4a2af3f4a8"]}'
 ```
 
 Réponse :
@@ -2222,29 +2372,36 @@ Content-Type: application/json; charset=utf-8
 
 ```json
 {
-  //TODO https://api.participamap.org/abuses/
+  "_id": "58108eda412d1215e99378cd",
+  "title": "Parcours historique",
+  "places": [
+    "57e5261dab4feb4a2af3f419",
+    "57e5261dab4feb4a2af3f4a8"
+  ]
 }
 ```
 
-### Lister les parcours
+### Modification d’un parcours
 
 #### Nom de la requête
 
-`getRoute`
+`updateRoute`
 
 #### Description
 
-Récuperer tous les parcours
+Modifie un parcours existant.
 
 #### Point d’accès
 
 Méthode | Chemin | Autorisation
 :------:|:------:|:-----------:
-GET | /routes | content-owner
+PUT | /routes/{id} | `content-owner`
 
 #### Paramètres de chemin
 
-*Néant*
+Nom | Description | Exemple
+----|-------------|--------
+id | Identifiant du parcours | 57dbe334c3eaf116f88e0318
 
 #### Paramètres de requête
 
@@ -2252,34 +2409,195 @@ GET | /routes | content-owner
 
 #### Contenu
 
-Identifiants :
+Un parcours :
 
 Attribut | Description | Exemple
 ---------|-------------|--------
-title | titre du parcours | parcours du Dôme
-places | liste des places | ['57e5261dab4feb4a2af3f419']
+*title* | Titre du parcours | "Parcours historique"
+*places* | Liste des lieux constituant le parcours | ["57e5261dab4feb4a2af3f419", "57e5261dab4feb4a2af3f4a8"]
+
+#### Réponse
+
+Le parcours mis à jour :
+
+Attribut | Description | Exemple
+---------|-------------|--------
+_id | Identifiant du parcours | "57dbe334c3eaf116f88e0318"
+title | Titre du parcours | "Parcours historique"
+places | Liste des lieux constituant le parcours | ["57e5261dab4feb4a2af3f419", "57e5261dab4feb4a2af3f4a8"]
 
 #### Exemple
 
 Requête :
 
 ```sh
-curl -X GET -H "Content-Type: application/json" https://api.participamap.org/routes/
+$ curl -X PUT "https://api.participamap.org/routes/57dbe334c3eaf116f88e0318" \
+    -H "Authorization: Bearer JSON_WEB_TOKEN" \
+    -H "Content-Type: application/json" \
+    -d '{"title":"Parcours historique modifié"}'
 ```
 
 Réponse :
 
 ```http
-HTTP/1.1 201 Created
+HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
 ```
 
 ```json
 {
-  //TODO
+  "_id": "58108eda412d1215e99378cd",
+  "title": "Parcours historique modifié",
+  "places": [
+    "57e5261dab4feb4a2af3f419",
+    "57e5261dab4feb4a2af3f4a8"
+  ]
 }
 ```
-### Suppression d'un parcours
+
+### Ajout d’un lieu à un parcours
+
+#### Nom de la requête
+
+`addPlace`
+
+#### Description
+
+Ajoute un lieu à la fin d’un parcours existant.
+
+#### Point d’accès
+
+Méthode | Chemin | Autorisation
+:------:|:------:|:-----------:
+POST | /routes/{id}/ | `content-owner`
+
+#### Paramètres de chemin
+
+Nom | Description | Exemple
+----|-------------|--------
+id | Identifiant du parcours | 57dbe334c3eaf116f88e0318
+
+#### Paramètres de requête
+
+*Néant*
+
+#### Contenu
+
+Identifiant d’un lieu :
+
+Attribut | Description | Exemple
+---------|-------------|--------
+place | Identifiant du lieu à ajouter au parcours | "580358be27b9e512fb75c83b"
+
+#### Réponse
+
+Le parcours mis à jour :
+
+Attribut | Description | Exemple
+---------|-------------|--------
+_id | Identifiant du parcours | "57dbe334c3eaf116f88e0318"
+title | Titre du parcours | "Parcours historique"
+places | Liste des lieux constituant le parcours | ["57e5261dab4feb4a2af3f419", "57e5261dab4feb4a2af3f4a8"]
+
+#### Exemple
+
+Requête :
+
+```sh
+$ curl -X POST "https://api.participamap.org/routes/57dbe334c3eaf116f88e0318/" \
+    -H "Authorization: Bearer JSON_WEB_TOKEN" \
+    -H "Content-Type: application/json" \
+    -d '{"place":"580358be27b9e512fb75c83b"}'
+```
+
+Réponse :
+
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+```
+
+```json
+{
+  "_id": "58108eda412d1215e99378cd",
+  "title": "Parcours historique",
+  "places": [
+    "57e5261dab4feb4a2af3f419",
+    "57e5261dab4feb4a2af3f4a8",
+    "580358be27b9e512fb75c83b"
+  ]
+}
+```
+
+### Suppression d’un lieu dans un parcours
+
+#### Nom de la requête
+
+`removePlace`
+
+#### Description
+
+Retire un lieu d’un parcours.
+
+#### Point d’accès
+
+Méthode | Chemin | Autorisation
+:------:|:------:|:-----------:
+DELETE | /routes/{id}/{index} | `content-owner`
+
+#### Paramètres de chemin
+
+Nom | Description | Exemple
+----|-------------|--------
+id | Identifiant du parcours | 57dbe334c3eaf116f88e0318
+index | Index du lieu à retirer | 1
+
+#### Paramètres de requête
+
+*Néant*
+
+#### Contenu
+
+*Néant*
+
+#### Réponse
+
+Le parcours mis à jour :
+
+Attribut | Description | Exemple
+---------|-------------|--------
+_id | Identifiant du parcours | "57dbe334c3eaf116f88e0318"
+title | Titre du parcours | "Parcours historique"
+places | Liste des lieux constituant le parcours | ["57e5261dab4feb4a2af3f419", "57e5261dab4feb4a2af3f4a8"]
+
+#### Exemple
+
+Requête :
+
+```sh
+$ curl -X DELETE "https://api.participamap.org/routes/57dbe334c3eaf116f88e0318/1" \
+    -H "Authorization: Bearer JSON_WEB_TOKEN"
+```
+
+Réponse :
+
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+```
+
+```json
+{
+  "_id": "58108eda412d1215e99378cd",
+  "title": "Parcours historique",
+  "places": [
+    "57e5261dab4feb4a2af3f419",
+    "580358be27b9e512fb75c83b"
+  ]
+}
+```
+
+### Suppression d’un parcours
 
 #### Nom de la requête
 
@@ -2287,17 +2605,19 @@ Content-Type: application/json; charset=utf-8
 
 #### Description
 
-Supprime un parcours
+Supprime un parcours.
 
 #### Point d’accès
 
 Méthode | Chemin | Autorisation
 :------:|:------:|:-----------:
-DELETE | /routes/{id} | Content-owner
+DELETE | /routes/{id} | `content-owner`
 
 #### Paramètres de chemin
 
-*Néant*
+Nom | Description | Exemple
+----|-------------|--------
+id | Identifiant du parcours | 57dbe334c3eaf116f88e0318
 
 #### Paramètres de requête
 
@@ -2305,55 +2625,52 @@ DELETE | /routes/{id} | Content-owner
 
 #### Contenu
 
-Identifiants :
+*Néant*
 
-Attribut | Description | Exemple
----------|-------------|--------
-title | titre du parcours | parcours du Dôme
-places | liste des places | ['57e5261dab4feb4a2af3f419']
+#### Réponse
+
+```http
+HTTP/1.1 204 No Content
+```
 
 #### Exemple
 
 Requête :
 
 ```sh
-curl -X DELETE -H "Content-Type: application/json" https://api.participamap.org/routes/58086fc915e92e10f3244e73
+$ curl -X DELETE "https://api.participamap.org/routes/57dbe334c3eaf116f88e0318" \
+    -H "Authorization: Bearer JSON_WEB_TOKEN"
 ```
 
 Réponse :
 
 ```http
-HTTP/1.1 204 
+HTTP/1.1 204 No Content
 ```
 
-```json
-{
-  //TODO
-}
-```
+## Rapports d’abus
 
-
-#### Abuse
-
-#### Lister les abus
+### Rapport d’un contenu abusif
 
 #### Nom de la requête
 
-`getAbuse`
+`reportAbuse`
 
 #### Description
 
-Récupère tous les abus 
+Rapporte un contenu abusif.
 
 #### Point d’accès
 
 Méthode | Chemin | Autorisation
 :------:|:------:|:-----------:
-GET | /abuses/ | moderator
+POST | {path\_to\_content}/report | `user`
 
 #### Paramètres de chemin
 
-*Néant*
+Nom | Description | Exemple
+----|-------------|--------
+path\_to\_content | Chemin vers le contenu | /places/57dbe334c3eaf116f88e0318
 
 #### Paramètres de requête
 
@@ -2361,51 +2678,70 @@ GET | /abuses/ | moderator
 
 #### Contenu
 
-Identifiants :
+*Néant*
+
+#### Réponse
+
+Le rapport d’abus créé :
 
 Attribut | Description | Exemple
 ---------|-------------|--------
-type | type de l'objet (commentaire,document,image) | parcours du Dôme
-user | id de l'utilisateur concerné | 57e4d06ff0653747e4559bfe
-contentReport | id du contenu de l'objet | 57ff35e1e446c90c26e9980f
+_id | Identifiant du rapport d’abus | 5810f690a40261392f823fbc
+author | Auteur du rapport | { "id": "57dbe334c3eaf116f88eca27", "name": "Jean Dupont" }
+date | Date du rapport | "2016-10-16T20:19:36.251Z"
+type | Type de contenu rapporté | "comment"
+reportedContent | Contenu rapporté | {Object}
 
 #### Exemple
 
 Requête :
 
 ```sh
-curl -X GET -H "Content-Type: application/json" https://api.participamap.org/abuses/
+$ curl -X POST "http://api.participamap.org/places/57ddbfacaf832bcfcb18c3df/comments/5803e0d83123de250f9c43ff/report" \
+    -H "Authorization: Bearer JSON_WEB_TOKEN"
 ```
 
 Réponse :
 
 ```http
-HTTP/1.1 200 ok
+HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
 ```
 
 ```json
 {
-  //TODO
+  "_id": "5810f690a40261392f823fbc",
+  "author": {
+    "id": "5802aaa97cb43a3094ba2f61",
+    "name": "Jean Dupont"
+  },
+  "date": "2016-10-26T18:31:44.852Z",
+  "type": "comment",
+  "reportedContent": {
+    "_id": "5803e0d83123de250f9c43ff",
+    "place": "57ddbfacaf832bcfcb18c3df",
+    "author": "58029d822779132827686f2f",
+    "date": "2016-10-16T20:19:36.251Z",
+    "content": "Salut salut"
+  }
 }
 ```
 
-#### Création d'un abus
-
+### Liste des rapports d’abus
 
 #### Nom de la requête
 
-`createAbuse`
+`getAbuseReports`
 
 #### Description
 
-Créer un abus reporté par un commentaire,image ou document
+Récupère la liste des rapports d’abus dans l’ordre chronologique.
 
 #### Point d’accès
 
 Méthode | Chemin | Autorisation
 :------:|:------:|:-----------:
-POST | /places/{id}/comments/{id}/abuseReport | user
+GET | /abuse-reports/ | `moderator`
 
 #### Paramètres de chemin
 
@@ -2413,58 +2749,104 @@ POST | /places/{id}/comments/{id}/abuseReport | user
 
 #### Paramètres de requête
 
-*Néant*
+Nom | Description | Exemple | Absence
+----|-------------|---------|--------
+page | Numéro de page | 3 | 1
+n | Nombre de rapports d’abus par page | 10 | 25 si `page` est fixé, infini sinon
 
 #### Contenu
 
-Identifiants :
+*Néant*
+
+#### Réponse
+
+Liste de rapports d’abus :
 
 Attribut | Description | Exemple
 ---------|-------------|--------
-type | type de l'objet (commentaire,document,image) | parcours du Dôme
-user | id de l'utilisateur concerné | 57e4d06ff0653747e4559bfe
-contentReport | id du contenu de l'objet | 57ff35e1e446c90c26e9980f
+_id | Identifiant du rapport d’abus | 5810f690a40261392f823fbc
+author | Auteur du rapport | { "id": "57dbe334c3eaf116f88eca27", "name": "Jean Dupont" }
+date | Date du rapport | "2016-10-16T20:19:36.251Z"
+type | Type de contenu rapporté | "comment"
+reportedContent | Contenu rapporté | {Object}
 
 #### Exemple
 
 Requête :
 
 ```sh
-curl -X POST -H "Content-Type: application/json" https://api.participamap.org/places/57e5261dab4feb4a2af3f419/comments/57ff35e1e446c90c26e9980f/abuseReport -d '{ "type" : "comment" , "user" : "57e4d06ff0653747e4559bfe" , "contentReported" : "57ff35e1e446c90c26e9980f" }'
+$ curl "http://api.participamap.org/abuse-reports/?page=1" \
+    -H "Authorization: Bearer JSON_WEB_TOKEN"
 ```
 
 Réponse :
 
 ```http
-HTTP/1.1 201 Created
+HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
 ```
 
 ```json
-{
-  //TODO
-}
+[
+  {
+    "_id": "580ff2bc1f468d2d553a84cf",
+    "author": {
+      "id": "5802aaa97cb43a3094ba2f61",
+      "name": "Jean Dupont"
+    },
+    "date": "2016-10-26T00:03:08.992Z",
+    "type": "place",
+    "reportedContent": {
+      "_id": "57ddbfacaf832bcfcb18c3df",
+      "location": {
+        "latitude": 49.179121,
+        "longitude": -0.3593137
+      },
+      "title": "Crotte de chien",
+      "isVerified": false,
+      "proposedBy": "57dbe334c3eaf116f88eca27"
+    }
+  },
+  {
+    "_id": "5810f690a40261392f823fbc",
+    "author": {
+      "id": "5802aaa97cb43a3094ba2f61",
+      "name": "Jean Dupont"
+    },
+    "date": "2016-10-26T18:31:44.852Z",
+    "type": "comment",
+    "reportedContent": {
+      "_id": "5803e0d83123de250f9c43ff",
+      "place": "57ddbfacaf832bcfcb18c3df",
+      "author": "58029d822779132827686f2f",
+      "date": "2016-10-16T20:19:36.251Z",
+      "content": "Salut salut"
+    }
+  }
+]
 ```
 
-#### Suppression d'un abus
+### Suppression d’un rapport d’abus
 
 #### Nom de la requête
 
-`deleteAbuse`
+`deleteAbuseReport`
 
 #### Description
 
-Supprimer un abus
+Supprime un rapport d’abus.
 
 #### Point d’accès
 
 Méthode | Chemin | Autorisation
 :------:|:------:|:-----------:
-DELETE | /abuses/{id} | moderator
+DELETE | /abuse-reports/{id} | `moderator`
 
 #### Paramètres de chemin
 
-*Néant*
+Nom | Description | Exemple
+----|-------------|--------
+id | Identifiant du rapport d’abus | 57dbe334c3eaf116f88e0318
 
 #### Paramètres de requête
 
@@ -2472,54 +2854,50 @@ DELETE | /abuses/{id} | moderator
 
 #### Contenu
 
-Identifiants :
+*Néant*
 
-Attribut | Description | Exemple
----------|-------------|--------
-type | type de l'objet (commentaire,document,image) | parcours du Dôme
-user | id de l'utilisateur concerné | 57e4d06ff0653747e4559bfe
-contentReport | id du contenu de l'objet | 57ff35e1e446c90c26e9980f
+#### Réponse
+
+```http
+HTTP/1.1 204 No Content
+```
 
 #### Exemple
 
 Requête :
 
 ```sh
-curl -X DELETE -H "Content-Type: application/json" https://api.participamap.org/abuses/57e5261dab4feb4a2af3f419
+$ curl -X DELETE "https://api.participamap.org/abuse-reports/57dbe334c3eaf116f88e0318" \
+    -H "Authorization: Bearer JSON_WEB_TOKEN"
 ```
 
 Réponse :
 
 ```http
-HTTP/1.1 204
+HTTP/1.1 204 No Content
 ```
 
-```json
-{
-  //TODO
-}
-```
-#### Suppression du contenu d'un abus
-
-#### Suppression d'un abus
+### Suppression d’un contenu abusif
 
 #### Nom de la requête
 
-`deleteContentReport`
+`deleteAbusiveContent`
 
 #### Description
 
-Supprime le contenu d'un abus
+Supprime un rapport d’abus et le contenu abusif qu’il rapporte.
 
 #### Point d’accès
 
 Méthode | Chemin | Autorisation
 :------:|:------:|:-----------:
-DELETE | /deleteContentReport/{id} | moderator
+POST | /abuse-reports/{id}/delete-content | `moderator`
 
 #### Paramètres de chemin
 
-*Néant*
+Nom | Description | Exemple
+----|-------------|--------
+id | Identifiant du rapport d’abus | 57dbe334c3eaf116f88e0318
 
 #### Paramètres de requête
 
@@ -2527,31 +2905,25 @@ DELETE | /deleteContentReport/{id} | moderator
 
 #### Contenu
 
-Identifiants :
+*Néant*
 
-Attribut | Description | Exemple
----------|-------------|--------
-type | type de l'objet (commentaire,document,image) | parcours du Dôme
-user | id de l'utilisateur concerné | 57e4d06ff0653747e4559bfe
-contentReport | id du contenu de l'objet | 57ff35e1e446c90c26e9980f
+#### Réponse
+
+```http
+HTTP/1.1 204 No Content
+```
 
 #### Exemple
 
 Requête :
 
 ```sh
-curl -X DELETE -H "Content-Type: application/json" https://api.participamap.org/abuseContentReport/57e5261dab4feb4a2af3f419
+$ curl -X POST "https://api.participamap.org/abuse-reports/57dbe334c3eaf116f88e0318/delete-content" \
+    -H "Authorization: Bearer JSON_WEB_TOKEN"
 ```
 
 Réponse :
 
 ```http
-HTTP/1.1 204
+HTTP/1.1 204 No Content
 ```
-
-```json
-{
-  //TODO
-}
-```
-
