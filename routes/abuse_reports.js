@@ -28,6 +28,9 @@ router.get('/',
   Utils.listAuthorsInObjectsToSend,
   Utils.getAuthorsInfos,
   Utils.addAuthorsNames,
+  Utils.listReportedContentsInObjectsToSend,
+  Utils.getObjects,
+  Utils.replaceByObjects,
   Utils.send);
 
 // deleteAbuseReport

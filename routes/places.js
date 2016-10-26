@@ -170,6 +170,9 @@ router.post('/:id/report',
   Utils.listAuthorsInObjectsToSend,
   Utils.getAuthorsInfos,
   Utils.addAuthorsNames,
+  Utils.listReportedContentsInObjectsToSend,
+  Utils.getObjects,
+  Utils.replaceByObjects,
   Utils.send);
 
 
@@ -181,6 +184,9 @@ router.post('/:id/comments/:comment_id/report',
   Utils.listAuthorsInObjectsToSend,
   Utils.getAuthorsInfos,
   Utils.addAuthorsNames,
+  Utils.listReportedContentsInObjectsToSend,
+  Utils.getObjects,
+  Utils.replaceByObjects,
   Utils.send);
 
 
