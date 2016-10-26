@@ -455,6 +455,8 @@ function deletePlace(req, res, next) {
   Document.remove({ place: place._id }, onRemoved);
   Vote.remove({ place: place._id }, onRemoved);
 
+  // TODO: Supprimer la référence dans les parcours
+
   // TODO: Meilleure gestion (pour l’instant seule la première erreur
   // déclenchée est retournée
   function onRemoved(error) {

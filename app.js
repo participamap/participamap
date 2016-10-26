@@ -9,9 +9,10 @@ var LocalStrategy = require('passport-local').Strategy;
 var Supervisor = require('./modules/supervisor');
 var Auth = require('./modules/auth');
 
-var routes = require('./routes/index');
+var index = require('./routes/index');
 var users = require('./routes/users');
 var places = require('./routes/places');
+var routes = require('./routes/routes');
 var abuseReports = require('./routes/abuse_reports');
 var upload = require('./routes/upload');
 // TODO: Définir les statics via la config
@@ -50,9 +51,10 @@ app.use(passport.initialize());
 app.use(Auth.jwt);
 
 // Route declarations
-app.use('/', routes);
+app.use('/', index);
 app.use('/users/', users);
 app.use('/places/', places);
+app.use('/routes/', routes);
 app.use('/abuse-reports/', abuseReports);
 app.use('/upload/', upload);
 app.use('/uploads/', uploads);
