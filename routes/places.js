@@ -503,7 +503,6 @@ function deletePlace(req, res, next) {
   Comment.remove({ place: place._id }, onRemoved);
   Picture.remove({ place: place._id }, onRemoved);
   Document.remove({ place: place._id }, onRemoved);
-  Vote.remove({ place: place._id }, onRemoved);
 
   // TODO: Supprimer la référence dans les parcours
 
