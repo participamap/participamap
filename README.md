@@ -26,9 +26,7 @@ Pour l’installer :
 
     # npm install pm2 -g
 
-Les applications Node.js peuvent être lancées par n’importe quel utilisateur. Toutefois, pour des raisons de sécurité il est préférable de créer un utilisateur dédié à ces applications.
-
-    # useradd pm2
+Les applications Node.js peuvent être lancées par n’importe quel utilisateur. Toutefois, pour des raisons de sécurité il est préférable de créer un utilisateur dédié à ces applications. Ce guide d’installation supposera par la suite qu’il existe un utilisateur `pm2`.
 
 ### Configuration de base de MongoDB
 
