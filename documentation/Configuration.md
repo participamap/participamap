@@ -6,6 +6,7 @@
 * [**Description des attributs**](#description-des-attributs)
     * [Configuration générale](#configuration-générale)
     * [MongoDB](#mongodb)
+    * [Système d’autorisation (jetons)](#système-dautorisation-jetons)
     * [Stockage de fichiers](#stockage-de-fichiers)
 
 ## Fichier de configuration
@@ -61,6 +62,28 @@ Si aucun paramètre n’est à renseigner, cet attribut attend un objet vide `{}
   }
 }
 ```
+
+### Système d’autorisation (jetons)
+
+#### `auth.secret`
+
+* **Type :** String
+
+Le système d’autorisation a besoin d’un secret pour générer des jetons. Une bonne idée peut être par exemple de générer un nombre aléatoire de 256 bits et l’encoder en *base64* :
+
+    $ node
+    > crypto.randomBytes(32).toString('base64')
+    'Gvba7PGoclt0ZCeu2E3sYuhJ98TjbugW9ST7Q4eh060='
+
+**Exemple :** `"Gvba7PGoclt0ZCeu2E3sYuhJ98TjbugW9ST7Q4eh060="`
+
+#### `auth.tokenValidity`
+
+* **Type :** Number
+
+Les jetons générés par le serveur ont une durée de vie, qui doit être définie. Plus cette valeur est grande et moins les utilisateurs devront s’authentifier régulièrement. L’autorisation étant au porteur, un jeton est valide jusqu’à son expiration ou jusqu’à un changement du secret.
+
+**Exemple :** `86400`
 
 ### Stockage de fichiers
 

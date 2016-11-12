@@ -12,7 +12,7 @@
 
   "auth": {
     "secret": "<Set a strong secret, e.g. 32 random Bytes in base64>",
-    "tokenValidity": 604800
+    "tokenValidity": 86400
   },
 
   "fileUpload": {
