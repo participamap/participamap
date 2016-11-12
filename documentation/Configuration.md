@@ -21,7 +21,7 @@ Pour fonctionner, **participamap** nécessite un fichier `config.json` contenant
 
 * **Type :** String
 
-Le serveur a besoin de connaitre son URL d’accès, qui doit donc être renseigné dans cet attribut.
+Le serveur a besoin de connaitre son URL d’accès public, qui doit donc être renseigné dans cet attribut.
 
 **Exemple :** `"https://participamap.org/"`
 
