@@ -13,6 +13,10 @@
   "rateLimiter": {
     "windowSize": 60,
     "max": 100,
+    "registration": {
+      "windowSizeMin": 10,
+      "max": 10
+    },
     "login": {
       "windowSizeMin": 15,
       "max": 5

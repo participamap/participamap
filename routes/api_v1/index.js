@@ -11,19 +11,29 @@ var config = require('../../config.json');
 
 var router = express.Router({ strict: true });
 
+// Registration rate limiter
+var registrationWs = config.rateLimiter.registration.windowSizeMin;
+var registrationLimiter = new RateLimit({
+  windowMs: registrationWs * 60 * 1000,
+  max: config.rateLimiter.registration.max,
+  delayMs: 0,
+  message: 'Too many registrations from this IP. Please retry in '
+    + registrationWs + ' minutes'
+});
+
 // Login rate limiter
-var ws = config.rateLimiter.login.windowSizeMin;
+var loginWs = config.rateLimiter.login.windowSizeMin;
 var loginLimiter = new RateLimit({
-  windowMs: ws * 60 * 1000,
+  windowMs: loginWs * 60 * 1000,
   delayAfter: 1,
   delayMs: 2 * 1000,
   max: config.rateLimiter.login.max,
-  message: 'Too many login attemps from this IP. Please retry in ' + ws
+  message: 'Too many login attemps from this IP. Please retry in ' + loginWs
     + ' minutes'
 });
 
 router.get('/', getRoot);
-router.post('/register', Checks.db, register, sendToken);
+router.post('/register', registrationLimiter, Checks.db, register, sendToken);
 router.post('/login', loginLimiter, Checks.db, login, sendToken);
 
 
