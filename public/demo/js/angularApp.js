@@ -35,12 +35,12 @@ app.factory('auth',['$http','$window', function($http,$window){
   };
 
   auth.register = function(user){
-    return $http.post('/api/v1/register',user).success(function(data){
+    return $http.post('../api/v1/register',user).success(function(data){
       auth.saveToken(data.token);
     });
   };
   auth.logIn = function(user){
-    return $http.post('/api/v1/login',user).success(function(data){
+    return $http.post('../api/v1/login',user).success(function(data){
       auth.saveToken(data.token);
     });
   };
@@ -74,20 +74,20 @@ app.factory('Parcours',['$http','auth','$base64',function($http, auth) {
   };
 
   oo.createParcours = function (parcour) {
-    return $http.post('/api/v1/routes', parcour, {
+    return $http.post('../api/v1/routes', parcour, {
       headers: {Authorization: 'Bearer ' + auth.getToken()}
     }).success(function (data) {
       oo.parcours.push(data);
     })
   };
   oo.getAll = function(){
-    return $http.get('/api/v1/routes/').success(function(data){
+    return $http.get('../api/v1/routes/').success(function(data){
       angular.copy(data,oo.parcours);
     });
   };
   
     oo.delete = function(identity){
-    return $http.delete('/api/v1/routes/'+identity.toString(),{
+    return $http.delete('../api/v1/routes/'+identity.toString(),{
       headers:{Authorization: 'Bearer '+auth.getToken()}
     }).success(function(data){
       for (i=0;i < oo.parcours.length;i++){
@@ -109,17 +109,17 @@ app.factory('Place',['$http','$base64','auth', function($http,$base64,auth){
   };
 
   o.getOnePlace = function(identity) {
-    return $http.get('/api/v1/places/'+identity.toString()).success(function(){
+    return $http.get('../api/v1/places/'+identity.toString()).success(function(){
     });
   };
 
   o.getAll = function(){
-    return $http.get('/api/v1/places').success(function(data){
+    return $http.get('../api/v1/places').success(function(data){
       angular.copy(data,o.places);
     });
   };
   o.create = function(place){
-    return $http.post('/api/v1/places',place,{
+    return $http.post('../api/v1/places',place,{
       headers:{Authorization: 'Bearer '+auth.getToken()}
     }).success(function(data){
       o.places.push(data);
@@ -129,11 +129,11 @@ app.factory('Place',['$http','$base64','auth', function($http,$base64,auth){
 
   o.createAndAddPhoto = function(place, picBin){
 
-    return $http.post('/api/v1/places',place,{
+    return $http.post('../api/v1/places',place,{
       headers:{Authorization: 'Bearer '+auth.getToken()}
     }).success(function(data,status,header,config){
 
-      var sendUrl = '/api/v1/upload/'+header().location.toString().split('/').pop();
+      var sendUrl = '../api/v1/upload/'+header().location.toString().split('/').pop();
       var fd = new FormData();
       fd.append('file',picBin);
       console.log ("file name: "+picBin.name);
@@ -154,7 +154,7 @@ app.factory('Place',['$http','$base64','auth', function($http,$base64,auth){
   };
 
   o.delete = function(identity){
-    return $http.delete('/api/v1/places/'+identity.toString(),{
+    return $http.delete('../api/v1/places/'+identity.toString(),{
       headers:{Authorization: 'Bearer '+auth.getToken()}
     }).success(function(data){
       console.log(o.places);
@@ -173,8 +173,8 @@ app.factory('Place',['$http','$base64','auth', function($http,$base64,auth){
     fd.append('file',imgBin);
     console.log("name of file: "+imgBin.name);
     imgBin.name = '@'+imgBin.name;
-    return $http.post('/api/v1/places/'+idPlace.toString()+'/pictures').success(function(data,status,header,config){
-      var sendUrl = '/api/v1/upload/'+header().location.toString().split('/').pop();
+    return $http.post('../api/v1/places/'+idPlace.toString()+'/pictures').success(function(data,status,header,config){
+      var sendUrl = '../api/v1/upload/'+header().location.toString().split('/').pop();
       //var imgData = $base64.encode(imgBin);
       $http.put(sendUrl,imgBin,{headers:{'Content-Type':'image/png'}}).then(function(){
         console.log('reussir');
