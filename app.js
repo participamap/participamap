@@ -42,7 +42,7 @@ app.use(slash());
 
 // Redirect / to the demo front-end
 app.get('/', function redirectToAdmin(req, res, next) {
-  res.redirect('/demo/');
+  res.redirect('demo/');
 });
 
 // catch 404 and forward to error handler
