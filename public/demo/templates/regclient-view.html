@@ -2,11 +2,11 @@
 
 <div class="row">
     <div class="col-md-3">
-        <h1>DEMO Map</h1>
+        <h1>Carte</h1>
         <div ng-repeat="eachL in domeLocations">
             <a href="#/regclient/views/{[{eachL._id}]}" ng-click="focus(eachL.location.latitude, eachL.location.longitude)">{[{eachL.title}]} </a>
         </div>
-        <button class="btn btn-block" ng-click="centerP.autodiscover=true;">Discover Position</button>
+        <button class="btn btn-block" ng-click="centerP.autodiscover=true;">Ma position</button>
     </div>
 
     <div class="col-md-9">
