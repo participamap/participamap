@@ -40,12 +40,9 @@ app.use('/uploads/', uploads);
 app.use('/', static_files);
 app.use(slash());
 
-// Redirect / to the admin front-end
-/*app.get('/', function redirectToAdmin(req, res, next) {
-  res.redirect('/admin/');
-});*/
-app.get('/', function getRoot(req, res, next) {
-  res.json({});
+// Redirect / to the demo front-end
+app.get('/', function redirectToAdmin(req, res, next) {
+  res.redirect('/demo/');
 });
 
 // catch 404 and forward to error handler

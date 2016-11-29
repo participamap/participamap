@@ -1,0 +1,19 @@
+<div>
+    <div ng-show="error" class="alert alert-danger row">
+        <span>{[{error.message}]}</span>
+    </div>
+    <div ></div>
+    <form ng-submit="register()" style="margin-top: 30px;">
+        <h3>Inscription</h3>
+        <div class="form-group">
+            <input type="text" class="form-control" placeholder="Nom d’utilisateur" ng-model="user.username"/>
+        </div>
+        <div class="form-group">
+            <input type="password" class="form-control" placeholder="Mot de passe" ng-model="user.password"/>
+        </div>
+        <div class="form-group">
+            <input type="text" class="form-control" placeholder="Adresse électronique" ng-model="user.email"/>
+        </div>
+        <button type="submit" class="btn btn-primary">S’inscrire</button>
+    </form>
+</div>

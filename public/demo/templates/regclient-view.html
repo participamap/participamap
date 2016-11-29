@@ -1,0 +1,22 @@
+
+
+<div class="row">
+    <div class="col-md-3">
+        <h1>Carte</h1>
+        <div ng-repeat="eachL in domeLocations">
+            <a href="#/regclient/views/{[{eachL._id}]}" ng-click="focus(eachL.location.latitude, eachL.location.longitude)">{[{eachL.title}]} </a>
+        </div>
+        <button class="btn btn-block" ng-click="centerP.autodiscover=true;">Ma position</button>
+    </div>
+
+    <div class="col-md-9">
+        <openlayers ol-center="centerP"  height="500px">
+            <ol-marker ng-repeat="mark in domeLocations" name="mark.title" lat="mark.location.latitude" lon="mark.location.longitude"></ol-marker>
+        </openlayers>
+        <p> Ici les informations/photos/documents des utilisateurs sur le lieu </p>
+        <p><small><a href="#">signaler abus</a></small></p>
+    </div>
+</div>
+<div class="row">
+    <ui-view></ui-view>
+</div>

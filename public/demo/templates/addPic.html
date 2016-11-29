@@ -1,0 +1,42 @@
+<div class = "row">
+    <div class="col-md-9">
+        <div class="container">
+            <div class="col-md-5">
+                <h2>Lieux existants</h2>
+                <div ng-repeat="eachL in domeLocations">
+                    <a ng-click="centerP.lat = eachL.location.latitude; centerP.lon = eachL.location.longitude ">{[{eachL.title}]}</a>
+                    <span class="glyphicon glyphicon-remove" ng-click="delPlace(eachL._id)"></span>
+                    <a ng-click="showFrame(eachL._id)" >Ajouter une image</a>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-7">
+                        <h2>Carte</h2>
+
+                        <style type="text/css">
+                            #openlayerFrame{
+                                border: darkseagreen 5px solid;
+                            }
+                        </style>
+
+                        <openlayers id="openlayerFrame" ol-center="centerP"  height="300px">
+                            <ol-marker ng-repeat="mark in domeLocations" name="mark.title" lat="mark.location.latitude" lon="mark.location.longitude"></ol-marker>
+                        </openlayers>
+
+                        <button class="btn btn-block" ng-click="centerP.autodiscover=true;">Ma position</button>
+                    </div>
+                </div>
+                <div ng-show="showFramePic" class="row">
+                    <h2>Ajout d’une image</h2>
+                    <!--<ui-view></ui-view>-->
+                    <form>
+                        <input type="file" file-model="picAdded" accept="image/*" >
+                        <input type="submit" value="Mettre en ligne" name="submit" ng-click="addPhoto()">
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
