@@ -1,10 +1,10 @@
 var express = require('express');
 var mongoose = require('mongoose');
 
-var Checks = require('../modules/checks');
-var Utils = require('../modules/utils');
+var Checks = require('../../modules/checks');
+var Utils = require('../../modules/utils');
 
-var Route = require('../models/route');
+var Route = require('../../models/route');
 
 var ObjectId = mongoose.Types.ObjectId;
 

@@ -1,10 +1,10 @@
 var express = require('express');
 var mongoose = require('mongoose');
 
-var Checks = require('../modules/checks');
-var Utils = require('../modules/utils');
+var Checks = require('../../modules/checks');
+var Utils = require('../../modules/utils');
 
-var User = require('../models/user');
+var User = require('../../models/user');
 
 var router = express.Router({ strict: true });
 
