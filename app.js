@@ -1,22 +1,14 @@
 var express = require('express');
 var slash = require('express-slash');
 var logger = require('morgan');
-var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
-var passport = require('passport');
-var LocalStrategy = require('passport-local').Strategy;
 
 var Supervisor = require('./modules/supervisor');
-var Auth = require('./modules/auth');
 
-var index = require('./routes/index');
-var users = require('./routes/users');
-var places = require('./routes/places');
-var routes = require('./routes/routes');
-var abuseReports = require('./routes/abuse_reports');
-var upload = require('./routes/upload');
-// TODO: Définir les statics via la config
+var api_v1 = require('./routes/api_v1');
+// TODO: Définir le répertoire à servir dans la configuration
 var uploads = express.static('./uploads');
+var static_files = express.static('./public');
 
 var config = require('./config.json');
 
@@ -36,34 +28,25 @@ db.once('open', function onDBOpen() {
 // Supervisor to automate some actions
 var supervisor = new Supervisor(config.supervisor);
 
-// Passport for authentication
-passport.use(new LocalStrategy(Auth.verify));
-
 var app = express();
 app.enable('strict routing');
 
-// Module declarations
+// Modules
 app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.raw({ type: 'image/jpeg', limit: '5MB' }));
-app.use(bodyParser.raw({ type: 'image/png', limit: '5MB' }));
-app.use(bodyParser.raw({ type: 'text/plain', limit: '1MB' }));
-app.use(bodyParser.raw({ type: 'application/pdf', limit: '10MB' }));
-app.use(bodyParser.raw({ type: 'application/msword', limit: '5MB' }));
-app.use(bodyParser.raw({ type: 'application/vnd.oasis.opendocument.text',
-  limit: '5MB' }));
-app.use(passport.initialize());
-app.use(Auth.jwt);
 
-// Route declarations
-app.use('/', index);
-app.use('/users/', users);
-app.use('/places/', places);
-app.use('/routes/', routes);
-app.use('/abuse-reports/', abuseReports);
-app.use('/upload/', upload);
+// Routes
+app.use('/api/v1/', api_v1);
 app.use('/uploads/', uploads);
+app.use('/', static_files);
 app.use(slash());
+
+// Redirect / to the admin front-end
+/*app.get('/', function redirectToAdmin(req, res, next) {
+  res.redirect('/admin/');
+});*/
+app.get('/', function getRoot(req, res, next) {
+  res.json({});
+});
 
 // catch 404 and forward to error handler
 app.use(function notFound(req, res, next) {

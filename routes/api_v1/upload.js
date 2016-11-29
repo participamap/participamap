@@ -3,16 +3,16 @@ var mongoose = require('mongoose');
 var fileType = require('file-type');
 var uuid = require('uuid');
 
-var Checks = require('../modules/checks');
-var Utils = require('../modules/utils');
+var Checks = require('../../modules/checks');
+var Utils = require('../../modules/utils');
 
-var PendingUpload = require('../models/pending_upload');
-var FileSaver = require('../modules/filesaver');
-var Place = require('../models/place');
-var Picture = require('../models/picture');
-var Document = require('../models/document');
+var PendingUpload = require('../../models/pending_upload');
+var FileSaver = require('../../modules/filesaver');
+var Place = require('../../models/place');
+var Picture = require('../../models/picture');
+var Document = require('../../models/document');
 
-var config = require('../config.json');
+var config = require('../../config.json');
 
 var router = express.Router();
 

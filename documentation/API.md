@@ -188,7 +188,7 @@ Enregistre un nouvel utilisateur.
 
 Méthode | Chemin | Autorisation
 :------:|:------:|:-----------:
-POST | /register | non requis
+POST | /api/v1/register | non requis
 
 #### Paramètres de chemin
 
@@ -253,7 +253,7 @@ Se connecte en tant qu’utilisateur.
 
 Méthode | Chemin | Autorisation
 :------:|:------:|:-----------:
-POST | /login | non requis
+POST | /api/v1/login | non requis
 
 #### Paramètres de chemin
 
@@ -317,7 +317,7 @@ Récupère la liste des utilisateurs.
 
 Méthode | Chemin | Autorisation
 :------:|:------:|:-----------:
-GET | /users/ | `admin`
+GET | /api/v1/users/ | `admin`
 
 #### Paramètres de chemin
 
@@ -396,7 +396,7 @@ Récupère les informations sur un utilisateur.
 
 Méthode | Chemin | Autorisation
 :------:|:------:|:-----------:
-GET | /users/{id} | `admin` (tous) / `user` (lui-même)
+GET | /api/v1/users/{id} | `admin` (tous) / `user` (lui-même)
 
 #### Paramètres de chemin
 
@@ -464,7 +464,7 @@ Crée un utilisateur.
 
 Méthode | Chemin | Autorisation
 :------:|:------:|:-----------:
-POST | /users/ | `admin`
+POST | /api/v1/users/ | `admin`
 
 #### Paramètres de chemin
 
@@ -539,7 +539,7 @@ Modifie un utilisateur.
 
 Méthode | Chemin | Autorisation
 :------:|:------:|:-----------:
-PUT | /users/{id} | `admin` (tous) / `user` (lui-même)
+PUT | /api/v1/users/{id} | `admin` (tous) / `user` (lui-même)
 
 #### Paramètres de chemin
 
@@ -617,7 +617,7 @@ Supprime un utilisateur.
 
 Méthode | Chemin | Autorisation
 :------:|:------:|:-----------:
-DELETE | /users/{id} | `admin` (tous) / `user` (lui-même)
+DELETE | /api/v1/users/{id} | `admin` (tous) / `user` (lui-même)
 
 #### Paramètres de chemin
 
@@ -670,7 +670,7 @@ Récupère les en-têtes de lieux.
 
 Méthode | Chemin | Autorisation
 :------:|:------:|:-----------:
-GET | /places/ | non requis
+GET | /api/v1/places/ | non requis
 
 #### Paramètres de chemin
 
@@ -755,7 +755,7 @@ Récupère les informations sur un lieu.
 
 Méthode | Chemin | Autorisation
 :------:|:------:|:-----------:
-GET | /places/{id} | non requis
+GET | /api/v1/places/{id} | non requis
 
 #### Paramètres de chemin
 
@@ -847,7 +847,7 @@ Crée un nouveau lieu.
 
 Méthode | Chemin | Autorisation
 :------:|:------:|:-----------:
-POST | /places/ | `user`
+POST | /api/v1/places/ | `user`
 
 #### Paramètres de chemin
 
@@ -981,7 +981,7 @@ Modifie un lieu existant.
 
 Méthode | Chemin | Autorisation
 :------:|:------:|:-----------:
-PUT | /places/{id} | `content-owner`
+PUT | /api/v1/places/{id} | `content-owner`
 
 #### Paramètres de chemin
 
@@ -1100,7 +1100,7 @@ Supprime un lieu.
 
 Méthode | Chemin | Autorisation
 :------:|:------:|:-----------:
-DELETE | /places/{id} | `content-owner`
+DELETE | /api/v1/places/{id} | `content-owner`
 
 #### Paramètres de chemin
 
@@ -1155,7 +1155,7 @@ Les éventuels commentaires en attente de modération ne sont affichés qu’en 
 
 Méthode | Chemin | Autorisation
 :------:|:------:|:-----------:
-GET | /places/{id}/comments/ | non requis
+GET | /api/v1/places/{id}/comments/ | non requis
 
 #### Paramètres de chemin
 
@@ -1243,7 +1243,7 @@ Crée un commentaire.
 
 Méthode | Chemin | Autorisation
 :------:|:------:|:-----------:
-POST | /places/{id}/comments/ | `user`
+POST | /api/v1/places/{id}/comments/ | `user`
 
 #### Paramètres de chemin
 
@@ -1318,7 +1318,7 @@ Accepte un commentaire.
 
 Méthode | Chemin | Autorisation
 :------:|:------:|:-----------:
-POST | /places/{id}/comments/{comment_id}/accept | `moderator`
+POST | /api/v1/places/{id}/comments/{comment_id}/accept | `moderator`
 
 #### Paramètres de chemin
 
@@ -1388,7 +1388,7 @@ Supprime un commentaire.
 
 Méthode | Chemin | Autorisation
 :------:|:------:|:-----------:
-DELETE | /places/{id}/comments/{comment_id} | `moderator` (tous) / `user` (ses commentaires)
+DELETE | /api/v1/places/{id}/comments/{comment_id} | `moderator` (tous) / `user` (ses commentaires)
 
 #### Paramètres de chemin
 
@@ -1444,7 +1444,7 @@ Les éventuelles images en attente de modération ne sont affichées qu’en ét
 
 Méthode | Chemin | Autorisation
 :------:|:------:|:-----------:
-GET | /places/{id}/pictures/ | non requis
+GET | /api/v1/places/{id}/pictures/ | non requis
 
 #### Paramètres de chemin
 
@@ -1523,7 +1523,7 @@ Ajoute une image à un lieu.
 
 Méthode | Chemin | Autorisation
 :------:|:------:|:-----------:
-POST | /places/{id}/pictures/ | `user`
+POST | /api/v1/places/{id}/pictures/ | `user`
 
 #### Paramètres de chemin
 
@@ -1620,7 +1620,7 @@ Accepte une image.
 
 Méthode | Chemin | Autorisation
 :------:|:------:|:-----------:
-POST | /places/{id}/pictures/{picture_id}/accept | `moderator`
+POST | /api/v1/places/{id}/pictures/{picture_id}/accept | `moderator`
 
 #### Paramètres de chemin
 
@@ -1690,7 +1690,7 @@ Supprime une image.
 
 Méthode | Chemin | Autorisation
 :------:|:------:|:-----------:
-DELETE | /places/{id}/picture/{picture_id} | `moderator` (tous) / `user` (ses images)
+DELETE | /api/v1/places/{id}/picture/{picture_id} | `moderator` (tous) / `user` (ses images)
 
 #### Paramètres de chemin
 
@@ -1746,7 +1746,7 @@ Les éventuels documents en attente de modération ne sont affichés qu’en ét
 
 Méthode | Chemin | Autorisation
 :------:|:------:|:-----------:
-GET | /places/{id}/documents/ | non requis
+GET | /api/v1/places/{id}/documents/ | non requis
 
 #### Paramètres de chemin
 
@@ -1829,7 +1829,7 @@ Ajoute un document à un lieu.
 
 Méthode | Chemin | Autorisation
 :------:|:------:|:-----------:
-POST | /places/{id}/documents/ | `user`
+POST | /api/v1/places/{id}/documents/ | `user`
 
 #### Paramètres de chemin
 
@@ -1934,7 +1934,7 @@ Accepte un document.
 
 Méthode | Chemin | Autorisation
 :------:|:------:|:-----------:
-POST | /places/{id}/documents/{document_id}/accept | `moderator`
+POST | /api/v1/places/{id}/documents/{document_id}/accept | `moderator`
 
 #### Paramètres de chemin
 
@@ -2008,7 +2008,7 @@ Supprime un document.
 
 Méthode | Chemin | Autorisation
 :------:|:------:|:-----------:
-DELETE | /places/{id}/document/{document_id} | `moderator` (tous) / `user` (ses documents)
+DELETE | /api/v1/places/{id}/document/{document_id} | `moderator` (tous) / `user` (ses documents)
 
 #### Paramètres de chemin
 
@@ -2062,7 +2062,7 @@ Récupère sa notation du lieu (en étant identifié).
 
 Méthode | Chemin | Autorisation
 :------:|:------:|:-----------:
-GET | /places/{id}/rating | `user`
+GET | /api/v1/places/{id}/rating | `user`
 
 #### Paramètres de chemin
 
@@ -2122,7 +2122,7 @@ Note un lieu.
 
 Méthode | Chemin | Autorisation
 :------:|:------:|:-----------:
-POST | /places/{id}/rating | `user`
+POST | /api/v1/places/{id}/rating | `user`
 
 #### Paramètres de chemin
 
@@ -2190,7 +2190,7 @@ Récupère les en-têtes de parcours.
 
 Méthode | Chemin | Autorisation
 :------:|:------:|:-----------:
-GET | /routes/ | non requis
+GET | /api/v1/routes/ | non requis
 
 #### Paramètres de chemin
 
@@ -2257,7 +2257,7 @@ Récupère les informations d’un parcours.
 
 Méthode | Chemin | Autorisation
 :------:|:------:|:-----------:
-GET | /routes/{id} | non requis
+GET | /api/v1/routes/{id} | non requis
 
 #### Paramètres de chemin
 
@@ -2323,7 +2323,7 @@ Crée un nouveau parcours.
 
 Méthode | Chemin | Autorisation
 :------:|:------:|:-----------:
-POST | /routes/ | `content-owner`
+POST | /api/v1/routes/ | `content-owner`
 
 #### Paramètres de chemin
 
@@ -2395,7 +2395,7 @@ Modifie un parcours existant.
 
 Méthode | Chemin | Autorisation
 :------:|:------:|:-----------:
-PUT | /routes/{id} | `content-owner`
+PUT | /api/v1/routes/{id} | `content-owner`
 
 #### Paramètres de chemin
 
@@ -2469,7 +2469,7 @@ Ajoute un lieu à la fin d’un parcours existant.
 
 Méthode | Chemin | Autorisation
 :------:|:------:|:-----------:
-POST | /routes/{id}/ | `content-owner`
+POST | /api/v1/routes/{id}/ | `content-owner`
 
 #### Paramètres de chemin
 
@@ -2543,7 +2543,7 @@ Retire un lieu d’un parcours.
 
 Méthode | Chemin | Autorisation
 :------:|:------:|:-----------:
-DELETE | /routes/{id}/{index} | `content-owner`
+DELETE | /api/v1/routes/{id}/{index} | `content-owner`
 
 #### Paramètres de chemin
 
@@ -2611,7 +2611,7 @@ Supprime un parcours.
 
 Méthode | Chemin | Autorisation
 :------:|:------:|:-----------:
-DELETE | /routes/{id} | `content-owner`
+DELETE | /api/v1/routes/{id} | `content-owner`
 
 #### Paramètres de chemin
 
@@ -2670,7 +2670,7 @@ POST | {path\_to\_content}/report | `user`
 
 Nom | Description | Exemple
 ----|-------------|--------
-path\_to\_content | Chemin vers le contenu | /places/57dbe334c3eaf116f88e0318
+path\_to\_content | Chemin vers le contenu | /api/v1/places/57dbe334c3eaf116f88e0318
 
 #### Paramètres de requête
 
@@ -2741,7 +2741,7 @@ Récupère la liste des rapports d’abus dans l’ordre chronologique.
 
 Méthode | Chemin | Autorisation
 :------:|:------:|:-----------:
-GET | /abuse-reports/ | `moderator`
+GET | /api/v1/abuse-reports/ | `moderator`
 
 #### Paramètres de chemin
 
@@ -2840,7 +2840,7 @@ Supprime un rapport d’abus.
 
 Méthode | Chemin | Autorisation
 :------:|:------:|:-----------:
-DELETE | /abuse-reports/{id} | `moderator`
+DELETE | /api/v1/abuse-reports/{id} | `moderator`
 
 #### Paramètres de chemin
 
@@ -2891,7 +2891,7 @@ Supprime un rapport d’abus et le contenu abusif qu’il rapporte.
 
 Méthode | Chemin | Autorisation
 :------:|:------:|:-----------:
-POST | /abuse-reports/{id}/delete-content | `moderator`
+POST | /api/v1/abuse-reports/{id}/delete-content | `moderator`
 
 #### Paramètres de chemin
 

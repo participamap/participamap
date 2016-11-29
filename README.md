@@ -149,9 +149,18 @@ Un script de démarrage automatique peut aussi être défini. Plus d’informati
 
 À cette étape, il est possible de tester le fonctionnement de l’application :
 
-    $ curl "http://localhost:3001/"
+    $ curl "http://localhost:3001/api/v1/"
 
-La commande doit retourner un objet JSON vide `{}`.
+La commande doit retourner un objet JSON contenant les informations suivantes :
+
+```json
+{
+  "infos": {
+    "name": "participamap",
+    "apiVersion": 1
+  }
+}
+```
 
 ### Configuration du proxy HTTP
 
@@ -183,8 +192,8 @@ La commande doit retourner un objet JSON vide `{}`.
 
 4. Vérifier l’accès public :
 
-        $ curl "https://<domaine_public>/"
-        {}
+        $ curl "https://<domaine_public>/api/v1/"
+        {"infos":{"name":"participamap","apiVersion":1}}
 
 ### Création d’un compte administrateur\*
 

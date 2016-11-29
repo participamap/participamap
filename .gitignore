@@ -113,3 +113,10 @@ flycheck_*.el
 
 # projectiles files
 .projectile
+
+
+###########
+# WebSorm #
+###########
+
+.idea

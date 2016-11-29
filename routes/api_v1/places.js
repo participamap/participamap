@@ -2,20 +2,20 @@ var express = require('express');
 var mongoose = require('mongoose');
 var url = require('url');
 
-var Checks = require('../modules/checks');
-var Utils = require('../modules/utils');
+var Checks = require('../../modules/checks');
+var Utils = require('../../modules/utils');
 
-var Place = require('../models/place');
-var Comment = require('../models/comment');
-var Picture = require('../models/picture');
-var Document = require('../models/document');
-var Rating = require('../models/rating');
-var AbuseReport = require('../models/abuse_report');
-var PendingUpload = require('../models/pending_upload');
+var Place = require('../../models/place');
+var Comment = require('../../models/comment');
+var Picture = require('../../models/picture');
+var Document = require('../../models/document');
+var Rating = require('../../models/rating');
+var AbuseReport = require('../../models/abuse_report');
+var PendingUpload = require('../../models/pending_upload');
 
 var ObjectId = mongoose.Types.ObjectId;
 
-var config = require('../config.json');
+var config = require('../../config.json');
 
 var router = express.Router({ strict: true });
 
@@ -442,7 +442,7 @@ function createPlace(req, res, next) {
   function sendUploadURL(error, pendingUpload) {
     if (error) return next(error);
 
-    var uploadPath = 'upload/' + pendingUpload._id;
+    var uploadPath = 'api/v1/upload/' + pendingUpload._id;
     var uploadURL = url.resolve(config.serverURL, uploadPath);
     res.redirect(204, uploadURL);
   }
@@ -490,7 +490,7 @@ function updatePlace(req, res, next) {
   function sendUploadURL(error, pendingUpload) {
     if (error) return next(error);
 
-    var uploadPath = 'upload/' + pendingUpload._id;
+    var uploadPath = 'api/v1/upload/' + pendingUpload._id;
     var uploadURL = url.resolve(config.serverURL, uploadPath);
     res.redirect(204, uploadURL);
   }
@@ -764,7 +764,7 @@ function createPicture(req, res, next) {
   function sendUploadURL(error, pendingUpload) {
     if (error) return next(error);
 
-    var uploadPath = 'upload/' + pendingUpload._id;
+    var uploadPath = 'api/v1/upload/' + pendingUpload._id;
     var uploadURL = url.resolve(config.serverURL, uploadPath);
     res.redirect(204, uploadURL);
   }
@@ -913,7 +913,7 @@ function createDocument(req, res, next) {
   function sendUploadURL(error, pendingUpload) {
     if (error) return next(error);
 
-    var uploadPath = 'upload/' + pendingUpload._id;
+    var uploadPath = 'api/v1/upload/' + pendingUpload._id;
     var uploadURL = url.resolve(config.serverURL, uploadPath);
     res.redirect(204, uploadURL);
   }

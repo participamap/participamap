@@ -1,10 +1,10 @@
 var express = require('express');
 var passport = require('passport');
 
-var Checks = require('../modules/checks');
-var Auth = require('../modules/auth');
+var Checks = require('../../modules/checks');
+var Auth = require('../../modules/auth');
 
-var User = require('../models/user');
+var User = require('../../models/user');
 
 var router = express.Router({ strict: true });
 
@@ -14,7 +14,12 @@ router.post('/login', Checks.db, login, sendToken);
 
 
 function getRoot(req, res, next) {
-  res.json({});
+  var infos = {
+    name: 'participamap',
+    apiVersion: 1,
+  };
+
+  res.json({infos: infos});
 }
 
 

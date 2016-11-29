@@ -1,14 +1,14 @@
 var express = require('express');
 var mongoose = require('mongoose');
 
-var Checks = require('../modules/checks');
-var Utils = require('../modules/utils');
+var Checks = require('../../modules/checks');
+var Utils = require('../../modules/utils');
 
-var AbuseReport = require('../models/abuse_report');
-var Place = require('../models/place');
-var Comment = require('../models/comment');
-var Picture = require('../models/picture');
-var Document = require('../models/document');
+var AbuseReport = require('../../models/abuse_report');
+var Place = require('../../models/place');
+var Comment = require('../../models/comment');
+var Picture = require('../../models/picture');
+var Document = require('../../models/document');
 
 var ObjectId = mongoose.Types.ObjectId;
 
