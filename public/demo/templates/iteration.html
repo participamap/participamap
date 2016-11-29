@@ -1,0 +1,65 @@
+<h2>Parcours Chemin</h2>
+
+
+
+<style>
+    .ul-person-1 {
+        list-style: none;
+        padding: 0;
+    }
+
+    .ul-person {
+        list-style: none;
+        padding: 0;
+        border:5px solid burlywood;
+    }
+    .li-person {
+        background: #eee;
+        margin: 1px;
+        padding: 5px 10px;
+    }
+
+
+    .sortable-ghost {
+        opacity: .5;
+    }
+</style>
+
+<div class="row">
+    <div class="col-md-3">
+        <h3>All Routes Created:</h3>
+    </div>
+
+
+    <div class="col-md-3">
+        <h3>All Places list:</h3>
+        <ul class="ul-person-1" id="allPlacesC" >
+            <li class="li-person" ng-repeat="eachPlace in allPlaces" name="{[{eachPlace._id}]}">{[{eachPlace.title}]}</li>
+        </ul>
+    </div>
+    <div class="col-md-3">
+        <h3>Parcours Envisages:</h3>
+        <input type="text" ng-model="titleParcours"/>
+        <ul class="ul-person" id="parcous" >
+        </ul>
+
+        <button class="btn btn-primary" ng-click="saveParcours()">Sauvgarder</button>
+    </div>
+</div>
+
+
+
+<script>
+
+    Sortable.create(allPlacesC, {
+        group: 'allPlacesC',
+        animation: 100
+    });
+    Sortable.create(parcous, {
+        group:{
+            name: 'parcous',
+            put :['allPlacesC']
+        } ,
+        animation: 100
+    });
+</script>
