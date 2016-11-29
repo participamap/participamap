@@ -12,7 +12,11 @@
 
   "rateLimiter": {
     "windowSize": 60,
-    "max": 100
+    "max": 100,
+    "login": {
+      "windowSizeMin": 15,
+      "max": 5
+    }
   },
 
   "auth": {

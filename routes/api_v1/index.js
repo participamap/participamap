@@ -1,16 +1,30 @@
 var express = require('express');
 var passport = require('passport');
+var RateLimit = require('express-rate-limit');
 
 var Checks = require('../../modules/checks');
 var Auth = require('../../modules/auth');
 
 var User = require('../../models/user');
 
+var config = require('../../config.json');
+
 var router = express.Router({ strict: true });
+
+// Login rate limiter
+var ws = config.rateLimiter.login.windowSizeMin;
+var loginLimiter = new RateLimit({
+  windowMs: ws * 60 * 1000,
+  delayAfter: 1,
+  delayMs: 2 * 1000,
+  max: config.rateLimiter.login.max,
+  message: 'Too many login attemps from this IP. Please retry in ' + ws
+    + ' minutes'
+});
 
 router.get('/', getRoot);
 router.post('/register', Checks.db, register, sendToken);
-router.post('/login', Checks.db, login, sendToken);
+router.post('/login', loginLimiter, Checks.db, login, sendToken);
 
 
 function getRoot(req, res, next) {
