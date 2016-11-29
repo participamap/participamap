@@ -80,6 +80,25 @@ app.factory('Parcours',['$http','auth','$base64',function($http, auth) {
       oo.parcours.push(data);
     })
   };
+  oo.getAll = function(){
+    return $http.get('/api/v1/routes/').success(function(data){
+      angular.copy(data,oo.parcours);
+    });
+  };
+  
+    oo.delete = function(identity){
+    return $http.delete('/api/v1/routes/'+identity.toString(),{
+      headers:{Authorization: 'Bearer '+auth.getToken()}
+    }).success(function(data){
+      for (i=0;i < oo.parcours.length;i++){
+        if (oo.parcours[i]._id===identity.toString()) {
+          oo.parcours.splice(i,1);
+          break;
+        }
+      }
+    })
+  };
+
   return oo;
 }]);
 
@@ -237,7 +256,12 @@ app.config(
       .state('nav.regclient.iteration',{
         url:'/iteration',
         templateUrl: 'templates/iteration.html',
-        controller:'IterationCtrl'
+        controller:'IterationCtrl',
+        resolve:{
+          postPromise:['Parcours',function(Parcours){
+            return Parcours.getAll();
+          }]
+        }
       });
     $stateProvider
       .state('nav.regclient.addPic',{

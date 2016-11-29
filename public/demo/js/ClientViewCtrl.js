@@ -10,7 +10,6 @@ app.controller('ClientViewCtrl',['$scope','$location', '$timeout','Place',functi
     lon: 0,
     zoom: 12,
     description: 'Initial',
-    autodiscover: true,
     centerUrlHash: true
   };
 
