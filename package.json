@@ -11,6 +11,7 @@
     "debug": "~2.2.0",
     "express": "~4.13.4",
     "express-jwt": "^5.0.0",
+    "express-rate-limit": "^2.6.0",
     "express-slash": "^2.0.1",
     "file-type": "^3.8.0",
     "jsonwebtoken": "^7.1.9",

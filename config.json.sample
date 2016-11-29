@@ -10,6 +10,11 @@
     "pendingUploadsValidity": 60
   },
 
+  "rateLimiter": {
+    "windowSize": 60,
+    "max": 100
+  },
+
   "auth": {
     "secret": "<Set a strong secret, e.g. 32 random Bytes in base64>",
     "tokenValidity": 86400
