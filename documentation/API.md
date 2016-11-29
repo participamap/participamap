@@ -60,7 +60,7 @@
 
 ### Protocole, format et encodage
 
-L’API utilise le protocole HTTP. Le contenu des requêtes doit être passé en JSON avec l’en-tête `Content-Type: application/json` le cas échéant, sauf mention contraire. Le contenu des réponses est toujours en JSON. L’encodage utilisé est UTF-8.
+L’API utilise le protocole HTTP. Le contenu des requêtes doit être passé en JSON avec l’en-tête `Content-Type: application/json` le cas échéant, sauf mention contraire. Le contenu des réponses est toujours en JSON ; le client devrait donc faire ses requêtes avec l’en-tête `Accept: application/json`. L’encodage utilisé est UTF-8.
 
 ### Chemins
 
