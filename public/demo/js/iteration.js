@@ -19,6 +19,15 @@ app.controller('IterationCtrl',['$scope','Place','Parcours',function ($scope, Pl
 
   };
 
+  $scope.parcoursFam = Parcours.parcours;
+
+  $scope.delParcours=function (identity){
+    Parcours.delete(identity);
+  };
+
+
+
+
   /*Sortable.create(bar, {
     group: 'bar',
     animation: 100

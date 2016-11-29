@@ -82,7 +82,10 @@ app.controller('CreatePlaceCtrl',['$scope','$location', '$timeout','Place','$htt
           },
           description: $scope.centerP.description,
           isVerified : false,
-          setHeaderPhoto : true
+          setHeaderPhoto : true,
+            generic1: {
+            inforPratique:centerP.generic1.inforPratique
+          }
         }, $scope.picAdded);
       }else{
         console.log("creating place without picture");
@@ -95,7 +98,10 @@ app.controller('CreatePlaceCtrl',['$scope','$location', '$timeout','Place','$htt
               longitude: $scope.centerP.lon
             },
             description: $scope.centerP.description,
-            isVerified : false
+            isVerified : false,
+            generic1: {
+              inforPratique: $scope.centerP.generic1.inforPratique
+            }
           });
       }
 
