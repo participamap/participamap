@@ -1,6 +1,9 @@
 {
   "name": "participamap",
+  "description": "A free cultural, citizen and participative mapping project",
+  "homepage": "https://github.com/participamap/participamap",
   "version": "0.0.0",
+  "license": "AGPL-3.0+",
   "private": true,
   "scripts": {
     "start": "node ./bin/www"

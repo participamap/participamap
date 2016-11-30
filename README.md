@@ -1,6 +1,6 @@
 # participamap
 
-**participamap** est le cœur d’un projet de cartographie culturelle, citoyenne et participative. Il permet un accès ouvert à ses données à travers un service Web.
+**participamap** est le cœur d’un projet libre de cartographie culturelle, citoyenne et participative. Il permet un accès ouvert à ses données à travers un service Web.
 
 Sa conception est le fruit d’une collaboration entre les étudiants en Master 2 E-SECURE de l’Université de Caen et le Dôme, centre de sciences de nouvelle génération.
 
@@ -215,3 +215,9 @@ La commande doit retourner un objet JSON contenant les informations suivantes :
         > db.users.update({ username: "admin" }, { $set: { role: "admin" } })
 
 \* Cette procédure pourra être améliorée dans une prochaine version pour permettre la création d’un administrateur directement dans le fichier de configuration.
+
+## Licence
+
+Copyright © 2016 Les Développeurs Participamap
+
+Distribué sous licence AGPLv3 : https://www.gnu.org/licenses/agpl-3.0.html.

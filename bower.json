@@ -1,12 +1,8 @@
 {
   "name": "participamap",
-  "description": "",
-  "main": "",
-  "authors": [
-    "Jean-Philippe Cugnet <jean-philippe@cugnet.eu>"
-  ],
-  "license": "MIT",
+  "description": "A free cultural, citizen and participative mapping project",
   "homepage": "https://github.com/participamap/participamap",
+  "license": "AGPL-3.0+",
   "private": true,
   "ignore": [
     "**/.*",
