@@ -6,6 +6,7 @@
 * [**Description des attributs**](#description-des-attributs)
     * [Configuration générale](#configuration-générale)
     * [MongoDB](#mongodb)
+    * [Limitation des appels API](#limitation-des-appels-api)
     * [Système d’autorisation (jetons)](#système-dautorisation-jetons)
     * [Stockage de fichiers](#stockage-de-fichiers)
 
@@ -62,6 +63,65 @@ Si aucun paramètre n’est à renseigner, cet attribut attend un objet vide `{}
   }
 }
 ```
+
+### Limitation des appels API
+
+Pour éviter un usage frauduleux de l’API — bourrage de données, inscriptions en masse ou tentatives de connexion par force brute —, les appels API sont limités à plusieurs niveaux.
+
+Le fonctionnement du limiteur d’appels est basé sur un principe simple :
+
+* une fenêtre coulissante dont la durée est paramétrable,
+* un nombre d’appels maximum dans cette fenêtre.
+
+Le limiteur de tentatives de connexion ajoute une sécurité supplémentaire : après un premier appel sans délais, les réponses suivantes sont retardées de deux secondes supplémentaires jusqu’à épuiser le nombre d’essais dans la fenêtre.
+
+#### `rateLimiter.windowSize`
+
+* **Type :** Number
+
+Taille de la fenêtre pour les requêtes API en général, **en secondes**.
+
+**Exemple :** `60`
+
+#### `rateLimiter.max`
+
+* **Type :** Number
+
+Nombre maximum de requêtes API en général dans la fenêtre.
+
+**Exemple :** `100`
+
+#### `rateLimiter.registration.windowSizeMin`
+
+* **Type :** Number
+
+Taille de la fenêtre pour la requête de création de compte, **en minutes**.
+
+**Exemple :** `10`
+
+#### `rateLimiter.registration.max`
+
+* **Type :** Number
+
+Nombre maximum de requêtes de connection dans la fenêtre.
+
+**Exemple :** `10`
+
+#### `rateLimiter.login.windowSizeMin`
+
+* **Type :** Number
+
+Taille de la fenêtre pour les tentatives de connexion, **en minutes**.
+
+**Exemple :** `15`
+
+#### `rateLimiter.max`
+
+* **Type :** Number
+
+Nombre de tentitives de connexion dans la fenêtre.
+
+**Exemple :** `5`
 
 ### Système d’autorisation (jetons)
 

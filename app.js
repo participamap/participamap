@@ -31,6 +31,10 @@ var supervisor = new Supervisor(config.supervisor);
 var app = express();
 app.enable('strict routing');
 
+// If the app runs in production mode, it is behind a reverse proxy. Trust it.
+if (app.get('env') === 'production')
+  app.enable('trust proxy');
+
 // Modules
 app.use(logger('dev'));
 
