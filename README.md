@@ -220,4 +220,6 @@ La commande doit retourner un objet JSON contenant les informations suivantes :
 
 Copyright © 2016 Les Développeurs Participamap
 
-Distribué sous licence AGPLv3 : https://www.gnu.org/licenses/agpl-3.0.html.
+Le code est distribué sous licence AGPLv3 : https://www.gnu.org/licenses/agpl-3.0.html.
+
+La documentation est distribuée sous licence CC BY-SA 4.0 : https://creativecommons.org/licenses/by-sa/4.0/
