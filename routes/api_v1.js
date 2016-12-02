@@ -17,10 +17,11 @@
  */
 
 var express = require('express');
-var bodyParser = require('body-parser');
+var cors = require('cors');
+var RateLimit = require('express-rate-limit');
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
-var RateLimit = require('express-rate-limit');
+var bodyParser = require('body-parser');
 
 var Auth = require('../modules/auth');
 
@@ -46,6 +47,7 @@ var apiLimiter = new RateLimit({
 passport.use(new LocalStrategy(Auth.verify));
 
 // Modules
+router.use(cors());
 router.use(apiLimiter);
 router.use(passport.initialize());
 router.use(Auth.jwt);
