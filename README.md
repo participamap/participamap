@@ -104,7 +104,7 @@ Plus d’informations sur la sécurité de MongoDB sont disponibles sur [la docu
         $ cd
         $ mkdir node_apps
         $ cd node_apps
-        $ git clone https://github.com/participamap/participamap
+        $ git clone https://github.com/participamap/participamap -b release/0.1
 
 4. Se rendre dans le répertoire de l’application et installer les dépendances :
 
